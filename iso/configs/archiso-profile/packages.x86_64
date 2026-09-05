@@ -1,0 +1,51 @@
+# Base System & Hardware Drivers
+base
+base-devel
+linux
+linux-firmware
+amd-ucode
+nvidia-utils
+networkmanager
+bluez
+bluez-utils
+blueman
+sudo
+grub
+efibootmgr
+
+# Shell & Terminal Tools
+git
+curl
+btop
+fastfetch
+ripgrep
+micro
+vim
+
+# Hyprland Stack & Compositor Utilities
+hyprland
+xdg-desktop-portal-hyprland
+waybar
+alacritty
+kitty
+awww
+quickshell
+
+# XFCE & Fallback Desktop Stack
+lightdm
+lightdm-gtk-greeter
+xfce4
+xfce4-goodies
+thunar
+thunar-archive-plugin
+thunar-volman
+tumbler
+
+# Audio & Media
+pipewire
+pipewire-pulse
+wireplumber
+pavucontrol
+obs-studio
+vlc
+archiso
