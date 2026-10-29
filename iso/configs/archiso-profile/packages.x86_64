@@ -1,51 +1,110 @@
-# Base System & Hardware Drivers
+# =============================================================================
+# Jacob's Custom Arch Linux ISO Package Manifest (x86_64)
+# =============================================================================
+
+# Base System, Boot & Live ISO Essentials
+arch-install-scripts
+archiso
 base
 base-devel
+btrfs-progs
+dosfstools
+e2fsprogs
+edk2-shell
+efibootmgr
+gptfdisk
+grub
 linux
 linux-firmware
+memtest86+-efi
+mkinitcpio
+mkinitcpio-archiso
+mtools
+parted
+pv
+squashfs-tools
+sudo
+syslinux
+
+# CPU Microcode & GPU Drivers
 amd-ucode
+intel-ucode
 nvidia-utils
-networkmanager
+
+# Networking, Bluetooth & Live Services
+alsa-utils
+blueman
 bluez
 bluez-utils
-blueman
-sudo
-grub
-efibootmgr
-
-# Shell & Terminal Tools
-git
+cloud-init
 curl
+espeakup
+hyperv
+iwd
+modemmanager
+network-manager-applet
+networkmanager
+open-vm-tools
+openssh
+pcsclite
+reflector
+rsync
+virtualbox-guest-utils-nox
+wget
+
+# Shell & Terminal Utilities
 btop
 fastfetch
-ripgrep
+git
+grml-zsh-config
 micro
+ncdu
+ripgrep
 vim
+zsh
 
-# Hyprland Stack & Compositor Utilities
-hyprland
-xdg-desktop-portal-hyprland
-waybar
+# Hyprland & Quickshell Custom Desktop Stack
 alacritty
-kitty
 awww
+cliphist
+hyprland
+hyprlock
+hyprpaper
+hyprpolkitagent
+kitty
+libnotify
+noto-fonts
+noto-fonts-emoji
+playerctl
+polkit
+qt5-wayland
+qt6-5compat
+qt6-declarative
+qt6-wayland
 quickshell
+ttf-jetbrains-mono-nerd
+waybar
+wl-clipboard
+xdg-desktop-portal-gtk
+xdg-desktop-portal-hyprland
 
 # XFCE & Fallback Desktop Stack
+firefox
 lightdm
 lightdm-gtk-greeter
-xfce4
-xfce4-goodies
 thunar
 thunar-archive-plugin
 thunar-volman
 tumbler
+xfce4
+xfce4-goodies
 
 # Audio & Media
-pipewire
-pipewire-pulse
-wireplumber
-pavucontrol
 obs-studio
+pavucontrol
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
 vlc
-archiso
+wireplumber

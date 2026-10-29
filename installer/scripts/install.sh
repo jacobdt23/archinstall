@@ -1,165 +1,164 @@
 #!/bin/bash
+set -euo pipefail
 
-set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=helpers.sh
+source "$SCRIPT_DIR/helpers.sh"
 
-# Function to connect to Wi-Fi using iwctl
+if [ "$EUID" -ne 0 ]; then
+    echo "[-] Please run this script as root (sudo $0)."
+    exit 1
+fi
+
 connect_wifi() {
-    echo "Checking for active internet connection..."
+    echo "[*] Checking for active internet connection..."
     if ping -c 1 -W 3 archlinux.org &>/dev/null; then
-        echo "Internet connection is active."
+        echo "[+] Internet connection is active."
     else
-        echo "No active internet connection detected."
-        if ! command -v iwctl &>/dev/null; then
-            echo "Error: iwctl is not installed. Please install it and try again."
-            exit 1
-        fi
-        echo "Starting iwctl for Wi-Fi setup..."
-        echo "Follow these steps to connect to Wi-Fi:"
-        echo "1. Type 'device list' to find your wireless device."
-        echo "2. Type 'station <device> scan' to scan for networks."
-        echo "3. Type 'station <device> get-networks' to list available networks."
-        echo "4. Type 'station <device> connect <SSID>' to connect to your network."
-        echo "5. Type 'exit' to quit iwctl."
-        iwctl
-        echo "Rechecking internet connection..."
-        if ping -c 1 -W 3 archlinux.org &>/dev/null; then
-            echo "Internet connection established."
+        echo "[-] No active internet connection detected."
+        if command -v iwctl &>/dev/null; then
+            echo "Starting iwctl for Wi-Fi setup..."
+            echo "1. 'device list' -> 2. 'station <dev> scan' -> 3. 'station <dev> connect <SSID>' -> 4. 'exit'"
+            iwctl
+        elif command -v nmtui &>/dev/null; then
+            nmtui
         else
-            echo "Failed to establish an internet connection. Exiting..."
+            echo "[-] Neither iwctl nor nmtui found. Please connect to the internet first."
+            exit 1
+        fi
+        if ! ping -c 1 -W 3 archlinux.org &>/dev/null; then
+            echo "[-] Failed to establish internet connection."
             exit 1
         fi
     fi
 }
 
-
-# Function to create a new user
-create_user() {
-    echo "Creating a new user..."
-    read -p "Enter the username: " username
-    if id "$username" &>/dev/null; then
-        echo "User $username already exists."
-    else
-        useradd -m -G wheel -s /bin/bash "$username"
+setup_interactive_user() {
+    read -r -p "Enter username to create/configure [default: jacob]: " username
+    username="${username:-jacob}"
+    create_user "$username"
+    if ! passwd -S "$username" 2>/dev/null | grep -q " P "; then
         echo "Set a password for $username:"
-        passwd "$username"
-        echo "User $username created and added to the wheel group."
+        set_user_password "$username"
     fi
-
-    echo "Configuring sudo access for the wheel group..."
-    sed -i '/%wheel ALL=(ALL:ALL) ALL/s/^# //' /etc/sudoers
-    echo "Sudo access configured."
+    echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/wheel
+    chmod 0440 /etc/sudoers.d/wheel
+    deploy_custom_dotfiles "$username"
 }
 
-
-# Function to display the main menu
-show_menu() {
-    echo "Select the software you want to install:"
-    echo "1) Base System"
-    echo "2) Desktop Environment"
-    echo "3) Web Browser"
-    echo "4) Media Player"
-    echo "5) Development Tools"
-    echo "6) Utilities"
-    echo "7) Install Additional Software"
-    echo "8) Configure System Settings"
-    echo "9) Finish Installation"
-    echo "10) Exit"
-}
-
-# Function to install selected packages
-install_packages() {
-    local packages=("$@")
-    if [ ${#packages[@]} -gt 0 ]; then
-        echo "Installing packages: ${packages[*]}"
-        pacman -S --noconfirm "${packages[@]}"
-    else
-        echo "No packages selected."
-    fi
-}
-
-# Function to configure system settings
-configure_system() {
-    echo "Configuring system settings..."
-    echo "1) Set Locale"
-    echo "2) Set Timezone"
-    echo "3) Configure Pacman Mirrors"
-    echo "4) Enable Services (e.g., Bluetooth, CUPS)"
-    read -p "Enter your choice [1-4]: " config_choice
-    case $config_choice in
+install_desktop_menu() {
+    echo "Select Desktop Environment:"
+    echo "1) Jacob's Custom Hyprland + Quickshell Stack"
+    echo "2) KDE Plasma"
+    echo "3) GNOME"
+    echo "4) XFCE"
+    echo "5) LXQt"
+    read -r -p "Enter choice [1-5]: " de_opt
+    case "$de_opt" in
         1)
-            echo "Setting locale..."
-            echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-            locale-gen
-            echo "LANG=en_US.UTF-8" > /etc/locale.conf
+            install_packages hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland \
+                quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl \
+                qt5-wayland qt6-wayland qt6-5compat qt6-declarative \
+                ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
+                thunar thunar-archive-plugin thunar-volman tumbler \
+                lightdm lightdm-gtk-greeter network-manager-applet
+            enable_service lightdm.service
             ;;
         2)
-            echo "Setting timezone..."
-            ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
-            hwclock --systohc
+            install_packages plasma kde-applications sddm
+            enable_service sddm.service
             ;;
         3)
-            echo "Configuring Pacman mirrors..."
-            pacman -S --noconfirm reflector
-            reflector --country UnitedStates --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-            
-# Function to display the main menu
-show_menu() {
-    echo "Select the software you want to install:"
-    echo "1) Base System"
-    echo "2) Desktop Environment"
-    echo "3) Web Browser"
-    echo "4) Media Player"
-    echo "5) Development Tools"
-    echo "6) Utilities"
-    echo "7) Install Additional Software"
-    echo "8) Configure System Settings"
-    echo "9) Finish Installation"
-    echo "10) Exit"
+            install_packages gnome gnome-extra gdm
+            enable_service gdm.service
+            ;;
+        4)
+            install_packages xfce4 xfce4-goodies lightdm lightdm-gtk-greeter
+            enable_service lightdm.service
+            ;;
+        5)
+            install_packages lxqt breeze-icons sddm
+            enable_service sddm.service
+            ;;
+        *)
+            echo "[-] Invalid selection."
+            ;;
+    esac
 }
 
-# Function to install selected packages
-install_packages() {
-    local packages=("$@")
-    if [ ${#packages[@]} -gt 0 ]; then
-        echo "Installing packages: ${packages[*]}"
-        pacman -S --noconfirm "${packages[@]}"
-    else
-        echo "No packages selected."
-    fi
-}
-
-# Function to configure system settings
 configure_system() {
-    echo "Configuring system settings..."
-    echo "1) Set Locale"
-    echo "2) Set Timezone"
-    echo "3) Configure Pacman Mirrors"
-    echo "4) Enable Services (e.g., Bluetooth, CUPS)"
-    read -p "Enter your choice [1-4]: " config_choice
-    case $config_choice in
+    echo "Configure System Settings:"
+    echo "1) Set Locale (en_US.UTF-8)"
+    echo "2) Set Timezone (America/New_York)"
+    echo "3) Optimize Pacman Mirrors (Reflector)"
+    echo "4) Enable Core Services (NetworkManager, Bluetooth, SSH)"
+    read -r -p "Enter your choice [1-4]: " config_choice
+    case "$config_choice" in
         1)
-            echo "Setting locale..."
-            echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+            sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+            grep -q "^en_US.UTF-8 UTF-8" /etc/locale.gen || echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
             locale-gen
             echo "LANG=en_US.UTF-8" > /etc/locale.conf
+            echo "[+] Locale configured."
             ;;
         2)
-            echo "Setting timezone..."
-            ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+            read -r -p "Enter timezone [default: America/New_York]: " tz
+            tz="${tz:-America/New_York}"
+            ln -sf "/usr/share/zoneinfo/$tz" /etc/localtime
             hwclock --systohc
+            echo "[+] Timezone set to $tz."
             ;;
         3)
-                        echo "Configuring Pacman mirrors..."
-                        pacman -S --noconfirm reflector
-                        reflector --country UnitedStates --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-                        ;;
-                    4)
-                        echo "Enabling services..."
-                        systemctl enable bluetooth.service
-                        systemctl enable cups.service
-                        ;;
-                    *)
-                        echo "Invalid choice. Returning to the main menu."
-                        ;;
-                esac
-            }
+            install_packages reflector
+            reflector --country "United States" --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
+            echo "[+] Mirrors updated."
+            ;;
+        4)
+            install_packages networkmanager bluez bluez-utils openssh
+            enable_service NetworkManager.service
+            enable_service bluetooth.service
+            enable_service sshd.service
+            ;;
+        *)
+            echo "[-] Invalid choice."
+            ;;
+    esac
+}
+
+show_menu() {
+    echo
+    echo "==================================================="
+    echo "   Jacob's Custom Arch Linux Modular Setup Menu    "
+    echo "==================================================="
+    echo "1) Install Base System Utilities"
+    echo "2) Install Desktop Environment (Hyprland / KDE / GNOME / XFCE)"
+    echo "3) Install Web Browsers (Firefox, Chromium)"
+    echo "4) Install Media & Audio Stack (PipeWire, VLC, MPV, OBS)"
+    echo "5) Install Development Tools (base-devel, git, vim, micro)"
+    echo "6) Install System Utilities (btop, fastfetch, ncdu, ripgrep)"
+    echo "7) Create User & Deploy Jacob's Custom Dotfiles"
+    echo "8) Configure System Settings (Locale, Timezone, Mirrors, Services)"
+    echo "9) Run Post-Install Finalization"
+    echo "10) Exit"
+    echo "==================================================="
+}
+
+connect_wifi
+
+while true; do
+    show_menu
+    read -r -p "Select an option [1-10]: " choice
+    case "$choice" in
+        1) install_packages base base-devel linux-firmware sudo networkmanager grub efibootmgr ;;
+        2) install_desktop_menu ;;
+        3) install_packages firefox chromium ;;
+        4) install_packages pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol vlc mpv obs-studio ;;
+        5) install_packages base-devel git vim micro curl wget ;;
+        6) install_packages btop fastfetch ncdu ripgrep zsh grml-zsh-config ;;
+        7) setup_interactive_user ;;
+        8) configure_system ;;
+        9) "$SCRIPT_DIR/post-install.sh" ;;
+        10) echo "[+] Exiting installer."; exit 0 ;;
+        *) echo "[-] Invalid option: $choice" ;;
+    esac
+done

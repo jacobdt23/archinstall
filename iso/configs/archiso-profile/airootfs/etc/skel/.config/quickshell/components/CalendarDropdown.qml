@@ -18,7 +18,13 @@ PanelWindow {
     color: "transparent"
 
     implicitWidth: 360
-    implicitHeight: 440
+    implicitHeight: 460
+
+    property var now: new Date()
+    property int currentYear: now.getFullYear()
+    property int currentMonth: now.getMonth()
+    property int firstDayOffset: new Date(currentYear, currentMonth, 1).getDay()
+    property int daysInMonth: new Date(currentYear, currentMonth + 1, 0).getDate()
 
     Rectangle {
         anchors.fill: parent
@@ -34,7 +40,7 @@ PanelWindow {
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: Qt.formatDateTime(new Date(), "dddd, MMMM d, yyyy")
+                text: Qt.formatDateTime(now, "dddd, MMMM d, yyyy")
                 color: "#7aa2f7"
                 font.pixelSize: 15
                 font.bold: true
@@ -65,7 +71,7 @@ PanelWindow {
                 }
             }
 
-            // Clean Uniform Grid for Calendar Days
+            // Dynamic Grid for Calendar Days
             Grid {
                 Layout.alignment: Qt.AlignHCenter
                 columns: 7
@@ -73,17 +79,16 @@ PanelWindow {
                 columnSpacing: 8
 
                 Repeater {
-                    model: 35
+                    model: 42
                     Rectangle {
                         required property int index
                         width: 40
-                        height: 32
+                        height: 30
                         radius: 6
                         
-                        property int firstDayOffset: 6 // Saturday start offset for August 2026
                         property int dayNum: index - firstDayOffset + 1
-                        property bool isCurrentMonth: dayNum > 0 && dayNum <= 31
-                        property bool isToday: isCurrentMonth && dayNum === new Date().getDate()
+                        property bool isCurrentMonth: dayNum > 0 && dayNum <= daysInMonth
+                        property bool isToday: isCurrentMonth && dayNum === now.getDate()
 
                         color: isToday ? "#7aa2f7" : "transparent"
 

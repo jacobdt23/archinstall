@@ -15,6 +15,10 @@ Scope {
     property bool mediaOpen: false
     property bool controlCenterOpen: false
 
+    Process {
+        id: volumeProc
+    }
+
     function closeAll() {
         launcherOpen = false;
         powerMenuOpen = false;
@@ -54,11 +58,65 @@ Scope {
     }
 
     IpcHandler {
+        target: "notifications"
+        function toggle(): void {
+            let state = root.notificationsOpen;
+            root.closeAll();
+            root.notificationsOpen = !state;
+        }
+    }
+
+    IpcHandler {
+        target: "media"
+        function toggle(): void {
+            let state = root.mediaOpen;
+            root.closeAll();
+            root.mediaOpen = !state;
+        }
+    }
+
+    IpcHandler {
+        target: "clipboard"
+        function toggle(): void {
+            let state = root.clipboardOpen;
+            root.closeAll();
+            root.clipboardOpen = !state;
+        }
+    }
+
+    IpcHandler {
+        target: "calendar"
+        function toggle(): void {
+            let state = root.calendarOpen;
+            root.closeAll();
+            root.calendarOpen = !state;
+        }
+    }
+
+    IpcHandler {
         target: "controlcenter"
         function toggle(): void {
             let state = root.controlCenterOpen;
             root.closeAll();
             root.controlCenterOpen = !state;
+        }
+    }
+
+    IpcHandler {
+        target: "volume"
+        function up(): void {
+            volumeProc.exec(["wpctl", "set-volume", "-l", "1.5", "@DEFAULT_AUDIO_SINK@", "5%+"]);
+        }
+        function down(): void {
+            volumeProc.exec(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-"]);
+        }
+        function mute(): void {
+            volumeProc.exec(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
+        }
+        function change(action: string): void {
+            if (action === "up") up();
+            else if (action === "down") down();
+            else if (action === "mute") mute();
         }
     }
 
@@ -77,6 +135,7 @@ Scope {
             KeybindsMenu { screen: modelData; rootScope: root }
             Notifications { targetScreen: modelData; rootScope: root }
             MediaMenu { targetScreen: modelData; rootScope: root }
+            ControlCenter { targetScreen: modelData; rootScope: root }
         }
     }
 }

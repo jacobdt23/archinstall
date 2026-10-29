@@ -1,2 +1,6 @@
 iso/work/
 iso/out/
+**/build/
+*.save
+*.backup
+*.swp

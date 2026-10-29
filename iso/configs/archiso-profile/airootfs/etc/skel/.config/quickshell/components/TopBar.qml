@@ -191,7 +191,7 @@ PanelWindow {
                 border.color: "#3b4261"; border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
                 Text { id: cpuText; anchors.centerIn: parent; text: "CPU: " + cpuUsage; color: "#7aa2f7"; font.pixelSize: 11; font.bold: true }
-                MouseArea { id: cpuArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["alacritty", "-e", "btm"]) }
+                MouseArea { id: cpuArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "alacritty -e btop || kitty -e btop"]) }
             }
 
             Rectangle {
@@ -200,7 +200,7 @@ PanelWindow {
                 border.color: "#3b4261"; border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
                 Text { id: memText; anchors.centerIn: parent; text: "MEM: " + memUsage; color: "#bb9af7"; font.pixelSize: 11; font.bold: true }
-                MouseArea { id: memArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["alacritty", "-e", "btm"]) }
+                MouseArea { id: memArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "alacritty -e btop || kitty -e btop"]) }
             }
 
             Rectangle {

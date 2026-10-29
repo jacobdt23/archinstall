@@ -1,40 +1,37 @@
 #!/bin/bash
+set -euo pipefail
 
-set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=helpers.sh
+source "$SCRIPT_DIR/helpers.sh"
 
-# Function to create a new user
-create_user() {
-    read -p "Enter the username for the new user: " username
-    useradd -m -G wheel "$username"
-    echo "User $username created."
-    passwd "$username"
-}
+if [ "$EUID" -ne 0 ]; then
+    echo "[-] Please run this script as root."
+    exit 1
+fi
 
-# Function to configure sudoers
-configure_sudoers() {
-    echo "Configuring sudoers..."
-    echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
-}
+echo "[+] Starting post-installation tasks..."
 
-# Function to enable services
-enable_services() {
-    echo "Enabling necessary services..."
-    systemctl enable NetworkManager
-}
+read -r -p "Enter username for the primary user [default: jacob]: " username
+username="${username:-jacob}"
 
-# Function to set up system settings
-setup_system_settings() {
-    echo "Applying system settings..."
-    # Example: Set the timezone
-    timedatectl set-timezone America/New_York
-}
+create_user "$username"
+if ! passwd -S "$username" 2>/dev/null | grep -q " P "; then
+    set_user_password "$username"
+fi
 
-# Main post-installation tasks
-echo "Starting post-installation tasks..."
+echo "[+] Configuring sudoers..."
+echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/wheel
+chmod 0440 /etc/sudoers.d/wheel
 
-create_user
-configure_sudoers
-enable_services
-setup_system_settings
+echo "[+] Deploying custom Hyprland & Quickshell dotfiles..."
+deploy_custom_dotfiles "$username"
 
-echo "Post-installation tasks completed. You can now reboot your system."
+echo "[+] Enabling core services..."
+enable_service NetworkManager.service
+
+echo "[+] Applying timezone settings (America/New_York)..."
+ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+hwclock --systohc || true
+
+echo "[+] Post-installation tasks completed!"

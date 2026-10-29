@@ -1,39 +1,66 @@
-# Custom Arch Linux ISO Build
+# Jacob's Custom Arch Linux (`CUSTOM_ARCH`)
 
-This directory contains the configurations and build scripts for generating a custom, UEFI-compatible Arch Linux live ISO image using `mkarchiso`.
+A unified custom Arch Linux live ISO builder (`mkarchiso`) and interactive UEFI/GPT system installer pre-configured with **Jacob's Custom Hyprland + Quickshell (TokyoNight) + XFCE Fallback Desktop**.
 
-## Project Directory Structure
+---
 
-- **configs/archiso-profile/**: Contains the custom profile definition, package manifests, and live environment configurations.
-  - **airootfs/**: Files and configurations overlaid onto the live environment root (including user dotfiles, shell configs, and systemd services).
-  - **packages.x86_64**: List of packages installed in the custom ISO.
-  - **grub/**: Custom GRUB bootloader configuration (`grub.cfg`) for UEFI booting.
-  - **profiledef.sh**: Profile metadata and file permission definitions for `mkarchiso`.
+## Repository Structure
 
-- **scripts/**: Build automation scripts.
-  - **build-iso.sh**: Main script that handles environment cleanup and invokes `mkarchiso` using absolute paths.
+* **[`iso/`](iso/)**: Custom UEFI-compatible Arch Linux live ISO configuration and build scripts.
+  * **[`iso/configs/archiso-profile/`](iso/configs/archiso-profile/)**:
+    * **[`airootfs/etc/skel/.config/`](iso/configs/archiso-profile/airootfs/etc/skel/.config/)**: Bundled dotfiles for **Hyprland** (`hyprland.conf` + Lua modules), **Quickshell** (TopBar, BottomDock, Launcher, ControlCenter, Clipboard, Media, Notifications, Calendar, Keybinds, PowerMenu), **Alacritty**, **Hyprlock**, **Hyprpaper**, and **Waypaper**.
+    * **[`packages.x86_64`](iso/configs/archiso-profile/packages.x86_64)**: Complete live & desktop package manifest (`hyprland`, `quickshell`, `awww`, `pipewire`, `xfce4`, `arch-install-scripts`, `mkinitcpio-archiso`, etc.).
+    * **[`profiledef.sh`](iso/configs/archiso-profile/profiledef.sh)**: ISO profile metadata (`jacob-archlinux`, label `CUSTOM_ARCH`).
+  * **[`iso/scripts/build-iso.sh`](iso/scripts/build-iso.sh)**: Automatically stages `installer/` and dotfiles into the live ISO and builds via `mkarchiso` natively (on Arch) or automatically inside a privileged Arch container via `podman`/`docker` (on Fedora or any other Linux host).
+* **[`installer/`](installer/)**: Full-disk UEFI/GPT system installer and modular post-install scripts.
+  * **[`installer/install.sh`](installer/install.sh)**: Interactive full-disk UEFI/GPT installer (`archinstall-custom` inside the live ISO) that partitions, installs Arch, configures GRUB, and deploys your custom Hyprland + Quickshell desktop and dotfiles.
+  * **[`installer/scripts/install.sh`](installer/scripts/install.sh)**: Interactive post-install/modular menu for adding desktop environments, packages, users, and dotfiles on an existing Arch system.
 
-- **out/**: Output directory where the compiled custom ISO image is saved (`archlinux-*.iso`).
+---
 
-- **work/**: Temporary working directory generated during the `mkarchiso` build process.
+## Building the Custom ISO
 
-## Usage
+Run the build script with `sudo` from the repository root (works on both **Arch Linux** via `mkarchiso` and **Fedora/other distros** via `podman`/`docker`):
 
-1. **Build the ISO**:
-   From the repository root, run the build script with root privileges:
+```bash
+sudo ./iso/scripts/build-iso.sh
+```
+
+The compiled bootable ISO (`jacob-archlinux-YYYY.MM.DD-x86_64.iso`) will be placed in `iso/out/`.
+
+---
+
+## Installing from the Live ISO
+
+Once booted into the live environment:
+
+1. **Run the unified installer** (available directly in `$PATH`):
    ```bash
-   sudo ./iso/scripts/build-iso.sh
-## Usage (cont.)
+   archinstall-custom
+   ```
+   *(Or run `/root/installer/install.sh` directly.)*
+2. **Or test the live Hyprland desktop directly**:
+   ```bash
+   Hyprland
+   ```
 
-2. **Locate your finished ISO**:
-   The compiled image will be placed in `iso/out/`.
+---
 
-## Requirements
+## Default Hyprland & Quickshell Keybindings
 
-- An active internet connection and root privileges to run `mkarchiso`.
-- Arch ISO build tools installed (`arch-install-scripts`, `archiso`).
-
-## Notes
-
-- Modify `iso/configs/archiso-profile/packages.x86_64` to adjust the package manifest included in your live environment.
-- The ISO is built specifically for UEFI boot modes (`uefi.grub`).
+| Keybind | Action |
+| :--- | :--- |
+| `SUPER + RETURN` | Open Terminal (`kitty`) |
+| `SUPER` / `SUPER + SPACE` | Toggle Quickshell App Launcher |
+| `SUPER + E` | Open File Manager (`thunar`) |
+| `SUPER + C` | Close Active Window |
+| `SUPER + I` | Toggle Quickshell Control Center |
+| `SUPER + K` | Toggle Keybinds Reference |
+| `SUPER + N` | Toggle Notifications Center |
+| `SUPER + SHIFT + V` | Toggle Clipboard History (`cliphist`) |
+| `SUPER + M` | Toggle Media & Audio Controls (`playerctl` / `wpctl`) |
+| `SUPER + L` | Toggle Calendar & Agenda Dropdown |
+| `SUPER + Q` | Toggle Power Menu (`hyprlock` / Reboot / Shutdown) |
+| `SUPER + = / - / BackSpace` | Volume Up / Down / Mute |
+| `SUPER + 1-0` | Switch to Workspaces 1–10 |
+| `SUPER + SHIFT + 1-0` | Move Window to Workspaces 1–10 |

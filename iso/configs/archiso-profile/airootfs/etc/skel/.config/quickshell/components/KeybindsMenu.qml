@@ -17,30 +17,34 @@ PanelWindow {
     visible: rootScope.keybindsOpen
     color: "transparent"
 
-    implicitWidth: 420
-    implicitHeight: 460
+    implicitWidth: 440
+    implicitHeight: 480
 
     ListModel {
         id: keybindMasterModel
 
         Component.onCompleted: {
             let binds = [
-                { key: "SUPER + T", desc: "Open Terminal (Kitty)" },
-                { key: "SUPER + Q", desc: "Close Focused Window" },
-                { key: "SUPER + M", desc: "Exit Hyprland / Logout" },
+                { key: "SUPER + RETURN", desc: "Open Terminal (Kitty)" },
+                { key: "SUPER + C", desc: "Close Focused Window" },
+                { key: "SUPER + Q", desc: "Toggle Power Menu" },
                 { key: "SUPER + E", desc: "Open File Manager (Thunar)" },
+                { key: "SUPER + D", desc: "Open Discord" },
+                { key: "SUPER + W", desc: "Launch Looking Glass Client" },
+                { key: "SUPER / SUPER + SPACE", desc: "Toggle Application Launcher" },
+                { key: "SUPER + I", desc: "Toggle Control Center" },
+                { key: "SUPER + K", desc: "Toggle Keybinds Reference" },
+                { key: "SUPER + N", desc: "Toggle Notifications Center" },
+                { key: "SUPER + SHIFT + V", desc: "Toggle Clipboard History" },
+                { key: "SUPER + M", desc: "Toggle Media Controls" },
+                { key: "SUPER + L", desc: "Toggle Calendar & Agenda" },
                 { key: "SUPER + V", desc: "Toggle Floating Mode" },
                 { key: "SUPER + P", desc: "Pseudo Tile Layout" },
                 { key: "SUPER + J", desc: "Toggle Split Layout" },
-                { key: "SUPER + Space", desc: "Toggle Application Launcher" },
-                { key: "SUPER + K", desc: "Toggle Keybinds Reference" },
-                { key: "SUPER + N", desc: "Toggle Notifications Center" },
-                { key: "SUPER + C", desc: "Toggle Clipboard History" },
-                { key: "SUPER + B", desc: "Toggle Media Controls" },
-                { key: "SUPER + L", desc: "Toggle Calendar & Agenda" },
-                { key: "SUPER + 1-5", desc: "Switch to Workspaces 1-5" },
-                { key: "SUPER + SHIFT + 1-5", desc: "Move Window to Workspace" },
-                { key: "MOUSE_LEFT / DRAG", desc: "Move / Resize Windows" }
+                { key: "SUPER + = / - / BS", desc: "Volume Up / Down / Mute" },
+                { key: "SUPER + 1-0", desc: "Switch to Workspaces 1-10" },
+                { key: "SUPER + SHIFT + 1-0", desc: "Move Window to Workspace 1-10" },
+                { key: "SUPER + S", desc: "Toggle Special Scratchpad" }
             ];
             for (let i = 0; i < binds.length; i++) {
                 keybindMasterModel.append(binds[i]);

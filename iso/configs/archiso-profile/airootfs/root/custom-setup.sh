@@ -1,26 +1,29 @@
 #!/bin/bash
+set -euo pipefail
 
-# Custom setup script for Arch Linux installation
+# Custom setup script for Jacob's Arch Linux environment
+USERNAME="${USERNAME:-jacob}"
+PASSWORD="${PASSWORD:-jacob}"
 
-# Update the system clock
-timedatectl set-ntp true
+timedatectl set-ntp true || true
 
-# Install additional packages
-pacman -S --noconfirm vim git
+pacman -S --noconfirm --needed vim git openssh networkmanager
 
-# Enable necessary services
-systemctl enable NetworkManager
+systemctl enable NetworkManager.service
+systemctl enable sshd.service
 
-# Create a new user with sudo privileges
-useradd -m -G wheel -s /bin/bash customuser
-echo "customuser:password" | chpasswd
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+if ! id "$USERNAME" &>/dev/null; then
+    useradd -m -G wheel,video,audio,input,storage -s /bin/bash "$USERNAME"
+    echo "$USERNAME:$PASSWORD" | chpasswd
+fi
 
-# Set up SSH server
-pacman -S --noconfirm openssh
-systemctl enable sshd
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel
+chmod 0440 /etc/sudoers.d/wheel
 
-# Additional custom configurations can be added here
-# For example, setting up a firewall or installing other software
+if [ -d "/etc/skel/.config" ] && [ -d "/home/$USERNAME" ]; then
+    mkdir -p "/home/$USERNAME/.config"
+    cp -r /etc/skel/.config/* "/home/$USERNAME/.config/"
+    chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
+fi
 
-echo "Custom setup completed."
+echo "[+] Custom setup completed for user '$USERNAME'."

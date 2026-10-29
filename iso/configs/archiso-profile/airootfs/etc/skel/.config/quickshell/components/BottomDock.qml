@@ -21,7 +21,7 @@ PanelWindow {
         anchors.centerIn: parent
         spacing: 12
 
-        // App Launcher Button with custom CachyOS image from Downloads
+        // App Launcher Button with bundled logo
         Rectangle {
             width: 32; height: 32; radius: 6
             color: btn1Mouse.containsMouse ? "#3b4261" : "#24283b"
@@ -32,7 +32,7 @@ PanelWindow {
             Image {
                 anchors.centerIn: parent
                 width: 20; height: 20
-                source: "file:///home/jacob/Downloads/cachyos-linux.png"
+                source: "../../hypr/cachyos_logo.png"
                 fillMode: Image.PreserveAspectFit
             }
 
@@ -41,8 +41,9 @@ PanelWindow {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
+                    let s = rootScope.launcherOpen
                     rootScope.closeAll()
-                    rootScope.launcherOpen = true
+                    rootScope.launcherOpen = !s
                 }
             }
         }
@@ -67,7 +68,31 @@ PanelWindow {
                 id: btn2Mouse
                 anchors.fill: parent
                 hoverEnabled: true
-                onClicked: dockExec.exec(["alacritty"])
+                onClicked: dockExec.exec(["sh", "-c", "command -v kitty >/dev/null && exec kitty || exec alacritty"])
+            }
+        }
+
+        // File Manager Shortcut
+        Rectangle {
+            width: 32; height: 32; radius: 6
+            color: btnFilesMouse.containsMouse ? "#3b4261" : "#24283b"
+            border.color: "#3b4261"
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: "F"
+                color: "#7aa2f7"
+                font.pixelSize: 13
+                font.bold: true
+            }
+
+            MouseArea {
+                id: btnFilesMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: dockExec.exec(["thunar"])
             }
         }
 
@@ -91,7 +116,35 @@ PanelWindow {
                 id: btn3Mouse
                 anchors.fill: parent
                 hoverEnabled: true
-                onClicked: dockExec.exec(["brave"])
+                onClicked: dockExec.exec(["sh", "-c", "for b in brave firefox chromium; do command -v $b >/dev/null && exec $b; done; xdg-open https://archlinux.org"])
+            }
+        }
+
+        // Control Center Shortcut
+        Rectangle {
+            width: 32; height: 32; radius: 6
+            color: btnCcMouse.containsMouse ? "#3b4261" : "#24283b"
+            border.color: "#3b4261"
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: "⚙"
+                color: "#bb9af7"
+                font.pixelSize: 14
+                font.bold: true
+            }
+
+            MouseArea {
+                id: btnCcMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    let s = rootScope.controlCenterOpen
+                    rootScope.closeAll()
+                    rootScope.controlCenterOpen = !s
+                }
             }
         }
     }
