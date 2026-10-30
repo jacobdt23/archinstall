@@ -1,11 +1,23 @@
 #!/bin/bash
 set -e
 
-# 1. Restore kernel image from /usr/lib/modules/<kver>/vmlinuz into /boot/vmlinuz-linux
+# 1. Ensure /boot exists, is strictly uncompressed (chattr +m), and restore kernel + microcode
+mkdir -p /boot
+chattr -R +m /boot 2>/dev/null || true
+chattr +m /boot 2>/dev/null || true
+btrfs property set /boot compression none 2>/dev/null || true
+
 KVER="$(ls -1 /usr/lib/modules 2>/dev/null | head -n1)"
 if [ -n "$KVER" ] && [ -f "/usr/lib/modules/$KVER/vmlinuz" ]; then
-    mkdir -p /boot
     cp -f "/usr/lib/modules/$KVER/vmlinuz" /boot/vmlinuz-linux
+    chattr +m /boot/vmlinuz-linux 2>/dev/null || true
+    btrfs property set /boot/vmlinuz-linux compression none 2>/dev/null || true
+fi
+
+# Restore CPU microcode if backed up
+if [ -d /usr/lib/boot-backup ]; then
+    cp -f /usr/lib/boot-backup/*-ucode.img /boot/ 2>/dev/null || true
+    chattr -R +m /boot 2>/dev/null || true
 fi
 
 # 2. Replace archiso mkinitcpio preset & hook config with standard installed Arch Linux preset
@@ -19,6 +31,12 @@ default_image="/boot/initramfs-linux.img"
 fallback_image="/boot/initramfs-linux-fallback.img"
 fallback_options="-S autodetect"
 EOF
+
+# Ensure initramfs is fully built, uncompressed, and synced to disk
+mkinitcpio -P
+chattr -R +m /boot 2>/dev/null || true
+btrfs filesystem defragment -r -v /boot 2>/dev/null || true
+sync
 
 # 3. Clean up live-ISO specific systemd units, autologin, and root autostart scripts
 rm -rf /etc/systemd/system/getty@tty1.service.d
@@ -83,8 +101,7 @@ fi
 # 6. Strip build-only local customrepo from /etc/pacman.conf on installed target
 sed -i '/^\[customrepo\]/,/^Server =/d' /etc/pacman.conf
 
-# 6. Remove live installer configuration and launcher from the installed system
+# 7. Remove live installer configuration and launcher from the installed system
 rm -rf /etc/calamares
 rm -f /usr/share/applications/calamares.desktop \
-      /usr/local/bin/launch-calamares \
-      /usr/local/bin/calamares-post-install
+      /usr/local/bin/launch-calamares

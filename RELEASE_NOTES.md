@@ -38,14 +38,19 @@ Welcome to the official **JacobOS v1.0.0** release — a customized Arch Linux r
   * Fast terminals: `kitty` and `alacritty`.
   * Editors: `vim`, `nano`, and `micro`.
 
+* **Bulletproof GRUB + Btrfs Boot Reliability**:
+  * Resolved `loader/i386/linux.c:grub_cmd_linux: premature end of file /@/boot/vmlinuz-linux`.
+  * Guarantees `/boot` is explicitly uncompressed (`chattr +m`, `btrfs property set compression none`) so GRUB's userspace driver reads raw kernel & initramfs extents without compression bugs.
+  * Embedded CPU microcode backup restoring `intel-ucode.img` and `amd-ucode.img` to `/boot`.
+
 ---
 
 ### Verification & Checksum
 
-* **ISO Image**: `jacob-archlinux-2026.10.30-x86_64.iso` (2.10 GB / 2,105,573,376 bytes)
+* **ISO Image**: `jacob-archlinux-2026.10.30-x86_64.iso` (2.12 GB / 2,120,302,592 bytes)
 * **SHA-256 Checksum**:
   ```
-  e78b8400d5d21071cc94e479e8bfcdd1edef616a7004a28d13e02ee0d1547951  jacob-archlinux-2026.10.30-x86_64.iso
+  be5ae9fef7ba516abb66630b9a670677e969da1530fc078919e36f8278079289  jacob-archlinux-2026.10.30-x86_64.iso
   ```
 * **Verify**:
   ```bash

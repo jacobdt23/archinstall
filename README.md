@@ -13,10 +13,10 @@ A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring th
 You can download the single standalone release ISO directly from GitHub Releases:
 
 * **Direct Release**: [**JacobOS v1.0.0 Release**](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0)
-* **ISO File**: `jacob-archlinux-2026.10.30-x86_64.iso` (2.10 GB / 2,105,573,376 bytes)
+* **ISO File**: `jacob-archlinux-2026.10.30-x86_64.iso` (2.12 GB / 2,120,302,592 bytes)
 * **SHA-256 Checksum**:
   ```
-  e78b8400d5d21071cc94e479e8bfcdd1edef616a7004a28d13e02ee0d1547951  jacob-archlinux-2026.10.30-x86_64.iso
+  be5ae9fef7ba516abb66630b9a670677e969da1530fc078919e36f8278079289  jacob-archlinux-2026.10.30-x86_64.iso
   ```
 * **Verify Download**:
   ```bash
