@@ -30,7 +30,7 @@ Presentation
             anchors.top: logoImg.bottom
             anchors.topMargin: 16
             text: "<b>Jacob's Custom Arch Linux</b><br/>" +
-                  "Installing Hyprland + Quickshell (TokyoNight) & XFCE fallback desktop..."
+                  "Installing Hyprland + Quickshell (TokyoNight) Desktop..."
             wrapMode: Text.WordWrap
             width: presentation.width
             horizontalAlignment: Text.Center

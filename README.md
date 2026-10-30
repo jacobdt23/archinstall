@@ -1,6 +1,6 @@
 # Jacob's Custom Arch Linux (`CUSTOM_ARCH`)
 
-A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Installer**, booting directly into **Jacob's Custom Hyprland + Quickshell (TokyoNight) + XFCE Fallback Desktop** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** support.
+A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Installer**, booting directly into **Jacob's Custom Hyprland + Quickshell (TokyoNight) Desktop** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** support.
 
 ---
 
@@ -23,7 +23,7 @@ A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Instal
   * **[`iso/configs/archiso-profile/`](iso/configs/archiso-profile/)**:
     * **[`airootfs/etc/calamares/`](iso/configs/archiso-profile/airootfs/etc/calamares/)**: Complete **Calamares Graphical Installer** configuration (`settings.conf`, `custom_arch` branding, and modules for `partition`, `mount`, `unpackfs`, `users`, `displaymanager`, `services-systemd`, `shellprocess`, `initcpiocfg`, `initcpio`, `grubcfg`, `bootloader`).
     * **[`airootfs/etc/skel/.config/`](iso/configs/archiso-profile/airootfs/etc/skel/.config/)**: Bundled dotfiles for **Hyprland** (`hyprland.lua` + Lua modules), **Quickshell** (TopBar, BottomDock with live Calamares `"⬇ Install"` button, Launcher, ControlCenter, Clipboard, Media, Notifications, Calendar, Keybinds, PowerMenu), **Alacritty**, **Hyprlock**, **Hyprpaper**, and **Waypaper**.
-    * **[`packages.x86_64`](iso/configs/archiso-profile/packages.x86_64)**: Complete live & desktop package manifest (`calamares`, `kpmcore`, `hyprland`, `quickshell`, `awww`, `pipewire`, `xfce4`, etc.).
+    * **[`packages.x86_64`](iso/configs/archiso-profile/packages.x86_64)**: Complete live & desktop package manifest (`calamares`, `kpmcore`, `hyprland`, `quickshell`, `awww`, `pipewire`, `thunar`, `firefox`, etc.).
     * **[`profiledef.sh`](iso/configs/archiso-profile/profiledef.sh)**: ISO profile metadata (`jacob-archlinux`, label `CUSTOM_ARCH`).
   * **[`iso/custom-repo/`](iso/custom-repo/)**: Prebuilt `calamares` (`3.4.2-2`) package and local pacman repository database.
   * **[`iso/scripts/build-iso.sh`](iso/scripts/build-iso.sh)**: Stages the desktop configuration and builds the ISO via `mkarchiso` natively (on Arch) or automatically inside a privileged Arch container via `podman`/`docker` (on Fedora or any other Linux host).

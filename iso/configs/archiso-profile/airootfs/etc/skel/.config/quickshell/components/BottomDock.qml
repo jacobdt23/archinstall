@@ -73,7 +73,7 @@ PanelWindow {
                 }
             }
 
-            // 2. Terminal (Kitty SVG Icon)
+            // 2. Terminal (Official Kitty Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnTermMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -83,9 +83,9 @@ PanelWindow {
 
                 Image {
                     anchors.centerIn: parent
-                    width: 22; height: 22
-                    sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/kitty.svg"
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/256x256/apps/kitty.png"
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -97,7 +97,7 @@ PanelWindow {
                 }
             }
 
-            // 3. File Manager (Thunar SVG Icon)
+            // 3. File Manager (Official Thunar Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnFilesMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -107,9 +107,9 @@ PanelWindow {
 
                 Image {
                     anchors.centerIn: parent
-                    width: 22; height: 22
-                    sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.thunar.svg"
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/128x128/apps/org.xfce.thunar.png"
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -121,7 +121,7 @@ PanelWindow {
                 }
             }
 
-            // 4. Web Browser (Firefox SVG Icon)
+            // 4. Web Browser (Official Firefox Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnBrowserMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -131,9 +131,9 @@ PanelWindow {
 
                 Image {
                     anchors.centerIn: parent
-                    width: 22; height: 22
-                    sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/firefox.svg"
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/256x256/apps/firefox.png"
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -145,63 +145,55 @@ PanelWindow {
                 }
             }
 
-            // 5. Clipboard History (Clipman SVG Icon)
+            // 5. OBS Studio (Official OBS Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
-                color: btnClipMouse.containsMouse ? "#3b4261" : "#24283b"
-                border.color: rootScope.clipboardOpen ? "#7dcfff" : "#3b4261"
+                color: btnObsMouse.containsMouse ? "#3b4261" : "#24283b"
+                border.color: "#3b4261"
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
                 Image {
                     anchors.centerIn: parent
-                    width: 22; height: 22
-                    sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/xfce4-clipman-plugin.svg"
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/256x256/apps/com.obsproject.Studio.png"
                     fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
-                    id: btnClipMouse
+                    id: btnObsMouse
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: {
-                        let c = rootScope.clipboardOpen
-                        rootScope.closeAll()
-                        rootScope.clipboardOpen = !c
-                    }
+                    onClicked: dockExec.exec(["obs"])
                 }
             }
 
-            // 6. Keybindings Cheat Sheet (Keyboard SVG Icon)
+            // 6. VLC Media Player (Official VLC Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
-                color: btnKbMouse.containsMouse ? "#3b4261" : "#24283b"
-                border.color: rootScope.keybindsOpen ? "#e0af68" : "#3b4261"
+                color: btnVlcMouse.containsMouse ? "#3b4261" : "#24283b"
+                border.color: "#3b4261"
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
                 Image {
                     anchors.centerIn: parent
-                    width: 22; height: 22
-                    sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.settings.keyboard.svg"
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/256x256/apps/vlc.png"
                     fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
-                    id: btnKbMouse
+                    id: btnVlcMouse
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: {
-                        let k = rootScope.keybindsOpen
-                        rootScope.closeAll()
-                        rootScope.keybindsOpen = !k
-                    }
+                    onClicked: dockExec.exec(["vlc"])
                 }
             }
 
-            // 7. System Control Center (Settings Manager SVG Icon)
+            // 7. System Control Center (Official Volume/Settings Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnCcMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -213,7 +205,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     width: 22; height: 22
                     sourceSize.width: 48; sourceSize.height: 48
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.settings.manager.svg"
+                    source: "file:///usr/share/icons/hicolor/scalable/apps/btop.svg"
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -236,7 +228,7 @@ PanelWindow {
                 color: "#3b4261"
             }
 
-            // 8. Calamares Installer Pill (visible only in Live ISO environment)
+            // 8. Calamares Installer Pill (Official Calamares Icon)
             Rectangle {
                 visible: hasCalamares
                 width: installRow.implicitWidth + 22
@@ -253,10 +245,10 @@ PanelWindow {
                     spacing: 8
 
                     Image {
-                        Layout.preferredWidth: 20
-                        Layout.preferredHeight: 20
-                        sourceSize.width: 40; sourceSize.height: 40
-                        source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/calamares.svg"
+                        Layout.preferredWidth: 22
+                        Layout.preferredHeight: 22
+                        sourceSize.width: 48; sourceSize.height: 48
+                        source: "file:///usr/share/icons/hicolor/scalable/apps/calamares.svg"
                         fillMode: Image.PreserveAspectFit
                     }
 

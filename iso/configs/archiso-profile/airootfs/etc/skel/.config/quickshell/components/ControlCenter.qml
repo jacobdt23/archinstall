@@ -42,7 +42,7 @@ PanelWindow {
                     Layout.preferredWidth: 20
                     Layout.preferredHeight: 20
                     sourceSize.width: 40; sourceSize.height: 40
-                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.settings.manager.svg"
+                    source: Qt.resolvedUrl("cachyos_logo.png")
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -65,13 +65,13 @@ PanelWindow {
 
             Repeater {
                 model: [
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/calamares.svg", color: "#9ece6a", label: "Install System (Calamares)", cmd: "/usr/local/bin/launch-calamares" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.pulseaudio.pavucontrol.svg", color: "#7aa2f7", label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/blueman.svg", color: "#7dcfff", label: "Bluetooth Manager (Blueman)", cmd: "blueman-manager" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/preferences-system-network.svg", color: "#e0af68", label: "Network Manager (nmtui)", cmd: "kitty -e nmtui || alacritty -e nmtui" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/btop.svg", color: "#bb9af7", label: "System Monitor (btop)", cmd: "kitty -e btop || alacritty -e btop" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.session.svg", color: "#7aa2f7", label: "Reload Hyprland Config", cmd: "hyprctl reload && notify-send 'Hyprland' 'Config Reloaded'" },
-                    { icon: "file:///usr/share/icons/Papirus-Dark/48x48/apps/xfsm-logout.svg", color: "#f7768e", label: "Lock Screen (Hyprlock)", cmd: "hyprlock" }
+                    { icon: "file:///usr/share/icons/hicolor/scalable/apps/calamares.svg", color: "#9ece6a", label: "Install System (Calamares)", cmd: "/usr/local/bin/launch-calamares" },
+                    { icon: "file:///usr/share/icons/hicolor/scalable/apps/org.pulseaudio.pavucontrol.svg", color: "#7aa2f7", label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },
+                    { icon: "file:///usr/share/icons/hicolor/256x256/apps/blueman.png", color: "#7dcfff", label: "Bluetooth Manager (Blueman)", cmd: "blueman-manager" },
+                    { icon: "file:///usr/share/icons/hicolor/scalable/apps/nm-device-wired.svg", color: "#e0af68", label: "Network Manager (nmtui)", cmd: "kitty -e nmtui || alacritty -e nmtui" },
+                    { icon: "file:///usr/share/icons/hicolor/scalable/apps/btop.svg", color: "#bb9af7", label: "System Monitor (btop)", cmd: "kitty -e btop || alacritty -e btop" },
+                    { icon: "file:///usr/share/icons/hicolor/256x256/apps/kitty.png", color: "#7aa2f7", label: "Reload Hyprland Config", cmd: "hyprctl reload && notify-send 'Hyprland' 'Config Reloaded'" },
+                    { icon: "file:///usr/share/pixmaps/archlinux-logo.svg", color: "#f7768e", label: "Lock Screen (Hyprlock)", cmd: "hyprlock" }
                 ]
 
                 delegate: Rectangle {
@@ -94,7 +94,7 @@ PanelWindow {
                         Image {
                             Layout.preferredWidth: 22
                             Layout.preferredHeight: 22
-                            sourceSize.width: 44; sourceSize.height: 44
+                            sourceSize.width: 48; sourceSize.height: 48
                             source: modelData.icon
                             fillMode: Image.PreserveAspectFit
                         }

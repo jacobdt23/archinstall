@@ -112,7 +112,7 @@ wl-clipboard
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 
-# XFCE & Fallback Desktop Stack
+# Desktop Applications, File Manager & Greeter
 firefox
 lightdm
 lightdm-gtk-greeter
@@ -120,8 +120,6 @@ thunar
 thunar-archive-plugin
 thunar-volman
 tumbler
-xfce4
-xfce4-goodies
 
 # Audio & Media
 obs-studio

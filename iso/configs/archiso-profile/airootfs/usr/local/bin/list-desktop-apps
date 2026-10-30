@@ -3,33 +3,24 @@ import configparser
 import glob
 import os
 
+# Prioritize official upstream application icons in hicolor & pixmaps first
 SEARCH_DIRS = [
-    "/usr/share/icons/Papirus-Dark/48x48/apps",
-    "/usr/share/icons/Papirus/48x48/apps",
-    "/usr/share/icons/Papirus/48x48/devices",
-    "/usr/share/icons/Papirus/48x48/places",
-    "/usr/share/icons/Papirus/48x48/categories",
-    "/usr/share/icons/Papirus/48x48/status",
-    "/usr/share/icons/Papirus/48x48/emblems",
-    "/usr/share/icons/Papirus/48x48/mimetypes",
-    "/usr/share/icons/Papirus/64x64/apps",
-    "/usr/share/icons/Papirus/32x32/apps",
-    "/usr/share/icons/breeze-dark/apps/48",
-    "/usr/share/icons/breeze-dark/preferences/32",
-    "/usr/share/icons/breeze-dark/devices/64",
-    "/usr/share/icons/breeze-dark/status/64",
-    "/usr/share/icons/breeze-dark/places/64",
-    "/usr/share/icons/breeze-dark/applets/64",
-    "/usr/share/icons/hicolor/scalable/apps",
     "/usr/share/icons/hicolor/256x256/apps",
+    "/usr/share/icons/hicolor/192x192/apps",
     "/usr/share/icons/hicolor/128x128/apps",
+    "/usr/share/icons/hicolor/scalable/apps",
     "/usr/share/icons/hicolor/64x64/apps",
     "/usr/share/icons/hicolor/48x48/apps",
-    "/usr/share/icons/hicolor/32x32/apps",
+    "/usr/share/pixmaps",
     "/usr/share/icons/Adwaita/scalable/apps",
     "/usr/share/icons/Adwaita/scalable/devices",
     "/usr/share/icons/Adwaita/scalable/categories",
-    "/usr/share/pixmaps",
+    "/usr/share/icons/breeze-dark/apps/48",
+    "/usr/share/icons/breeze-dark/preferences/32",
+    "/usr/share/icons/breeze-dark/devices/64",
+    "/usr/share/icons/Papirus-Dark/48x48/apps",
+    "/usr/share/icons/Papirus/48x48/apps",
+    "/usr/share/icons/Papirus/48x48/devices",
 ]
 
 icon_map = {}
@@ -38,13 +29,48 @@ for d in reversed(SEARCH_DIRS):
         continue
     try:
         for entry in os.scandir(d):
-            if entry.name.endswith((".svg", ".png")):
+            if entry.name.endswith((".png", ".svg")):
                 stem = os.path.splitext(entry.name)[0]
                 icon_map[stem] = entry.path
     except OSError:
         continue
 
 FALLBACK_ICON = icon_map.get("application-x-executable", "")
+
+# Internal/helper .desktop entries that should not clutter the main app launcher
+HIDDEN_DESKTOP_IDS = {
+    "avahi-discover",
+    "bssh",
+    "bvnc",
+    "blueman-adapters",
+    "kitty-open",
+    "lstopo",
+    "qv4l2",
+    "qvidcap",
+    "thunar-bulk-rename",
+    "thunar-settings",
+    "thunar-volman-settings",
+    "vim",
+    "xgps",
+    "xgpsspeed",
+}
+
+# Featured primary applications order at the top of the launcher
+PRIMARY_ORDER = {
+    "calamares": 0,
+    "firefox": 1,
+    "kitty": 2,
+    "thunar": 3,
+    "Alacritty": 4,
+    "com.obsproject.Studio": 5,
+    "vlc": 6,
+    "org.pulseaudio.pavucontrol": 7,
+    "blueman-manager": 8,
+    "btop": 9,
+    "nvidia-settings": 10,
+    "nm-connection-editor": 11,
+    "micro": 12,
+}
 
 
 def resolve_icon(icon_name: str) -> str:
@@ -61,8 +87,6 @@ def resolve_icon(icon_name: str) -> str:
         short = stem.split(".")[-1].lower()
         if short in icon_map:
             return icon_map[short]
-        if "xfce4-" + short in icon_map:
-            return icon_map["xfce4-" + short]
     if icon_name.endswith("-symbolic") and icon_name[:-9] in icon_map:
         return icon_map[icon_name[:-9]]
     return FALLBACK_ICON
@@ -77,6 +101,9 @@ seen_names = set()
 entries = []
 
 for f in desktop_files:
+    desktop_id = os.path.splitext(os.path.basename(f))[0]
+    if desktop_id in HIDDEN_DESKTOP_IDS:
+        continue
     cp = configparser.ConfigParser(interpolation=None, strict=False)
     try:
         cp.read(f, encoding="utf-8")
@@ -94,9 +121,7 @@ for f in desktop_files:
     desc = (sec.get("Comment", "") or sec.get("GenericName", "") or "Application").strip()
     icon_raw = sec.get("Icon", "").strip()
     icon_path = resolve_icon(icon_raw)
-    desktop_id = os.path.splitext(os.path.basename(f))[0]
-    # Sort Install System (Calamares) first, then alphabetical
-    priority = 0 if desktop_id == "calamares" else 1
+    priority = PRIMARY_ORDER.get(desktop_id, 50)
     entries.append((priority, name.lower(), name, desc, desktop_id, icon_path))
 
 entries.sort(key=lambda x: (x[0], x[1]))
