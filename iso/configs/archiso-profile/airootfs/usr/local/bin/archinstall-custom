@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-if [ -x "/root/installer/install.sh" ]; then
-    exec /root/installer/install.sh "$@"
-else
-    echo "[-] Installer not found at /root/installer/install.sh"
-    exit 1
-fi

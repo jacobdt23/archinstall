@@ -1,0 +1,55 @@
+#!/bin/bash
+set -e
+
+# 1. Restore kernel image from /usr/lib/modules/<kver>/vmlinuz into /boot/vmlinuz-linux
+KVER="$(ls -1 /usr/lib/modules 2>/dev/null | head -n1)"
+if [ -n "$KVER" ] && [ -f "/usr/lib/modules/$KVER/vmlinuz" ]; then
+    mkdir -p /boot
+    cp -f "/usr/lib/modules/$KVER/vmlinuz" /boot/vmlinuz-linux
+fi
+
+# 2. Replace archiso mkinitcpio preset & hook config with standard installed Arch Linux preset
+rm -rf /etc/mkinitcpio.conf.d/archiso.conf
+mkdir -p /etc/mkinitcpio.d
+cat > /etc/mkinitcpio.d/linux.preset << 'EOF'
+# mkinitcpio preset file for the 'linux' package
+ALL_kver="/boot/vmlinuz-linux"
+PRESETS=('default' 'fallback')
+default_image="/boot/initramfs-linux.img"
+fallback_image="/boot/initramfs-linux-fallback.img"
+fallback_options="-S autodetect"
+EOF
+
+# 3. Clean up live-ISO specific systemd units, autologin, and root autostart scripts
+rm -rf /etc/systemd/system/getty@tty1.service.d
+rm -rf /etc/systemd/system/etc-pacman.d-gnupg.mount
+rm -f /etc/systemd/system/pacman-init.service \
+      /etc/systemd/system/choose-mirror.service \
+      /etc/systemd/system/livecd-alsa-unmuter.service \
+      /etc/systemd/system/livecd-talk.service \
+      /etc/systemd/system/multi-user.target.wants/pacman-init.service \
+      /etc/systemd/system/multi-user.target.wants/choose-mirror.service \
+      /etc/systemd/system/multi-user.target.wants/livecd-talk.service \
+      /etc/systemd/system/sound.target.wants/livecd-alsa-unmuter.service
+rm -f /etc/systemd/journald.conf.d/volatile-storage.conf \
+      /etc/systemd/logind.conf.d/do-not-suspend.conf \
+      /etc/systemd/resolved.conf.d/archiso.conf \
+      /etc/systemd/system-generators/systemd-gpt-auto-generator \
+      /etc/ssh/sshd_config.d/10-archiso.conf
+rm -f /root/.zlogin /root/.automated_script.sh
+rm -rf /root/.config
+
+# 4. Set LightDM default session to Hyprland (with XFCE available in session switcher)
+if [ -f /etc/lightdm/lightdm.conf ]; then
+    sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf
+    sed -i 's/^#greeter-session=.*/greeter-session=lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
+fi
+
+# 5. Strip build-only local customrepo from /etc/pacman.conf on installed target
+sed -i '/^\[customrepo\]/,/^Server =/d' /etc/pacman.conf
+
+# 6. Remove live installer configuration and launcher from the installed system
+rm -rf /etc/calamares
+rm -f /usr/share/applications/calamares.desktop \
+      /usr/local/bin/launch-calamares \
+      /usr/local/bin/calamares-post-install

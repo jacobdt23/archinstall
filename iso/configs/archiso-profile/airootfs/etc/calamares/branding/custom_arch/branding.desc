@@ -1,0 +1,37 @@
+---
+componentName:   custom_arch
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,580px
+windowPlacement: center
+sidebar: widget
+navigation: widget
+
+strings:
+    productName:         "Jacob's Custom Arch Linux"
+    shortProductName:    "CustomArch"
+    version:             "Rolling"
+    shortVersion:        "Rolling"
+    versionedName:       "Jacob's Custom Arch Linux (Hyprland + Quickshell)"
+    shortVersionedName:  "CustomArch"
+    bootloaderEntryName: "CustomArch"
+    productUrl:          "https://github.com/jacobdt23/archinstall"
+    supportUrl:          "https://github.com/jacobdt23/archinstall/issues"
+    knownIssuesUrl:      "https://github.com/jacobdt23/archinstall/issues"
+    releaseNotesUrl:     "https://github.com/jacobdt23/archinstall"
+    donateUrl:           ""
+
+images:
+    productIcon:         "logo.png"
+    productLogo:         "logo.png"
+    productWelcome:      "logo.png"
+
+style:
+   SidebarBackground:        "#1a1b26"
+   SidebarText:              "#c0caf5"
+   SidebarTextCurrent:       "#1a1b26"
+   SidebarBackgroundCurrent: "#7aa2f7"
+
+slideshow:               "show.qml"
+slideshowAPI: 2

@@ -14,6 +14,7 @@ hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("quickshell ipc call drawer toggl
 -- System Management
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("notify-send 'Quickshell' 'Active!'"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("sh -c 'hyprctl reload && notify-send \"Hyprland\" \"Reloaded!\"'"))
+hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("/usr/local/bin/launch-calamares"))
 
 -- Quickshell Menus
 hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("quickshell ipc call keybinds toggle"))

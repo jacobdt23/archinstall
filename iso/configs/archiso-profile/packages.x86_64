@@ -3,18 +3,20 @@
 # Supports UEFI/GPT, BIOS/MBR, and NVIDIA + AMD + Intel CPUs & GPUs
 # =============================================================================
 
-# Base System, Boot (UEFI + BIOS/MBR) & Live ISO Essentials
+# Base System, Boot (UEFI + BIOS/MBR), Calamares Installer & Live ISO Essentials
 arch-install-scripts
 archiso
 base
 base-devel
 btrfs-progs
+calamares
 dosfstools
 e2fsprogs
 edk2-shell
 efibootmgr
 gptfdisk
 grub
+kpmcore
 linux
 linux-firmware
 memtest86+
@@ -22,12 +24,15 @@ memtest86+-efi
 mkinitcpio
 mkinitcpio-archiso
 mtools
+ntfs-3g
+os-prober
 parted
 pciutils
 pv
 squashfs-tools
 sudo
 syslinux
+xorg-xhost
 
 # CPU Microcode (AMD & Intel)
 amd-ucode

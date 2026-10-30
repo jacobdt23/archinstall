@@ -1,0 +1,13 @@
+#!/bin/bash
+export QT_QPA_PLATFORM="wayland;xcb"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/0}"
+
+if command -v xhost >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then
+    xhost +SI:localuser:root >/dev/null 2>&1 || true
+fi
+
+if [ "$EUID" -eq 0 ]; then
+    exec /usr/bin/calamares -D6 "$@"
+else
+    exec sudo -E /usr/bin/calamares -D6 "$@"
+fi

@@ -1,4 +1,12 @@
 #!/bin/bash
+# Automatically allow software rendering & software cursors when running inside a VM
+# (QEMU/KVM, VirtualBox, VMware, Proxmox, Hyper-V) while keeping full hardware
+# acceleration on bare-metal NVIDIA, AMD, and Intel GPUs.
+if systemd-detect-virt --vm >/dev/null 2>&1; then
+    export WLR_RENDERER_ALLOW_SOFTWARE=1
+    export WLR_NO_HARDWARE_CURSORS=1
+fi
+
 if [ "$EUID" -eq 0 ]; then
     exec /usr/bin/Hyprland --i-am-really-stupid "$@"
 fi

@@ -3,8 +3,7 @@
 ===============================================================================
 
   Quick Commands:
-  - Install Custom Arch to Disk :  archinstall-custom
-  - Interactive Post-Install    :  /root/installer/scripts/install.sh
+  - Graphical System Installer  :  launch-calamares  (or click "Install" on dock)
   - Launch Live Hyprland Desktop:  Hyprland
   - Configure Wi-Fi             :  iwctl  (or nmtui)
 

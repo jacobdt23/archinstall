@@ -17,6 +17,18 @@ PanelWindow {
 
     Process { id: dockExec }
 
+    property bool hasCalamares: false
+    Process {
+        id: checkCalamaresProc
+        command: ["sh", "-c", "test -x /usr/local/bin/launch-calamares && echo yes || echo no"]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                if (data.trim() === "yes") hasCalamares = true
+            }
+        }
+    }
+
     RowLayout {
         anchors.centerIn: parent
         spacing: 12
@@ -145,6 +157,31 @@ PanelWindow {
                     rootScope.closeAll()
                     rootScope.controlCenterOpen = !s
                 }
+            }
+        }
+
+        // Calamares Installer Pill (visible only in Live ISO environment)
+        Rectangle {
+            visible: hasCalamares
+            width: 82; height: 32; radius: 6
+            color: btnInstallMouse.containsMouse ? "#9ece6a" : "#7aa2f7"
+            border.color: "#bb9af7"
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: "⬇ Install"
+                color: "#1a1b26"
+                font.pixelSize: 12
+                font.bold: true
+            }
+
+            MouseArea {
+                id: btnInstallMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: dockExec.exec(["/usr/local/bin/launch-calamares"])
             }
         }
     }

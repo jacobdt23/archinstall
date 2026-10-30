@@ -1,0 +1,12 @@
+# remove from airootfs!
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = calamares
+
+[Action]
+Description = Configuring Calamares desktop launcher for Wayland live session...
+When = PostTransaction
+Depends = sed
+Exec = /usr/bin/sed -i 's|^Exec=.*|Exec=/usr/local/bin/launch-calamares|' /usr/share/applications/calamares.desktop
