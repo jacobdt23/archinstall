@@ -10,12 +10,15 @@ base
 base-devel
 btrfs-progs
 calamares
+cronie
 dosfstools
 e2fsprogs
 edk2-shell
 efibootmgr
 gptfdisk
 grub
+grub-btrfs
+inotify-tools
 kpmcore
 linux
 linux-firmware
@@ -32,6 +35,8 @@ pv
 squashfs-tools
 sudo
 syslinux
+timeshift
+timeshift-autosnap
 xorg-xhost
 
 # CPU Microcode (AMD & Intel)

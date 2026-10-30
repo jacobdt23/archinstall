@@ -4,9 +4,14 @@ A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Instal
 
 ---
 
-## Hardware, Boot & VM Compatibility
+## Hardware, Boot, Btrfs Rollback & VM Compatibility
 
 * **Boot Modes**: Hybrid ISO (`bios.syslinux` + `uefi.grub`) and Calamares graphical partitioning supporting **UEFI + GPT**, **Legacy BIOS + GPT** (`bios_grub`), and **Legacy BIOS + MBR (`msdos`)**.
+* **Bulletproof Btrfs + Timeshift + GRUB-Btrfs + `timeshift-autosnap` Stack**:
+  * **Default Btrfs Layout**: Calamares defaults to **Btrfs** (`noatime,compress=zstd:1`) with automatic `@` (`/`), `@home` (`/home`), `@cache` (`/var/cache`), `@log` (`/var/log`), and `@swap` subvolumes.
+  * **Timeshift (`timeshift`)**: Pre-configured automatically in **BTRFS mode** on the target disk (`calamares-post-install`) with `cronie.service` enabled for scheduled boot/daily/weekly snapshots.
+  * **Automatic Pre-Upgrade Snapshots (`timeshift-autosnap`)**: Pacman hook (`00-timeshift-autosnap.hook`) automatically takes a Btrfs snapshot before any `pacman -Syu` upgrade and regenerates GRUB snapshot entries.
+  * **Bootable GRUB Snapshots (`grub-btrfs`)**: `grub-btrfsd.service` is pre-configured with `--syslog --timeshift-auto` (`inotify-tools`) to watch Timeshift snapshots in real time and add them directly to the GRUB boot menu for instant rollback.
 * **CPUs**: Bundled with both `amd-ucode` and `intel-ucode`.
 * **GPUs & Virtual Machines**:
   * **NVIDIA**: `nvidia-open`, `nvidia-utils`, `nvidia-settings`, `libva-nvidia-driver`, `egl-wayland`, and `nvidia_drm modeset=1 fbdev=1`.

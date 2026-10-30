@@ -193,6 +193,30 @@ PanelWindow {
                 }
             }
 
+            // 7. Timeshift Btrfs Snapshots (Official Timeshift Icon)
+            Rectangle {
+                width: 34; height: 34; radius: 8
+                color: btnTsMouse.containsMouse ? "#3b4261" : "#24283b"
+                border.color: "#3b4261"
+                border.width: 1
+                Behavior on color { ColorAnimation { duration: 150 } }
+
+                Image {
+                    anchors.centerIn: parent
+                    width: 24; height: 24
+                    sourceSize.width: 64; sourceSize.height: 64
+                    source: "file:///usr/share/icons/hicolor/128x128/apps/timeshift.png"
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                MouseArea {
+                    id: btnTsMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: dockExec.exec(["/usr/local/bin/timeshift-launcher"])
+                }
+            }
+
             // 7. System Control Center (Official Volume/Settings Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8

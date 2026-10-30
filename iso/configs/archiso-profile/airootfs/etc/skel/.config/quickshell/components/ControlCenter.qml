@@ -18,7 +18,7 @@ PanelWindow {
     visible: rootScope.controlCenterOpen
 
     implicitWidth: 340
-    implicitHeight: 390
+    implicitHeight: 435
 
     Process { id: ccProc }
 
@@ -66,6 +66,7 @@ PanelWindow {
             Repeater {
                 model: [
                     { icon: "file:///usr/share/icons/hicolor/scalable/apps/calamares.svg", color: "#9ece6a", label: "Install System (Calamares)", cmd: "/usr/local/bin/launch-calamares" },
+                    { icon: "file:///usr/share/icons/hicolor/128x128/apps/timeshift.png", color: "#f7768e", label: "Btrfs Snapshots (Timeshift)", cmd: "/usr/local/bin/timeshift-launcher" },
                     { icon: "file:///usr/share/icons/hicolor/scalable/apps/org.pulseaudio.pavucontrol.svg", color: "#7aa2f7", label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },
                     { icon: "file:///usr/share/icons/hicolor/256x256/apps/blueman.png", color: "#7dcfff", label: "Bluetooth Manager (Blueman)", cmd: "blueman-manager" },
                     { icon: "file:///usr/share/icons/hicolor/scalable/apps/nm-device-wired.svg", color: "#e0af68", label: "Network Manager (nmtui)", cmd: "kitty -e nmtui || alacritty -e nmtui" },

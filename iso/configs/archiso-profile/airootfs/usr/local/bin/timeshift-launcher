@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Wayland/Hyprland-compatible launcher for Timeshift GTK
+
+export GDK_BACKEND="${GDK_BACKEND:-wayland,x11}"
+export GTK_THEME="${GTK_THEME:-Adwaita:dark}"
+
+if command -v xhost >/dev/null 2>&1; then
+    xhost +SI:localuser:root >/dev/null 2>&1 || true
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+    exec /usr/bin/timeshift-gtk "$@"
+elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+    exec sudo -E /usr/bin/timeshift-gtk "$@"
+elif command -v pkexec >/dev/null 2>&1; then
+    exec pkexec env \
+        DISPLAY="${DISPLAY}" \
+        XAUTHORITY="${XAUTHORITY}" \
+        WAYLAND_DISPLAY="${WAYLAND_DISPLAY}" \
+        XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR}" \
+        GDK_BACKEND="${GDK_BACKEND}" \
+        GTK_THEME="${GTK_THEME}" \
+        /usr/bin/timeshift-gtk "$@"
+else
+    exec kitty -e sudo -E /usr/bin/timeshift-gtk "$@"
+fi

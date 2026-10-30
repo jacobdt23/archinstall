@@ -4,9 +4,10 @@ Operation = Install
 Operation = Upgrade
 Type = Package
 Target = calamares
+Target = timeshift
 
 [Action]
-Description = Configuring Calamares desktop launcher for Wayland live session...
+Description = Configuring Calamares and Timeshift desktop launchers for Wayland...
 When = PostTransaction
 Depends = sed
-Exec = /usr/bin/sed -i 's|^Exec=.*|Exec=/usr/local/bin/launch-calamares|' /usr/share/applications/calamares.desktop
+Exec = /bin/sh -c "sed -i 's|^Exec=.*|Exec=/usr/local/bin/launch-calamares|' /usr/share/applications/calamares.desktop 2>/dev/null || true; sed -i 's|^Exec=.*|Exec=/usr/local/bin/timeshift-launcher|' /usr/share/applications/timeshift-gtk.desktop 2>/dev/null || true"

@@ -39,13 +39,48 @@ rm -f /etc/systemd/journald.conf.d/volatile-storage.conf \
 rm -f /root/.zlogin /root/.automated_script.sh
 rm -rf /root/.config
 
-# 4. Set LightDM default session to Hyprland (with XFCE available in session switcher)
+# 4. Set LightDM default session to Hyprland
 if [ -f /etc/lightdm/lightdm.conf ]; then
     sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf
     sed -i 's/^#greeter-session=.*/greeter-session=lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
 fi
 
-# 5. Strip build-only local customrepo from /etc/pacman.conf on installed target
+# 5. Pre-configure Timeshift in BTRFS mode + timeshift-autosnap + grub-btrfs when installed on Btrfs
+ROOT_DEV="$(findmnt -no SOURCE / 2>/dev/null | sed 's/\[.*//' || true)"
+ROOT_FSTYPE="$(findmnt -no FSTYPE / 2>/dev/null || true)"
+ROOT_UUID="$(findmnt -no UUID / 2>/dev/null || true)"
+if [ -z "$ROOT_UUID" ] && [ -n "$ROOT_DEV" ]; then
+    ROOT_UUID="$(blkid -s UUID -o value "$ROOT_DEV" 2>/dev/null || true)"
+fi
+if [ "$ROOT_FSTYPE" = "btrfs" ] && [ -n "$ROOT_UUID" ]; then
+    mkdir -p /etc/timeshift
+    cat > /etc/timeshift/timeshift.json << EOF
+{
+  "backup_device_uuid" : "${ROOT_UUID}",
+  "parent_device_uuid" : "",
+  "do_first_run" : "false",
+  "btrfs_mode" : "true",
+  "include_btrfs_home" : "false",
+  "stop_cron_emails" : "true",
+  "schedule_monthly" : "false",
+  "schedule_weekly" : "true",
+  "schedule_daily" : "true",
+  "schedule_hourly" : "false",
+  "schedule_boot" : "true",
+  "count_monthly" : "2",
+  "count_weekly" : "3",
+  "count_daily" : "5",
+  "count_hourly" : "6",
+  "count_boot" : "3",
+  "snapshot_size" : "0",
+  "snapshot_count" : "0",
+  "exclude" : [],
+  "exclude-apps" : []
+}
+EOF
+fi
+
+# 6. Strip build-only local customrepo from /etc/pacman.conf on installed target
 sed -i '/^\[customrepo\]/,/^Server =/d' /etc/pacman.conf
 
 # 6. Remove live installer configuration and launcher from the installed system

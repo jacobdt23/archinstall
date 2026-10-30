@@ -40,6 +40,14 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    name   = "timeshift-floating",
+    match  = { class = ".*[Tt]imeshift.*" },
+    float  = true,
+    size   = "900 620",
+    center = true,
+})
+
+hl.window_rule({
     name   = "pavucontrol-floating",
     match  = { class = ".*pavucontrol.*" },
     float  = true,

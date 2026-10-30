@@ -58,18 +58,19 @@ HIDDEN_DESKTOP_IDS = {
 # Featured primary applications order at the top of the launcher
 PRIMARY_ORDER = {
     "calamares": 0,
-    "firefox": 1,
-    "kitty": 2,
-    "thunar": 3,
-    "Alacritty": 4,
-    "com.obsproject.Studio": 5,
-    "vlc": 6,
-    "org.pulseaudio.pavucontrol": 7,
-    "blueman-manager": 8,
-    "btop": 9,
-    "nvidia-settings": 10,
-    "nm-connection-editor": 11,
-    "micro": 12,
+    "timeshift-gtk": 1,
+    "firefox": 2,
+    "kitty": 3,
+    "thunar": 4,
+    "Alacritty": 5,
+    "com.obsproject.Studio": 6,
+    "vlc": 7,
+    "org.pulseaudio.pavucontrol": 8,
+    "blueman-manager": 9,
+    "btop": 10,
+    "nvidia-settings": 11,
+    "nm-connection-editor": 12,
+    "micro": 13,
 }
 
 
