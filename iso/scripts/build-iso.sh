@@ -26,6 +26,7 @@ rm -rf "$STAGED_ROOT_CONFIG"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/.config" "$STAGED_ROOT_CONFIG"
 chmod +x "$PROFILE_DIR/airootfs/etc/skel/.config/hypr/wallpaper_loop.sh" \
          "$PROFILE_DIR/airootfs/usr/local/bin/Hyprland" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/list-desktop-apps" \
          "$PROFILE_DIR/airootfs/usr/local/bin/launch-calamares" \
          "$PROFILE_DIR/airootfs/usr/local/bin/calamares-post-install"
 

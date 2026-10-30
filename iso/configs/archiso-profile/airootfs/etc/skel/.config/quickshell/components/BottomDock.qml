@@ -56,7 +56,7 @@ PanelWindow {
 
                 Image {
                     anchors.centerIn: parent
-                    width: 20; height: 20
+                    width: 22; height: 22
                     source: Qt.resolvedUrl("cachyos_logo.png")
                     fillMode: Image.PreserveAspectFit
                 }
@@ -73,7 +73,7 @@ PanelWindow {
                 }
             }
 
-            // 2. Terminal (Kitty)
+            // 2. Terminal (Kitty SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnTermMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -81,12 +81,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰆍"
-                    color: "#9ece6a"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 18
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/kitty.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -97,7 +97,7 @@ PanelWindow {
                 }
             }
 
-            // 3. File Manager (Thunar)
+            // 3. File Manager (Thunar SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnFilesMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -105,12 +105,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰉋"
-                    color: "#7aa2f7"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 17
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.thunar.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -121,7 +121,7 @@ PanelWindow {
                 }
             }
 
-            // 4. Web Browser (Firefox)
+            // 4. Web Browser (Firefox SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnBrowserMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -129,12 +129,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰈹"
-                    color: "#ff9e64"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 18
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/firefox.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -145,7 +145,7 @@ PanelWindow {
                 }
             }
 
-            // 5. Clipboard History
+            // 5. Clipboard History (Clipman SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnClipMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -153,12 +153,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰅌"
-                    color: "#7dcfff"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 16
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/xfce4-clipman-plugin.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -173,7 +173,7 @@ PanelWindow {
                 }
             }
 
-            // 6. Keybindings Cheat Sheet
+            // 6. Keybindings Cheat Sheet (Keyboard SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnKbMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -181,12 +181,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰌌"
-                    color: "#e0af68"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 17
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.settings.keyboard.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -201,7 +201,7 @@ PanelWindow {
                 }
             }
 
-            // 7. System Control Center
+            // 7. System Control Center (Settings Manager SVG Icon)
             Rectangle {
                 width: 34; height: 34; radius: 8
                 color: btnCcMouse.containsMouse ? "#3b4261" : "#24283b"
@@ -209,12 +209,12 @@ PanelWindow {
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "󰒓"
-                    color: "#bb9af7"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 17
+                    width: 22; height: 22
+                    sourceSize.width: 48; sourceSize.height: 48
+                    source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/org.xfce.settings.manager.svg"
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
@@ -242,26 +242,27 @@ PanelWindow {
                 width: installRow.implicitWidth + 22
                 height: 34
                 radius: 8
-                color: btnInstallMouse.containsMouse ? "#9ece6a" : "#7aa2f7"
-                border.color: "#bb9af7"
+                color: btnInstallMouse.containsMouse ? "#3b4261" : "#24283b"
+                border.color: "#7aa2f7"
                 border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
 
                 RowLayout {
                     id: installRow
                     anchors.centerIn: parent
-                    spacing: 6
+                    spacing: 8
 
-                    Text {
-                        text: "󰇚"
-                        color: "#1a1b26"
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 15
+                    Image {
+                        Layout.preferredWidth: 20
+                        Layout.preferredHeight: 20
+                        sourceSize.width: 40; sourceSize.height: 40
+                        source: "file:///usr/share/icons/Papirus-Dark/48x48/apps/calamares.svg"
+                        fillMode: Image.PreserveAspectFit
                     }
 
                     Text {
                         text: "Install Arch"
-                        color: "#1a1b26"
+                        color: "#7aa2f7"
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
                         font.bold: true

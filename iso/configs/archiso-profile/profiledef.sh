@@ -23,6 +23,7 @@ file_permissions=(
   ["/root/.gnupg"]="0:0:700"
   ["/etc/skel/.config/hypr/wallpaper_loop.sh"]="0:0:755"
   ["/usr/local/bin/Hyprland"]="0:0:755"
+  ["/usr/local/bin/list-desktop-apps"]="0:0:755"
   ["/usr/local/bin/launch-calamares"]="0:0:755"
   ["/usr/local/bin/calamares-post-install"]="0:0:755"
   ["/usr/local/bin/choose-mirror"]="0:0:755"

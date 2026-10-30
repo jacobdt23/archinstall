@@ -29,7 +29,7 @@ PanelWindow {
 
     Process {
         id: appProc
-        command: ["sh", "-c", "for f in /usr/share/applications/*.desktop ~/.local/share/applications/*.desktop; do [ -f \"$f\" ] || continue; grep -q '^NoDisplay=true' \"$f\" && continue; name=$(grep -m1 '^Name=' \"$f\" | cut -d= -f2-); desc=$(grep -m1 '^Comment=' \"$f\" | cut -d= -f2-); base=$(basename \"$f\" .desktop); [ -n \"$name\" ] && printf '%s\\t%s\\t%s\\n' \"$name\" \"${desc:-Application}\" \"$base\"; done | sort -u"]
+        command: ["/usr/local/bin/list-desktop-apps"]
         running: true
         stdout: SplitParser {
             onRead: data => {
@@ -39,27 +39,14 @@ PanelWindow {
                     let entry = {
                         appName: parts[0] || "",
                         appDesc: parts[1] || "Application",
-                        desktopId: parts[2] || ""
+                        desktopId: parts[2] || "",
+                        appIcon: parts[3] ? ("file://" + parts[3]) : ""
                     };
                     appModel.append(entry);
                     filteredModel.append(entry);
                 }
             }
         }
-    }
-
-    function iconGlyphFor(name, id) {
-        let s = (name + " " + id).toLowerCase();
-        if (s.includes("calamares") || s.includes("install")) return "󰇚";
-        if (s.includes("kitty") || s.includes("alacritty") || s.includes("terminal")) return "󰆍";
-        if (s.includes("firefox") || s.includes("web") || s.includes("browser")) return "󰈹";
-        if (s.includes("thunar") || s.includes("file")) return "󰉋";
-        if (s.includes("pavucontrol") || s.includes("volume") || s.includes("audio")) return "󰕾";
-        if (s.includes("vlc") || s.includes("obs") || s.includes("media")) return "󰕼";
-        if (s.includes("blueman") || s.includes("bluetooth")) return "󰂯";
-        if (s.includes("btop") || s.includes("system") || s.includes("task")) return "󰻠";
-        if (s.includes("settings") || s.includes("xfce")) return "󰒓";
-        return "󰀻";
     }
 
     function filterApps(query) {
@@ -71,7 +58,8 @@ PanelWindow {
                 filteredModel.append({
                     appName: item.appName,
                     appDesc: item.appDesc,
-                    desktopId: item.desktopId
+                    desktopId: item.desktopId,
+                    appIcon: item.appIcon
                 });
             }
         }
@@ -117,11 +105,13 @@ PanelWindow {
                 Layout.fillWidth: true
                 spacing: 8
 
-                Text {
-                    text: "󰀻"
-                    color: "#7aa2f7"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 18
+                Image {
+                    Layout.preferredWidth: 22
+                    Layout.preferredHeight: 22
+                    sourceSize.width: 44
+                    sourceSize.height: 44
+                    source: Qt.resolvedUrl("cachyos_logo.png")
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 Text {
@@ -209,9 +199,10 @@ PanelWindow {
                     required property string appName
                     required property string appDesc
                     required property string desktopId
+                    required property string appIcon
 
                     width: ListView.view.width
-                    height: 48
+                    height: 50
                     color: launcherMouse.containsMouse ? "#3b4261" : "#24283b"
                     border.color: launcherMouse.containsMouse ? "#7aa2f7" : "#3b4261"
                     border.width: 1
@@ -226,16 +217,19 @@ PanelWindow {
                         spacing: 12
 
                         Rectangle {
-                            width: 32; height: 32; radius: 6
+                            width: 34; height: 34; radius: 8
                             color: "#1a1b26"
                             border.color: "#3b4261"; border.width: 1
 
-                            Text {
+                            Image {
+                                id: appIconImg
                                 anchors.centerIn: parent
-                                text: iconGlyphFor(appName, desktopId)
-                                color: "#7aa2f7"
-                                font.family: "JetBrainsMono Nerd Font"
-                                font.pixelSize: 16
+                                width: 24; height: 24
+                                sourceSize.width: 48
+                                sourceSize.height: 48
+                                source: appIcon
+                                fillMode: Image.PreserveAspectFit
+                                asynchronous: true
                             }
                         }
 
