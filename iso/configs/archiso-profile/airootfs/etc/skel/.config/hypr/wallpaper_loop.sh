@@ -7,8 +7,10 @@ mkdir -p "$WALLPAPER_DIR"
 if [ -z "$(ls -A "$WALLPAPER_DIR" 2>/dev/null)" ]; then
     if [ -f "$HOME/.config/hypr/default_wallpaper.png" ]; then
         cp "$HOME/.config/hypr/default_wallpaper.png" "$WALLPAPER_DIR/default.png"
-    elif [ -f "$HOME/.config/hypr/cachyos_logo.png" ]; then
-        cp "$HOME/.config/hypr/cachyos_logo.png" "$WALLPAPER_DIR/default.png"
+    elif [ -f "$HOME/.config/hypr/default_wallpaper.png" ]; then
+        cp "$HOME/.config/hypr/default_wallpaper.png" "$WALLPAPER_DIR/default.png"
+    elif [ -f "/usr/share/pixmaps/jacob-arch-logo.png" ]; then
+        cp "/usr/share/pixmaps/jacob-arch-logo.png" "$WALLPAPER_DIR/default.png"
     fi
 fi
 

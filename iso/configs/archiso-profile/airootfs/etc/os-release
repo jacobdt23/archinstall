@@ -1,0 +1,10 @@
+NAME="JacobOS"
+PRETTY_NAME="JacobOS (Arch Linux Rolling)"
+ID=jacobos
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;122;162;247"
+HOME_URL="https://github.com/jacobdt23/archinstall"
+SUPPORT_URL="https://github.com/jacobdt23/archinstall/issues"
+BUG_REPORT_URL="https://github.com/jacobdt23/archinstall/issues"
+LOGO=jacob-arch-logo
