@@ -145,7 +145,7 @@ ESSENTIAL_APPS = [
     ("System Control Center", "Audio, Network, Bluetooth, Display & Btrfs", LOGO, "/usr/local/bin/jacob-control-center"),
     ("Audio Mixer (Pavucontrol)", "Configure Speakers, Headsets & Mic", f"{HICOLOR}/scalable/apps/org.pulseaudio.pavucontrol.svg", "pavucontrol"),
     ("Bluetooth Manager", "Pair Controllers, Audio & Devices", f"{HICOLOR}/256x256/apps/blueman.png", "blueman-manager"),
-    ("OBS Studio", "Screen Recording & Live Streaming", f"{HICOLOR}/256x256/apps/com.obsproject.Studio.png", "obs"),
+    ("Media Player (mpv)", "High Performance Video & Audio Player", f"{HICOLOR}/64x64/apps/mpv.png", "mpv --player-operation-mode=pseudo-gui"),
     ("System Monitor (btop++)", "Live CPU, Memory, Disk & Process Viewer", f"{HICOLOR}/scalable/apps/btop.svg", "kitty -e btop"),
 ]
 
@@ -432,8 +432,8 @@ class BottomDock(Layer):
             (f"{HICOLOR}/256x256/apps/kitty.png", 24, lambda: spawn("command -v kitty >/dev/null && exec kitty || exec alacritty")),
             (f"{HICOLOR}/128x128/apps/org.xfce.thunar.png", 24, lambda: spawn("thunar")),
             (f"{HICOLOR}/256x256/apps/firefox.png", 24, lambda: spawn("firefox")),
-            (f"{HICOLOR}/256x256/apps/com.obsproject.Studio.png", 24, lambda: spawn("obs")),
-            (f"{HICOLOR}/256x256/apps/vlc.png", 24, lambda: spawn("vlc")),
+            (f"{HICOLOR}/scalable/apps/org.pulseaudio.pavucontrol.svg", 24, lambda: spawn("pavucontrol")),
+            (f"{HICOLOR}/256x256/apps/blueman.png", 24, lambda: spawn("blueman-manager")),
             (f"{HICOLOR}/128x128/apps/timeshift.png", 24, lambda: spawn("/usr/local/bin/timeshift-launcher")),
         ]
         for path, size, cb in items:

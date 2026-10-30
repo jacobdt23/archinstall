@@ -21,7 +21,17 @@ grub-btrfs
 inotify-tools
 kpmcore
 linux
-linux-firmware
+linux-firmware-amd
+linux-firmware-amdgpu
+linux-firmware-atheros
+linux-firmware-broadcom
+linux-firmware-cirrus
+linux-firmware-intel
+linux-firmware-mediatek
+linux-firmware-nvidia
+linux-firmware-radeon
+linux-firmware-realtek
+linux-firmware-whence
 memtest86+
 memtest86+-efi
 mkinitcpio
@@ -55,9 +65,6 @@ nvidia-utils
 vulkan-icd-loader
 vulkan-intel
 vulkan-radeon
-xf86-video-amdgpu
-xf86-video-ati
-xf86-video-intel
 
 # Networking, Bluetooth & Live Services
 alsa-utils
@@ -82,6 +89,7 @@ fastfetch
 git
 grml-zsh-config
 micro
+nano
 ncdu
 ripgrep
 vim
@@ -91,9 +99,7 @@ zsh
 adwaita-icon-theme
 alacritty
 awww
-breeze-icons
 cliphist
-gnome-themes-extra
 gtk-layer-shell
 gtk3
 hyprland
@@ -102,19 +108,18 @@ hyprpaper
 hyprpolkitagent
 kitty
 libnotify
-noto-fonts
-noto-fonts-emoji
 papirus-icon-theme
 python
 python-gobject
 playerctl
 polkit
 qt5-wayland
-qt6-declarative
 qt6-svg
 qt6-wayland
-ttf-jetbrains-mono-nerd
-waybar
+ttf-dejavu
+ttf-jetbrains-mono
+ttf-nerd-fonts-symbols-mono
+noto-fonts-emoji
 wl-clipboard
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
@@ -129,11 +134,9 @@ thunar-volman
 tumbler
 
 # Audio & Media
-obs-studio
+mpv
 pavucontrol
 pipewire
 pipewire-alsa
-pipewire-jack
 pipewire-pulse
-vlc
 wireplumber
