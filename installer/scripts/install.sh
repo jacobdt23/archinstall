@@ -56,13 +56,17 @@ install_desktop_menu() {
     read -r -p "Enter choice [1-5]: " de_opt
     case "$de_opt" in
         1)
-            install_packages nvidia-open nvidia-utils \
+            install_packages mesa nvidia-open nvidia-utils nvidia-settings libva-nvidia-driver egl-wayland \
+                vulkan-radeon xf86-video-amdgpu xf86-video-ati \
+                vulkan-intel intel-media-driver libva-intel-driver xf86-video-intel vulkan-icd-loader \
                 hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland \
                 quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl \
                 qt5-wayland qt6-wayland qt6-5compat qt6-declarative \
                 ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
                 thunar thunar-archive-plugin thunar-volman tumbler \
                 lightdm lightdm-gtk-greeter network-manager-applet
+            mkdir -p /etc/modprobe.d
+            echo "options nvidia_drm modeset=1 fbdev=1" > /etc/modprobe.d/nvidia.conf
             sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf || true
             enable_service lightdm.service
             ;;

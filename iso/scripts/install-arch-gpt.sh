@@ -1,12 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-# Unattended/Quick GPT UEFI Arch Installer for Jacob's Custom Linux
+# Quick GPT/MBR (UEFI & Legacy BIOS) Arch Installer for Jacob's Custom Linux
 DISK="${DISK:-/dev/sda}"
 HOSTNAME="${HOSTNAME:-jacob-arch}"
 USERNAME="${USERNAME:-jacob}"
 PASSWORD="${PASSWORD:-jacob}"
 TIMEZONE="${TIMEZONE:-America/New_York}"
+PART_TABLE="${PART_TABLE:-auto}" # auto, gpt-uefi, gpt-bios, mbr
 
 if [ "$EUID" -ne 0 ]; then
     echo "[-] Please run this script as root."
@@ -14,11 +15,19 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 if [ ! -b "$DISK" ]; then
-    echo "[-] Target disk $DISK not found. Set DISK=/dev/nvme0n1 (or /dev/vda) and re-run."
+    echo "[-] Target disk $DISK not found. Set DISK=/dev/nvme0n1 (or /dev/sda) and re-run."
     exit 1
 fi
 
-read -r -p "WARNING: This will format $DISK for user '$USERNAME'. Type 'YES' to continue: " CONFIRM
+if [ "$PART_TABLE" = "auto" ]; then
+    if [ -d "/sys/firmware/efi" ]; then
+        PART_TABLE="gpt-uefi"
+    else
+        PART_TABLE="gpt-bios"
+    fi
+fi
+
+read -r -p "WARNING: This will format $DISK ($PART_TABLE) for user '$USERNAME'. Type 'YES' to continue: " CONFIRM
 if [ "$CONFIRM" != "YES" ]; then
     echo "[-] Aborted."
     exit 1
@@ -30,35 +39,74 @@ else
     PART_PREFIX="$DISK"
 fi
 
-EFIPART="${PART_PREFIX}1"
-SWAPPART="${PART_PREFIX}2"
-ROOTPART="${PART_PREFIX}3"
-
-echo "[+] Partitioning $DISK..."
 wipefs -af "$DISK"
-parted "$DISK" --script mklabel gpt
-parted "$DISK" --script mkpart ESP fat32 1MiB 513MiB
-parted "$DISK" --script set 1 esp on
-parted "$DISK" --script mkpart primary linux-swap 513MiB 4609MiB
-parted "$DISK" --script mkpart primary ext4 4609MiB 100%
-partprobe "$DISK" || true
-sleep 1
 
-echo "[+] Formatting partitions..."
-mkfs.fat -F32 "$EFIPART"
-mkswap "$SWAPPART"
-mkfs.ext4 -F "$ROOTPART"
+if [ "$PART_TABLE" = "gpt-uefi" ]; then
+    echo "[+] Partitioning $DISK (GPT + UEFI)..."
+    parted "$DISK" --script mklabel gpt
+    parted "$DISK" --script mkpart ESP fat32 1MiB 513MiB
+    parted "$DISK" --script set 1 esp on
+    parted "$DISK" --script mkpart primary linux-swap 513MiB 4609MiB
+    parted "$DISK" --script mkpart primary ext4 4609MiB 100%
+    partprobe "$DISK" || true
+    sleep 1
 
-echo "[+] Mounting partitions..."
-mount "$ROOTPART" /mnt
-mkdir -p /mnt/boot
-mount "$EFIPART" /mnt/boot
-swapon "$SWAPPART"
+    EFIPART="${PART_PREFIX}1"
+    SWAPPART="${PART_PREFIX}2"
+    ROOTPART="${PART_PREFIX}3"
 
-echo "[+] Installing base system and Jacob's Custom Hyprland + Quickshell stack..."
+    mkfs.fat -F32 "$EFIPART"
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    mkdir -p /mnt/boot
+    mount "$EFIPART" /mnt/boot
+    swapon "$SWAPPART"
+elif [ "$PART_TABLE" = "gpt-bios" ]; then
+    echo "[+] Partitioning $DISK (GPT + Legacy BIOS)..."
+    parted "$DISK" --script mklabel gpt
+    parted "$DISK" --script mkpart primary 1MiB 3MiB
+    parted "$DISK" --script set 1 bios_grub on
+    parted "$DISK" --script mkpart primary linux-swap 3MiB 4099MiB
+    parted "$DISK" --script mkpart primary ext4 4099MiB 100%
+    partprobe "$DISK" || true
+    sleep 1
+
+    SWAPPART="${PART_PREFIX}2"
+    ROOTPART="${PART_PREFIX}3"
+
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    swapon "$SWAPPART"
+else
+    echo "[+] Partitioning $DISK (MBR/msdos + Legacy BIOS)..."
+    parted "$DISK" --script mklabel msdos
+    parted "$DISK" --script mkpart primary linux-swap 1MiB 4097MiB
+    parted "$DISK" --script mkpart primary ext4 4097MiB 100%
+    parted "$DISK" --script set 2 boot on
+    partprobe "$DISK" || true
+    sleep 1
+
+    SWAPPART="${PART_PREFIX}1"
+    ROOTPART="${PART_PREFIX}2"
+
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    swapon "$SWAPPART"
+fi
+
+echo "[+] Installing base system, NVIDIA/AMD/Intel drivers, and Jacob's Custom Hyprland + Quickshell stack..."
 pacstrap -K /mnt base base-devel linux linux-firmware amd-ucode intel-ucode \
+    mesa nvidia-open nvidia-utils nvidia-settings libva-nvidia-driver egl-wayland \
+    vulkan-radeon xf86-video-amdgpu xf86-video-ati \
+    vulkan-intel intel-media-driver libva-intel-driver xf86-video-intel vulkan-icd-loader pciutils \
     sudo git vim micro btop fastfetch ripgrep curl wget zsh grml-zsh-config \
-    networkmanager network-manager-applet openssh grub efibootmgr \
+    networkmanager network-manager-applet openssh grub efibootmgr dosfstools mtools \
     hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
     quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl polkit \
     qt5-wayland qt6-wayland qt6-5compat qt6-declarative \
@@ -69,6 +117,9 @@ pacstrap -K /mnt base base-devel linux linux-firmware amd-ucode intel-ucode \
 
 echo "[+] Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
+
+mkdir -p /mnt/etc/modprobe.d
+echo "options nvidia_drm modeset=1 fbdev=1" > /mnt/etc/modprobe.d/nvidia.conf
 
 if [ -d "/etc/skel/.config" ]; then
     mkdir -p /mnt/etc/skel/.config
@@ -106,7 +157,14 @@ if [ -d "/etc/skel/.config" ]; then
     chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
 fi
 
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+if [ "$PART_TABLE" = "gpt-uefi" ]; then
+    if [ -d "/sys/firmware/efi" ]; then
+        grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB || true
+    fi
+    grub-install --target=x86_64-efi --efi-directory=/boot --removable
+else
+    grub-install --target=i386-pc "$DISK"
+fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
 sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf || true

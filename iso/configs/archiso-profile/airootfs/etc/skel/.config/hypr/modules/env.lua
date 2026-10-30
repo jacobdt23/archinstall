@@ -18,13 +18,22 @@ hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
 
-local ok, nv = pcall(io.open, "/proc/driver/nvidia/version", "r")
-if ok and nv then
-    nv:close()
+-- Dynamic GPU Vendor Auto-Detection (NVIDIA, AMD, Intel)
+local has_nvidia = os.execute("lsmod 2>/dev/null | grep -q '^nvidia'")
+local has_amd    = os.execute("lsmod 2>/dev/null | grep -qE '^(amdgpu|radeon)'")
+local has_intel  = os.execute("lsmod 2>/dev/null | grep -qE '^(i915|xe)'")
+
+if has_nvidia == true or has_nvidia == 0 then
     hl.env("LIBVA_DRIVER_NAME", "nvidia")
     hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
     hl.env("NVD_BACKEND", "direct")
     hl.env("__GL_MAX_FRAMES_ALLOWED", "1")
+    hl.env("GBM_BACKEND", "nvidia-drm")
+elseif has_amd == true or has_amd == 0 then
+    hl.env("LIBVA_DRIVER_NAME", "radeonsi")
+    hl.env("VDPAU_DRIVER", "radeonsi")
+elseif has_intel == true or has_intel == 0 then
+    hl.env("LIBVA_DRIVER_NAME", "iHD")
 end
 
 hl.env("WLR_NO_HARDWARE_CURSORS", "0")

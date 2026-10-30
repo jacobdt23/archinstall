@@ -14,9 +14,10 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-if [ ! -d "/sys/firmware/efi" ]; then
-    echo "[-] System is not booted in UEFI mode. This script requires UEFI."
-    exit 1
+if [ -d "/sys/firmware/efi" ]; then
+    BOOT_MODE="UEFI"
+else
+    BOOT_MODE="BIOS"
 fi
 
 if ! ping -c 1 -W 3 archlinux.org &> /dev/null; then
@@ -25,7 +26,8 @@ if ! ping -c 1 -W 3 archlinux.org &> /dev/null; then
 fi
 
 echo "==================================================================="
-echo "        Jacob's Custom Arch Linux UEFI/GPT System Installer        "
+echo "   Jacob's Custom Arch Linux Installer (UEFI/BIOS • GPT/MBR)       "
+echo "   Detected Firmware Mode: $BOOT_MODE                              "
 echo "==================================================================="
 
 # --- User Inputs ---
@@ -44,10 +46,26 @@ echo
 echo "Available disks:"
 lsblk -d -o NAME,SIZE,MODEL,TYPE
 echo
-read -r -p "Enter the target disk (e.g., /dev/sda, /dev/vda, or /dev/nvme0n1): " DISK
+read -r -p "Enter the target disk (e.g., /dev/sda or /dev/nvme0n1): " DISK
 if [ ! -b "$DISK" ]; then
     echo "[-] Invalid block device: $DISK"
     exit 1
+fi
+
+echo
+echo "Select partition table & boot scheme:"
+if [ "$BOOT_MODE" = "UEFI" ]; then
+    echo "1) UEFI + GPT (512MiB EFI, 4GiB Swap, ext4 Root) [Recommended for UEFI]"
+    echo "2) Legacy BIOS + GPT (2MiB BIOS Boot, 4GiB Swap, ext4 Root)"
+    echo "3) Legacy BIOS + MBR/msdos (4GiB Swap, ext4 Root)"
+    read -r -p "Enter choice [1-3, default: 1]: " part_scheme
+    part_scheme="${part_scheme:-1}"
+else
+    echo "1) UEFI + GPT (512MiB EFI, 4GiB Swap, ext4 Root)"
+    echo "2) Legacy BIOS + GPT (2MiB BIOS Boot, 4GiB Swap, ext4 Root) [Recommended for BIOS]"
+    echo "3) Legacy BIOS + MBR/msdos (4GiB Swap, ext4 Root)"
+    read -r -p "Enter choice [1-3, default: 2]: " part_scheme
+    part_scheme="${part_scheme:-2}"
 fi
 
 read -r -p "WARNING: All data on $DISK will be erased! Type 'YES' to confirm: " CONFIRM_WIPE
@@ -74,6 +92,22 @@ while true; do
 done
 
 echo
+echo "Select GPU driver stack to install:"
+echo "1) All Vendors: NVIDIA + AMD + Intel (Universal hardware compatibility - Default)"
+echo "2) NVIDIA only (nvidia-open, nvidia-utils, CUDA/NVDEC VAAPI)"
+echo "3) AMD only (mesa, vulkan-radeon, xf86-video-amdgpu)"
+echo "4) Intel only (mesa, vulkan-intel, intel-media-driver)"
+read -r -p "Enter choice [1-4, default: 1]: " gpu_choice
+gpu_choice="${gpu_choice:-1}"
+
+case "$gpu_choice" in
+    2) GPU_PKGS=(mesa nvidia-open nvidia-utils nvidia-settings libva-nvidia-driver egl-wayland vulkan-icd-loader) ;;
+    3) GPU_PKGS=(mesa vulkan-radeon xf86-video-amdgpu xf86-video-ati vulkan-icd-loader) ;;
+    4) GPU_PKGS=(mesa vulkan-intel intel-media-driver libva-intel-driver xf86-video-intel vulkan-icd-loader) ;;
+    *) GPU_PKGS=(mesa nvidia-open nvidia-utils nvidia-settings libva-nvidia-driver egl-wayland vulkan-radeon xf86-video-amdgpu xf86-video-ati vulkan-intel intel-media-driver libva-intel-driver xf86-video-intel vulkan-icd-loader) ;;
+esac
+
+echo
 echo "Select a desktop profile to install:"
 echo "1) Jacob's Custom Hyprland + Quickshell + XFCE Fallback (Default)"
 echo "2) KDE Plasma + Wayland"
@@ -84,47 +118,87 @@ read -r -p "Enter your choice [1-5, default: 1]: " de_choice
 de_choice="${de_choice:-1}"
 
 # --- Partitioning & Formatting ---
-echo "[+] Partitioning disk $DISK (GPT: 512MiB EFI, 4GiB Swap, Rest Root)..."
-wipefs -af "$DISK"
-parted "$DISK" --script mklabel gpt
-parted "$DISK" --script mkpart ESP fat32 1MiB 513MiB
-parted "$DISK" --script set 1 esp on
-parted "$DISK" --script mkpart primary linux-swap 513MiB 4609MiB
-parted "$DISK" --script mkpart primary ext4 4609MiB 100%
-partprobe "$DISK" || true
-sleep 1
-
-# Handle partition naming conventions (nvme0n1p1, mmcblk0p1, loop0p1 vs sda1)
 if [[ "$DISK" =~ (nvme|mmcblk|loop) ]]; then
     PART_PREFIX="${DISK}p"
 else
     PART_PREFIX="$DISK"
 fi
 
-EFIPART="${PART_PREFIX}1"
-SWAPPART="${PART_PREFIX}2"
-ROOTPART="${PART_PREFIX}3"
+wipefs -af "$DISK"
 
-echo "[+] Formatting partitions..."
-mkfs.fat -F32 "$EFIPART"
-mkswap "$SWAPPART"
-mkfs.ext4 -F "$ROOTPART"
+if [ "$part_scheme" = "1" ]; then
+    echo "[+] Partitioning $DISK with GPT for UEFI (512MiB ESP, 4GiB Swap, Rest Root)..."
+    parted "$DISK" --script mklabel gpt
+    parted "$DISK" --script mkpart ESP fat32 1MiB 513MiB
+    parted "$DISK" --script set 1 esp on
+    parted "$DISK" --script mkpart primary linux-swap 513MiB 4609MiB
+    parted "$DISK" --script mkpart primary ext4 4609MiB 100%
+    partprobe "$DISK" || true
+    sleep 1
 
-echo "[+] Mounting partitions..."
-mount "$ROOTPART" /mnt
-mkdir -p /mnt/boot
-mount "$EFIPART" /mnt/boot
-swapon "$SWAPPART"
+    EFIPART="${PART_PREFIX}1"
+    SWAPPART="${PART_PREFIX}2"
+    ROOTPART="${PART_PREFIX}3"
+
+    mkfs.fat -F32 "$EFIPART"
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    mkdir -p /mnt/boot
+    mount "$EFIPART" /mnt/boot
+    swapon "$SWAPPART"
+elif [ "$part_scheme" = "2" ]; then
+    echo "[+] Partitioning $DISK with GPT for Legacy BIOS (2MiB bios_grub, 4GiB Swap, Rest Root)..."
+    parted "$DISK" --script mklabel gpt
+    parted "$DISK" --script mkpart primary 1MiB 3MiB
+    parted "$DISK" --script set 1 bios_grub on
+    parted "$DISK" --script mkpart primary linux-swap 3MiB 4099MiB
+    parted "$DISK" --script mkpart primary ext4 4099MiB 100%
+    partprobe "$DISK" || true
+    sleep 1
+
+    SWAPPART="${PART_PREFIX}2"
+    ROOTPART="${PART_PREFIX}3"
+
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    swapon "$SWAPPART"
+else
+    echo "[+] Partitioning $DISK with MBR (msdos) for Legacy BIOS (4GiB Swap, Rest Root)..."
+    parted "$DISK" --script mklabel msdos
+    parted "$DISK" --script mkpart primary linux-swap 1MiB 4097MiB
+    parted "$DISK" --script mkpart primary ext4 4097MiB 100%
+    parted "$DISK" --script set 2 boot on
+    partprobe "$DISK" || true
+    sleep 1
+
+    SWAPPART="${PART_PREFIX}1"
+    ROOTPART="${PART_PREFIX}2"
+
+    mkswap "$SWAPPART"
+    mkfs.ext4 -F "$ROOTPART"
+
+    mount "$ROOTPART" /mnt
+    swapon "$SWAPPART"
+fi
 
 # --- System Installation ---
-echo "[+] Updating system clock and installing base packages..."
+echo "[+] Updating system clock and installing base system + CPU/GPU drivers..."
 timedatectl set-ntp true
 pacstrap -K /mnt base base-devel linux linux-firmware amd-ucode intel-ucode \
+    "${GPU_PKGS[@]}" pciutils \
     sudo git vim micro btop fastfetch ripgrep curl wget zsh grml-zsh-config \
-    networkmanager openssh grub efibootmgr
+    networkmanager openssh grub efibootmgr dosfstools mtools
 
 echo "[+] Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
+
+# Configure NVIDIA DRM modeset for Wayland/Hyprland compatibility
+mkdir -p /mnt/etc/modprobe.d
+echo "options nvidia_drm modeset=1 fbdev=1" > /mnt/etc/modprobe.d/nvidia.conf
 
 # Deploy custom pacman.conf if present
 if [ -f "$SCRIPT_DIR/configs/pacman.conf" ]; then
@@ -175,8 +249,15 @@ if [ -d "/etc/skel/.config" ]; then
     chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
 fi
 
-# Bootloader
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+# Bootloader Installation (UEFI vs BIOS/MBR/GPT)
+if [ "$part_scheme" = "1" ]; then
+    if [ -d "/sys/firmware/efi" ]; then
+        grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB || true
+    fi
+    grub-install --target=x86_64-efi --efi-directory=/boot --removable
+else
+    grub-install --target=i386-pc "$DISK"
+fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # Desktop Environment & Services Selection
@@ -184,7 +265,6 @@ case "$de_choice" in
     1)
         echo "[+] Installing Jacob's Custom Hyprland + Quickshell + XFCE Desktop Stack..."
         pacman -S --noconfirm --needed \
-            nvidia-open nvidia-utils \
             hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
             quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl polkit \
             qt5-wayland qt6-wayland qt6-5compat qt6-declarative \

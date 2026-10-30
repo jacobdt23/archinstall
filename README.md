@@ -1,6 +1,18 @@
 # Jacob's Custom Arch Linux (`CUSTOM_ARCH`)
 
-A unified custom Arch Linux live ISO builder (`mkarchiso`) and interactive UEFI/GPT system installer pre-configured with **Jacob's Custom Hyprland + Quickshell (TokyoNight) + XFCE Fallback Desktop**.
+A unified custom Arch Linux live ISO builder (`mkarchiso`) and interactive **UEFI/BIOS (GPT & MBR)** system installer pre-configured with **Jacob's Custom Hyprland + Quickshell (TokyoNight) + XFCE Fallback Desktop** and full **NVIDIA, AMD, and Intel** CPU & GPU support.
+
+---
+
+## Hardware & Boot Compatibility
+
+* **Boot Modes**: Hybrid ISO (`bios.syslinux` + `uefi.grub`) and installer supporting **UEFI + GPT**, **Legacy BIOS + GPT** (`bios_grub`), and **Legacy BIOS + MBR (`msdos`)**.
+* **CPUs**: Bundled with both `amd-ucode` and `intel-ucode`.
+* **GPUs**:
+  * **NVIDIA**: `nvidia-open`, `nvidia-utils`, `nvidia-settings`, `libva-nvidia-driver`, `egl-wayland`, and `nvidia_drm modeset=1 fbdev=1`.
+  * **AMD**: `mesa`, `vulkan-radeon`, `xf86-video-amdgpu`, `xf86-video-ati`.
+  * **Intel**: `mesa`, `vulkan-intel`, `intel-media-driver`, `libva-intel-driver`, `xf86-video-intel`.
+  * **Auto-Detection**: [`modules/env.lua`](iso/configs/archiso-profile/airootfs/etc/skel/.config/hypr/modules/env.lua) automatically detects which GPU driver (`nvidia`, `amdgpu`/`radeon`, or `i915`/`xe`) is loaded at runtime and sets the matching VAAPI/GLX/GBM environment variables.
 
 ---
 
