@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-exec quickshell ipc call welcome toggle
+exec /usr/local/bin/jacob-shell toggle welcome

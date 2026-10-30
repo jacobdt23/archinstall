@@ -21,7 +21,7 @@ echo "[+] Cleaning previous build directories..."
 rm -rf "$WORK_DIR" "$OUT_DIR"
 mkdir -p "$OUT_DIR"
 
-echo "[+] Staging custom Hyprland + Quickshell desktop configs into live ISO airootfs..."
+echo "[+] Staging custom Hyprland + Python/GTK desktop configs into live ISO airootfs..."
 rm -rf "$STAGED_ROOT_CONFIG"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/.config" "$STAGED_ROOT_CONFIG"
 chmod +x "$PROFILE_DIR/airootfs/etc/skel/.config/hypr/wallpaper_loop.sh" \
@@ -29,6 +29,8 @@ chmod +x "$PROFILE_DIR/airootfs/etc/skel/.config/hypr/wallpaper_loop.sh" \
          "$PROFILE_DIR/airootfs/usr/local/bin/list-desktop-apps" \
          "$PROFILE_DIR/airootfs/usr/local/bin/launch-calamares" \
          "$PROFILE_DIR/airootfs/usr/local/bin/jacob-welcome" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/jacob-shell" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/jacob-control-center" \
          "$PROFILE_DIR/airootfs/usr/local/bin/timeshift-launcher" \
          "$PROFILE_DIR/airootfs/usr/local/bin/calamares-post-install"
 

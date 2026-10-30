@@ -20,6 +20,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("sh ~/.config/hypr/wallpaper_loop.sh")
     hl.exec_cmd("hyprpm reload -n")
 
-    -- Start Quickshell
-    hl.exec_cmd("quickshell")
+    -- Start Jacob's Python/GTK desktop shell (top bar, dock, launcher, notifications)
+    hl.exec_cmd("/usr/local/bin/jacob-shell")
 end)

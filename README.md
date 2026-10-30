@@ -1,6 +1,6 @@
 # Jacob's Custom Arch Linux (`CUSTOM_ARCH`)
 
-A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Installer**, booting directly into **Jacob's Custom Hyprland + Quickshell (TokyoNight) Desktop** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** support.
+A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Installer**, booting directly into **Jacob's Custom Hyprland + Python/GTK (TokyoNight) Desktop** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** support.
 
 ---
 
@@ -27,8 +27,10 @@ A custom Arch Linux live ISO (`mkarchiso`) with the **Calamares Graphical Instal
 * **[`iso/`](iso/)**: Custom Arch Linux live ISO configuration, local Calamares package repo, and build pipeline.
   * **[`iso/configs/archiso-profile/`](iso/configs/archiso-profile/)**:
     * **[`airootfs/etc/calamares/`](iso/configs/archiso-profile/airootfs/etc/calamares/)**: Complete **Calamares Graphical Installer** configuration (`settings.conf`, `custom_arch` branding, and modules for `partition`, `mount`, `unpackfs`, `users`, `displaymanager`, `services-systemd`, `shellprocess`, `initcpiocfg`, `initcpio`, `grubcfg`, `bootloader`).
-    * **[`airootfs/etc/skel/.config/`](iso/configs/archiso-profile/airootfs/etc/skel/.config/)**: Bundled dotfiles for **Hyprland** (`hyprland.lua` + Lua modules), **Quickshell** (TopBar, BottomDock with live Calamares `"⬇ Install"` button, Launcher, ControlCenter, Clipboard, Media, Notifications, Calendar, Keybinds, PowerMenu), **Alacritty**, **Hyprlock**, **Hyprpaper**, and **Waypaper**.
-    * **[`packages.x86_64`](iso/configs/archiso-profile/packages.x86_64)**: Complete live & desktop package manifest (`calamares`, `kpmcore`, `hyprland`, `quickshell`, `awww`, `pipewire`, `thunar`, `firefox`, etc.).
+    * **[`airootfs/etc/skel/.config/`](iso/configs/archiso-profile/airootfs/etc/skel/.config/)**: Bundled dotfiles for **Hyprland** (`hyprland.lua` + Lua modules), **Alacritty**, **Kitty**, **Hyprlock**, **Hyprpaper**, **Waypaper** and GTK themes.
+    * **[`airootfs/usr/local/bin/jacob-shell`](iso/configs/archiso-profile/airootfs/usr/local/bin/jacob-shell)** (Python + GTK3 + `gtk-layer-shell`): the whole desktop shell — Top Bar, floating Bottom Dock, App Launcher, Power Menu, Calendar, Clipboard History, Media Controls, Keybinds, Welcome Center and a built-in `org.freedesktop.Notifications` daemon.
+    * **[`airootfs/usr/local/bin/jacob-control-center`](iso/configs/archiso-profile/airootfs/usr/local/bin/jacob-control-center)** (Python + GTK3): the **System Control Center** — Audio/Mic (PipeWire), Network/Wi-Fi (NetworkManager), Bluetooth, Hyprland display tuning, Btrfs/Timeshift/GRUB-Btrfs status and Arch maintenance.
+    * **[`packages.x86_64`](iso/configs/archiso-profile/packages.x86_64)**: Complete live & desktop package manifest (`calamares`, `kpmcore`, `hyprland`, `python-gobject`, `gtk-layer-shell`, `awww`, `pipewire`, `thunar`, `firefox`, etc.).
     * **[`profiledef.sh`](iso/configs/archiso-profile/profiledef.sh)**: ISO profile metadata (`jacob-archlinux`, label `CUSTOM_ARCH`).
   * **[`iso/custom-repo/`](iso/custom-repo/)**: Prebuilt `calamares` (`3.4.2-2`) package and local pacman repository database.
   * **[`iso/scripts/build-iso.sh`](iso/scripts/build-iso.sh)**: Stages the desktop configuration and builds the ISO via `mkarchiso` natively (on Arch) or automatically inside a privileged Arch container via `podman`/`docker` (on Fedora or any other Linux host).
@@ -49,10 +51,10 @@ The compiled bootable ISO (`jacob-archlinux-YYYY.MM.DD-x86_64.iso`) will be plac
 
 ## Installing via Calamares from the Live ISO
 
-The ISO boots directly into the live **Hyprland + Quickshell** desktop on first boot (`tty1`). You can launch the **Calamares Graphical Installer** in any of three ways:
+The ISO boots directly into the live **Hyprland + Python/GTK** desktop on first boot (`tty1`). You can launch the **Calamares Graphical Installer** in any of three ways:
 
-1. **Click the `"⬇ Install"` button** on the bottom Quickshell dock.
-2. **Press `SUPER + SHIFT + I`** (or open the Quickshell App Launcher with `SUPER + SPACE` and select **Install System (Calamares)**).
+1. **Click the `"⬇ Install"` button** on the bottom dock.
+2. **Press `SUPER + SHIFT + I`** (or open the App Launcher with `SUPER + SPACE` and select **Install System (Calamares)**).
 3. **Run from terminal**:
    ```bash
    launch-calamares
@@ -60,17 +62,17 @@ The ISO boots directly into the live **Hyprland + Quickshell** desktop on first 
 
 ---
 
-## Default Hyprland & Quickshell Keybindings
+## Default Hyprland & jacob-shell Keybindings
 
 | Keybind | Action |
 | :--- | :--- |
 | `SUPER + W` | Toggle **Welcome Center & Keybinds Cheat Sheet** (Auto-opens on first boot) |
 | `SUPER + RETURN` | Open Terminal (`kitty`) |
-| `SUPER` / `SUPER + SPACE` | Toggle Quickshell App Launcher |
+| `SUPER` / `SUPER + SPACE` | Toggle App Launcher |
 | `SUPER + SHIFT + I` | Launch **Calamares System Installer** (Live ISO) |
 | `SUPER + E` | Open File Manager (`thunar`) |
 | `SUPER + C` | Close Active Window |
-| `SUPER + I` | Toggle Quickshell Control Center |
+| `SUPER + I` | Open System Control Center (`jacob-control-center`) |
 | `SUPER + K` | Toggle Keybinds Reference |
 | `SUPER + N` | Toggle Notifications Center |
 | `SUPER + SHIFT + V` | Toggle Clipboard History (`cliphist`) |

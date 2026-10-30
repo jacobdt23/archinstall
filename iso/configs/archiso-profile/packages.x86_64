@@ -87,13 +87,15 @@ ripgrep
 vim
 zsh
 
-# Hyprland & Quickshell Custom Desktop Stack
+# Hyprland + Python/GTK3 Custom Desktop Stack (jacob-shell & jacob-control-center)
 adwaita-icon-theme
 alacritty
 awww
 breeze-icons
 cliphist
 gnome-themes-extra
+gtk-layer-shell
+gtk3
 hyprland
 hyprlock
 hyprpaper
@@ -103,14 +105,14 @@ libnotify
 noto-fonts
 noto-fonts-emoji
 papirus-icon-theme
+python
+python-gobject
 playerctl
 polkit
 qt5-wayland
-qt6-5compat
 qt6-declarative
 qt6-svg
 qt6-wayland
-quickshell
 ttf-jetbrains-mono-nerd
 waybar
 wl-clipboard

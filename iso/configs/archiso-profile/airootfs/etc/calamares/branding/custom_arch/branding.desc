@@ -33,5 +33,5 @@ style:
    SidebarTextCurrent:       "#1a1b26"
    SidebarBackgroundCurrent: "#7aa2f7"
 
-slideshow:               "show.qml"
-slideshowAPI: 2
+slideshow:
+    - "welcome.png"

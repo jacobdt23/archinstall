@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=System Control Center
+GenericName=Audio, Network, Bluetooth, Display & Btrfs
+Comment=Control Jacob's Custom Arch Linux: audio, Wi-Fi, Bluetooth, Hyprland, Timeshift and updates
+Exec=/usr/local/bin/jacob-control-center
+Icon=/usr/share/pixmaps/jacob-arch-logo.png
+Terminal=false
+Categories=System;Settings;
+Keywords=settings;control;audio;network;bluetooth;display;
+StartupNotify=false
