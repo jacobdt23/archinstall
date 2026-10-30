@@ -109,6 +109,8 @@ fi
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
+sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf || true
+
 systemctl enable NetworkManager.service
 systemctl enable lightdm.service
 systemctl enable bluetooth.service

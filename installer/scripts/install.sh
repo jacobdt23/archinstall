@@ -63,6 +63,7 @@ install_desktop_menu() {
                 ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
                 thunar thunar-archive-plugin thunar-volman tumbler \
                 lightdm lightdm-gtk-greeter network-manager-applet
+            sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf || true
             enable_service lightdm.service
             ;;
         2)

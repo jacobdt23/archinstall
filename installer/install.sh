@@ -194,6 +194,7 @@ case "$de_choice" in
             bluez bluez-utils blueman \
             pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber pavucontrol \
             firefox vlc obs-studio ncdu
+        sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf || true
         systemctl enable lightdm.service
         systemctl enable bluetooth.service
         ;;
