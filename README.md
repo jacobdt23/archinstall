@@ -64,6 +64,7 @@ The ISO boots directly into the live **Hyprland + Quickshell** desktop on first 
 
 | Keybind | Action |
 | :--- | :--- |
+| `SUPER + W` | Toggle **Welcome Center & Keybinds Cheat Sheet** (Auto-opens on first boot) |
 | `SUPER + RETURN` | Open Terminal (`kitty`) |
 | `SUPER` / `SUPER + SPACE` | Toggle Quickshell App Launcher |
 | `SUPER + SHIFT + I` | Launch **Calamares System Installer** (Live ISO) |

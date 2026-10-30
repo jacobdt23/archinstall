@@ -14,6 +14,7 @@ Scope {
     property bool notificationsOpen: false
     property bool mediaOpen: false
     property bool controlCenterOpen: false
+    property bool welcomeOpen: false
 
     Process {
         id: volumeProc
@@ -28,6 +29,16 @@ Scope {
         notificationsOpen = false;
         mediaOpen = false;
         controlCenterOpen = false;
+        welcomeOpen = false;
+    }
+
+    IpcHandler {
+        target: "welcome"
+        function toggle(): void {
+            let state = root.welcomeOpen;
+            root.closeAll();
+            root.welcomeOpen = !state;
+        }
     }
 
     IpcHandler {
@@ -136,6 +147,7 @@ Scope {
             Notifications { targetScreen: modelData; rootScope: root }
             MediaMenu { targetScreen: modelData; rootScope: root }
             ControlCenter { targetScreen: modelData; rootScope: root }
+            Welcome { targetScreen: modelData; rootScope: root }
         }
     }
 }

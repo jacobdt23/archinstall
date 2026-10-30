@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome Center
+GenericName=First-Boot Hub & Keybinds Cheat Sheet
+Comment=Essential First-Boot Apps & Keybindings Cheat Sheet
+Exec=/usr/local/bin/jacob-welcome
+Icon=/etc/skel/.config/quickshell/components/cachyos_logo.png
+Terminal=false
+Categories=System;Utility;
+Keywords=welcome;keybinds;cheatsheet;setup;arch;
+StartupNotify=false

@@ -18,7 +18,7 @@ PanelWindow {
     visible: rootScope.controlCenterOpen
 
     implicitWidth: 340
-    implicitHeight: 435
+    implicitHeight: 475
 
     Process { id: ccProc }
 
@@ -65,6 +65,7 @@ PanelWindow {
 
             Repeater {
                 model: [
+                    { icon: Qt.resolvedUrl("cachyos_logo.png"), color: "#7aa2f7", label: "Welcome Hub & Keybinds (SUPER+W)", cmd: "/usr/local/bin/jacob-welcome" },
                     { icon: "file:///usr/share/icons/hicolor/scalable/apps/calamares.svg", color: "#9ece6a", label: "Install System (Calamares)", cmd: "/usr/local/bin/launch-calamares" },
                     { icon: "file:///usr/share/icons/hicolor/128x128/apps/timeshift.png", color: "#f7768e", label: "Btrfs Snapshots (Timeshift)", cmd: "/usr/local/bin/timeshift-launcher" },
                     { icon: "file:///usr/share/icons/hicolor/scalable/apps/org.pulseaudio.pavucontrol.svg", color: "#7aa2f7", label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },

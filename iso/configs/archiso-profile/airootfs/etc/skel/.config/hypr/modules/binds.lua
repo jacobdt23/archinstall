@@ -3,7 +3,7 @@ local mainMod = "SUPER"
 -- Core App Binds
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("thunar"))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("looking-glass-client egl:scale=2 win:autoResize=yes"))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("quickshell ipc call welcome toggle"))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("discord"))
 
