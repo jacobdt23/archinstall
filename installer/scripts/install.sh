@@ -56,7 +56,8 @@ install_desktop_menu() {
     read -r -p "Enter choice [1-5]: " de_opt
     case "$de_opt" in
         1)
-            install_packages hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland \
+            install_packages nvidia-open nvidia-utils \
+                hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland \
                 quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl \
                 qt5-wayland qt6-wayland qt6-5compat qt6-declarative \
                 ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \

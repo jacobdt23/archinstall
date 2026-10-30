@@ -32,7 +32,7 @@ PanelWindow {
             Image {
                 anchors.centerIn: parent
                 width: 20; height: 20
-                source: "../../hypr/cachyos_logo.png"
+                source: Qt.resolvedUrl("cachyos_logo.png")
                 fillMode: Image.PreserveAspectFit
             }
 

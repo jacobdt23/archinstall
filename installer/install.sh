@@ -184,6 +184,7 @@ case "$de_choice" in
     1)
         echo "[+] Installing Jacob's Custom Hyprland + Quickshell + XFCE Desktop Stack..."
         pacman -S --noconfirm --needed \
+            nvidia-open nvidia-utils \
             hyprland hyprlock hyprpaper hyprpolkitagent xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
             quickshell waybar awww alacritty kitty wl-clipboard cliphist libnotify playerctl polkit \
             qt5-wayland qt6-wayland qt6-5compat qt6-declarative \

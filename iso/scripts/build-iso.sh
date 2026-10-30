@@ -30,7 +30,8 @@ chmod +x "$STAGED_INSTALLER/install.sh" \
          "$STAGED_INSTALLER/scripts/helpers.sh" \
          "$STAGED_INSTALLER/scripts/post-install.sh" \
          "$PROFILE_DIR/airootfs/etc/skel/.config/hypr/wallpaper_loop.sh" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/archinstall-custom"
+         "$PROFILE_DIR/airootfs/usr/local/bin/archinstall-custom" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/Hyprland"
 
 if command -v mkarchiso >/dev/null 2>&1; then
     if [ "$EUID" -ne 0 ]; then
@@ -41,10 +42,8 @@ if command -v mkarchiso >/dev/null 2>&1; then
     mkarchiso -v -w "$WORK_DIR" -o "$OUT_DIR" "$PROFILE_DIR"
 elif command -v podman >/dev/null 2>&1; then
     echo "[+] Non-Arch host detected. Building custom Arch ISO inside Arch Linux Podman container..."
-    mkdir -p /tmp/archiso-pkg-cache
     podman run --rm --privileged \
         -v "$REPO_ROOT:/repo:Z" \
-        -v "/tmp/archiso-pkg-cache:/var/cache/pacman/pkg:Z" \
         docker.io/library/archlinux:latest \
         /bin/bash -c "set -e
             sed -i 's/^#DisableSandbox/DisableSandbox/' /etc/pacman.conf

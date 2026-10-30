@@ -29,6 +29,7 @@ syslinux
 # CPU Microcode & GPU Drivers
 amd-ucode
 intel-ucode
+nvidia-open
 nvidia-utils
 
 # Networking, Bluetooth & Live Services

@@ -18,9 +18,14 @@ hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
 
-hl.env("LIBVA_DRIVER_NAME", "nvidia")
-hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
-hl.env("NVD_BACKEND", "direct")
-hl.env("__GL_MAX_FRAMES_ALLOWED", "1")
+local ok, nv = pcall(io.open, "/proc/driver/nvidia/version", "r")
+if ok and nv then
+    nv:close()
+    hl.env("LIBVA_DRIVER_NAME", "nvidia")
+    hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+    hl.env("NVD_BACKEND", "direct")
+    hl.env("__GL_MAX_FRAMES_ALLOWED", "1")
+end
+
 hl.env("WLR_NO_HARDWARE_CURSORS", "0")
 hl.env("HYPRLAND_NO_SD_NOTIFY", "1")

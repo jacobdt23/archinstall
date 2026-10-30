@@ -1,0 +1,6 @@
+#!/bin/bash
+export WLR_RENDERER_ALLOW_SOFTWARE=1
+if [ "$EUID" -eq 0 ]; then
+    exec /usr/bin/Hyprland --i-am-really-stupid "$@"
+fi
+exec /usr/bin/start-hyprland --path /usr/bin/Hyprland -- "$@"

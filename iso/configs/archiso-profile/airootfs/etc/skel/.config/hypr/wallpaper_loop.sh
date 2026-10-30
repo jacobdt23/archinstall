@@ -3,9 +3,13 @@
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 mkdir -p "$WALLPAPER_DIR"
 
-# Seed default wallpaper if directory is empty
-if [ -z "$(ls -A "$WALLPAPER_DIR" 2>/dev/null)" ] && [ -f "$HOME/.config/hypr/cachyos_logo.png" ]; then
-    cp "$HOME/.config/hypr/cachyos_logo.png" "$WALLPAPER_DIR/default.png"
+# Seed default 1080p wallpaper if directory is empty
+if [ -z "$(ls -A "$WALLPAPER_DIR" 2>/dev/null)" ]; then
+    if [ -f "$HOME/.config/hypr/default_wallpaper.png" ]; then
+        cp "$HOME/.config/hypr/default_wallpaper.png" "$WALLPAPER_DIR/default.png"
+    elif [ -f "$HOME/.config/hypr/cachyos_logo.png" ]; then
+        cp "$HOME/.config/hypr/cachyos_logo.png" "$WALLPAPER_DIR/default.png"
+    fi
 fi
 
 # Detect whether awww or swww is installed
