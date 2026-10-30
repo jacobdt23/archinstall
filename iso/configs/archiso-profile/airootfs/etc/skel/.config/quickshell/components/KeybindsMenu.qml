@@ -1,43 +1,43 @@
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
 PanelWindow {
-    required property var screen
+    required property var targetScreen
     required property var rootScope
 
-    screen: screen
+    screen: targetScreen
     anchors { top: true; left: true }
-    margins { top: 40; left: 20 }
-    
+    margins { top: 44; left: 16 }
+
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     exclusionMode: ExclusionMode.Ignore
     visible: rootScope.keybindsOpen
     color: "transparent"
 
-    implicitWidth: 440
-    implicitHeight: 480
+    implicitWidth: 460
+    implicitHeight: 500
 
     ListModel {
         id: keybindMasterModel
 
         Component.onCompleted: {
             let binds = [
+                { key: "SUPER + SHIFT + I", desc: "Install System (Calamares)" },
                 { key: "SUPER + RETURN", desc: "Open Terminal (Kitty)" },
-                { key: "SUPER + C", desc: "Close Focused Window" },
-                { key: "SUPER + Q", desc: "Toggle Power Menu" },
-                { key: "SUPER + E", desc: "Open File Manager (Thunar)" },
-                { key: "SUPER + D", desc: "Open Discord" },
-                { key: "SUPER + W", desc: "Launch Looking Glass Client" },
                 { key: "SUPER / SUPER + SPACE", desc: "Toggle Application Launcher" },
+                { key: "SUPER + E", desc: "Open File Manager (Thunar)" },
+                { key: "SUPER + C", desc: "Close Focused Window" },
                 { key: "SUPER + I", desc: "Toggle Control Center" },
                 { key: "SUPER + K", desc: "Toggle Keybinds Reference" },
                 { key: "SUPER + N", desc: "Toggle Notifications Center" },
                 { key: "SUPER + SHIFT + V", desc: "Toggle Clipboard History" },
                 { key: "SUPER + M", desc: "Toggle Media Controls" },
                 { key: "SUPER + L", desc: "Toggle Calendar & Agenda" },
+                { key: "SUPER + Q", desc: "Toggle Power Menu" },
                 { key: "SUPER + V", desc: "Toggle Floating Mode" },
                 { key: "SUPER + P", desc: "Pseudo Tile Layout" },
                 { key: "SUPER + J", desc: "Toggle Split Layout" },
@@ -53,9 +53,7 @@ PanelWindow {
         }
     }
 
-    ListModel {
-        id: filteredKeybinds
-    }
+    ListModel { id: filteredKeybinds }
 
     function filterKeybinds(query) {
         filteredKeybinds.clear();
@@ -71,7 +69,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#e0af68"
         border.width: 1
         radius: 12
 
@@ -80,26 +78,41 @@ PanelWindow {
             anchors.margins: 16
             spacing: 12
 
-            Text {
-                text: "Keybindings Reference"
-                color: "#bb9af7"
-                font.bold: true
-                font.pixelSize: 14
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰌌"
+                    color: "#e0af68"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 16
+                }
+
+                Text {
+                    text: "Keybindings Reference"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 13
+                }
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                height: 35
+                height: 36
                 color: "#24283b"
                 border.color: "#3b4261"
                 border.width: 1
-                radius: 6
+                radius: 8
 
                 TextInput {
                     id: kbSearchInput
                     anchors.fill: parent
                     anchors.margins: 8
                     color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 11
                     focus: true
                     verticalAlignment: TextInput.AlignVCenter
                     onTextChanged: filterKeybinds(text)
@@ -109,8 +122,10 @@ PanelWindow {
                     anchors.fill: parent
                     anchors.margins: 8
                     verticalAlignment: Text.AlignVCenter
-                    text: "Search keybinds..."
+                    text: "󰍉  Search keybinds..."
                     color: "#565f89"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 11
                     visible: kbSearchInput.text.length === 0
                 }
             }
@@ -123,19 +138,21 @@ PanelWindow {
                 model: filteredKeybinds
 
                 delegate: Rectangle {
+                    required property string key
+                    required property string desc
                     width: ListView.view.width
-                    height: 35
+                    height: 36
                     color: "#24283b"
                     border.color: "#3b4261"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
                     RowLayout {
                         anchors.fill: parent
                         anchors.margins: 10
-                        Text { text: key; color: "#7aa2f7"; font.bold: true; font.pixelSize: 11 }
+                        Text { text: key; color: "#7aa2f7"; font.family: "JetBrainsMono Nerd Font"; font.bold: true; font.pixelSize: 11 }
                         Item { Layout.fillWidth: true }
-                        Text { text: desc; color: "#c0caf5"; font.pixelSize: 11 }
+                        Text { text: desc; color: "#c0caf5"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 11 }
                     }
                 }
             }

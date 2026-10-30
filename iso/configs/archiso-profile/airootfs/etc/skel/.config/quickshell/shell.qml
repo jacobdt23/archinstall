@@ -132,7 +132,7 @@ Scope {
             PowerMenu { targetScreen: modelData; rootScope: root }
             CalendarDropdown { targetScreen: modelData; rootScope: root }
             ClipboardMenu { targetScreen: modelData; rootScope: root }
-            KeybindsMenu { screen: modelData; rootScope: root }
+            KeybindsMenu { targetScreen: modelData; rootScope: root }
             Notifications { targetScreen: modelData; rootScope: root }
             MediaMenu { targetScreen: modelData; rootScope: root }
             ControlCenter { targetScreen: modelData; rootScope: root }

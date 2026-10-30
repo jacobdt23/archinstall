@@ -10,8 +10,8 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; left: true }
-    margins { top: 40; left: (targetScreen.width / 2) - (implicitWidth / 2) }
-    
+    margins { top: 44; left: (targetScreen.width / 2) - (implicitWidth / 2) }
+
     WlrLayershell.layer: WlrLayer.Overlay
     exclusionMode: ExclusionMode.Ignore
     visible: rootScope.calendarOpen
@@ -29,7 +29,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#7aa2f7"
         border.width: 1
         radius: 12
 
@@ -38,12 +38,24 @@ PanelWindow {
             anchors.margins: 16
             spacing: 12
 
-            Text {
+            RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                text: Qt.formatDateTime(now, "dddd, MMMM d, yyyy")
-                color: "#7aa2f7"
-                font.pixelSize: 15
-                font.bold: true
+                spacing: 8
+
+                Text {
+                    text: "󰃭"
+                    color: "#7aa2f7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 16
+                }
+
+                Text {
+                    text: Qt.formatDateTime(now, "dddd, MMMM d, yyyy")
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 13
+                    font.bold: true
+                }
             }
 
             Rectangle {
@@ -63,8 +75,9 @@ PanelWindow {
                         Text {
                             anchors.centerIn: parent
                             text: modelData
-                            color: "#565f89"
-                            font.pixelSize: 12
+                            color: "#7aa2f7"
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 11
                             font.bold: true
                         }
                     }
@@ -85,18 +98,21 @@ PanelWindow {
                         width: 40
                         height: 30
                         radius: 6
-                        
+
                         property int dayNum: index - firstDayOffset + 1
                         property bool isCurrentMonth: dayNum > 0 && dayNum <= daysInMonth
                         property bool isToday: isCurrentMonth && dayNum === now.getDate()
 
-                        color: isToday ? "#7aa2f7" : "transparent"
+                        color: isToday ? "#7aa2f7" : (isCurrentMonth ? "#24283b" : "transparent")
+                        border.color: isToday ? "#7aa2f7" : (isCurrentMonth ? "#3b4261" : "transparent")
+                        border.width: isCurrentMonth ? 1 : 0
 
                         Text {
                             anchors.centerIn: parent
                             text: parent.isCurrentMonth ? parent.dayNum : ""
                             color: parent.isToday ? "#1a1b26" : "#c0caf5"
-                            font.pixelSize: 12
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 11
                             font.bold: parent.isToday
                         }
                     }
@@ -110,9 +126,10 @@ PanelWindow {
             }
 
             Text {
-                text: "Recent Notifications"
+                text: "󰂚  Recent Notifications"
                 color: "#bb9af7"
-                font.pixelSize: 13
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 12
                 font.bold: true
             }
 
@@ -128,13 +145,15 @@ PanelWindow {
                     width: ListView.view.width
                     height: 45
                     color: "#24283b"
-                    radius: 6
+                    border.color: "#3b4261"
+                    border.width: 1
+                    radius: 8
 
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 8
-                        Text { text: modelData.summary; color: "#c0caf5"; font.bold: true; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: modelData.body; color: "#565f89"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: modelData.summary; color: "#c0caf5"; font.family: "JetBrainsMono Nerd Font"; font.bold: true; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: modelData.body; color: "#a9b1d6"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
                 }
             }

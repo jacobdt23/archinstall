@@ -10,20 +10,20 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; right: true }
-    margins { top: 40; right: 140 }
-    
+    margins { top: 44; right: 14 }
+
     WlrLayershell.layer: WlrLayer.Overlay
     exclusionMode: ExclusionMode.Ignore
     visible: rootScope.notificationsOpen
     color: "transparent"
 
-    implicitWidth: 320
+    implicitWidth: 330
     implicitHeight: 380
 
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#7aa2f7"
         border.width: 1
         radius: 12
 
@@ -32,17 +32,39 @@ PanelWindow {
             anchors.margins: 16
             spacing: 12
 
-            Text {
-                text: "Notifications Center"
-                color: "#7aa2f7"
-                font.bold: true
-                font.pixelSize: 14
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰂚"
+                    color: "#7aa2f7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 15
+                }
+
+                Text {
+                    text: "Notifications Center"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 13
+                }
             }
 
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
                 color: "#3b4261"
+            }
+
+            Text {
+                visible: NotificationServer.trackedNotifications.values.length === 0
+                Layout.alignment: Qt.AlignHCenter
+                text: "No active notifications"
+                color: "#565f89"
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 11
             }
 
             ListView {
@@ -55,17 +77,17 @@ PanelWindow {
                 delegate: Rectangle {
                     required property var modelData
                     width: ListView.view.width
-                    height: 50
+                    height: 52
                     color: "#24283b"
                     border.color: "#3b4261"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 8
-                        Text { text: modelData.summary; color: "#c0caf5"; font.bold: true; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: modelData.body; color: "#565f89"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: modelData.summary; color: "#c0caf5"; font.family: "JetBrainsMono Nerd Font"; font.bold: true; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: modelData.body; color: "#a9b1d6"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
                 }
             }

@@ -10,50 +10,48 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; right: true }
-    margins { top: 40; right: 20 }
+    margins { top: 44; right: 14 }
 
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-    color: "#01000000"
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    color: "transparent"
     visible: rootScope.powerMenuOpen
 
-    implicitWidth: 220
-    implicitHeight: 200
+    implicitWidth: 230
+    implicitHeight: 215
 
-    Process {
-        id: powerProc
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: rootScope.powerMenuOpen = false
-    }
+    Process { id: powerProc }
 
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#f7768e"
         border.width: 1
         radius: 12
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            onClicked: {}
-        }
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
             spacing: 10
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Power Menu"
-                color: "#7aa2f7"
-                font.bold: true
-                font.pixelSize: 14
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰐥"
+                    color: "#f7768e"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 15
+                }
+
+                Text {
+                    text: "Session & Power"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 13
+                }
             }
 
             Rectangle {
@@ -64,28 +62,43 @@ PanelWindow {
 
             Repeater {
                 model: [
-                    { label: "Lock Screen", cmd: "hyprlock" },
-                    { label: "Reboot", cmd: "systemctl reboot" },
-                    { label: "Shutdown", cmd: "systemctl poweroff" }
+                    { icon: "󰌾", color: "#7aa2f7", label: "Lock Screen", cmd: "hyprlock" },
+                    { icon: "󰜉", color: "#e0af68", label: "Reboot System", cmd: "systemctl reboot" },
+                    { icon: "󰐥", color: "#f7768e", label: "Power Off", cmd: "systemctl poweroff" }
                 ]
 
                 delegate: Rectangle {
                     required property var modelData
                     Layout.fillWidth: true
-                    height: 35
+                    height: 38
                     color: pMouse.containsMouse ? "#3b4261" : "#24283b"
-                    border.color: "#3b4261"
+                    border.color: pMouse.containsMouse ? modelData.color : "#3b4261"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
-                    Behavior on color { ColorAnimation { duration: 150 } }
+                    Behavior on color { ColorAnimation { duration: 120 } }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: modelData.label
-                        color: "#c0caf5"
-                        font.pixelSize: 12
-                        font.bold: true
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 10
+
+                        Text {
+                            text: modelData.icon
+                            color: modelData.color
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 15
+                        }
+
+                        Text {
+                            text: modelData.label
+                            color: "#c0caf5"
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 11
+                            font.bold: true
+                            Layout.fillWidth: true
+                        }
                     }
 
                     MouseArea {

@@ -13,18 +13,27 @@ PanelWindow {
     screen: targetScreen
     anchors { top: true; left: true; right: true }
     WlrLayershell.layer: WlrLayer.Top
-    implicitHeight: 35
-    exclusiveZone: 35
+    implicitHeight: 38
+    exclusiveZone: 38
     color: "#1a1b26"
 
-    property string cpuUsage: "--%"
-    property string memUsage: "--%"
-    property string diskUsage: "--%"
+    property string cpuUsage: "0%"
+    property string memUsage: "0%"
+    property string diskUsage: "0%"
 
     Process { id: topBarExec }
 
+    // Bottom subtle border line
+    Rectangle {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 1
+        color: "#292e42"
+    }
+
     Timer {
-        interval: 2000
+        interval: 2500
         running: true
         repeat: true
         triggeredOnStart: true
@@ -37,7 +46,7 @@ PanelWindow {
 
     Process {
         id: cpuProc
-        command: ["sh", "-c", "top -bn1 | awk '/Cpu/ {for(i=1;i<=NF;i++) if($i ~ /id/) print int(100 - $(i-1))}'"]
+        command: ["sh", "-c", "awk '/^cpu / {u=$2+$4; t=$2+$4+$5; if(t>0) printf \"%d\", (u*100)/t}' /proc/stat"]
         stdout: SplitParser { onRead: data => { if (data.trim() !== "") cpuUsage = data.trim() + "%"; } }
     }
 
@@ -55,12 +64,40 @@ PanelWindow {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 8
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
         spacing: 8
+
+        // App Menu Badge
+        Rectangle {
+            width: 28; height: 26; radius: 6
+            color: logoTopMouse.containsMouse ? "#3b4261" : "#24283b"
+            border.color: rootScope.launcherOpen ? "#7aa2f7" : "#3b4261"
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Image {
+                anchors.centerIn: parent
+                width: 16; height: 16
+                source: Qt.resolvedUrl("cachyos_logo.png")
+                fillMode: Image.PreserveAspectFit
+            }
+
+            MouseArea {
+                id: logoTopMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    let s = rootScope.launcherOpen;
+                    rootScope.closeAll();
+                    rootScope.launcherOpen = !s;
+                }
+            }
+        }
 
         // Workspaces Module
         RowLayout {
-            spacing: 6
+            spacing: 5
             Repeater {
                 model: {
                     let screenIndex = Quickshell.screens.indexOf(targetScreen);
@@ -72,11 +109,11 @@ PanelWindow {
                     property bool isFocused: (Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id === modelData)
                     property bool isHovered: wsMouse.containsMouse
 
-                    height: 24
-                    width: isFocused ? 28 : 24
+                    height: 26
+                    width: isFocused ? 32 : 26
                     radius: 6
                     color: isFocused ? "#7aa2f7" : (isHovered ? "#3b4261" : "#24283b")
-                    border.color: "#3b4261"
+                    border.color: isFocused ? "#7aa2f7" : "#3b4261"
                     border.width: 1
 
                     Behavior on width { NumberAnimation { duration: 150 } }
@@ -86,6 +123,7 @@ PanelWindow {
                         anchors.centerIn: parent
                         text: modelData
                         color: parent.isFocused ? "#1a1b26" : "#c0caf5"
+                        font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
                         font.bold: true
                     }
@@ -102,29 +140,42 @@ PanelWindow {
 
         Item { Layout.fillWidth: true }
 
-        // Clock Module wrapped in a styled box
+        // Center Clock & Calendar Pill
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
-            height: 24
-            implicitWidth: clockText.width + 20
+            height: 26
+            implicitWidth: clockRow.implicitWidth + 20
             radius: 6
             color: clockArea.containsMouse ? "#3b4261" : "#24283b"
-            border.color: "#3b4261"
+            border.color: rootScope.calendarOpen ? "#7aa2f7" : "#3b4261"
             border.width: 1
             z: 10
 
             Behavior on color { ColorAnimation { duration: 150 } }
 
-            Text {
-                id: clockText
+            RowLayout {
+                id: clockRow
                 anchors.centerIn: parent
-                color: "#c0caf5"
-                font.bold: true
-                font.pixelSize: 11
-                text: Qt.formatDateTime(new Date(), "MMM d • hh:mm AP")
-                Timer {
-                    interval: 1000; running: true; repeat: true
-                    onTriggered: parent.text = Qt.formatDateTime(new Date(), "MMM d • hh:mm AP")
+                spacing: 6
+
+                Text {
+                    text: "󰃭"
+                    color: "#7aa2f7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 13
+                }
+
+                Text {
+                    id: clockText
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 11
+                    text: Qt.formatDateTime(new Date(), "MMM d • hh:mm AP")
+                    Timer {
+                        interval: 1000; running: true; repeat: true
+                        onTriggered: parent.text = Qt.formatDateTime(new Date(), "MMM d • hh:mm AP")
+                    }
                 }
             }
 
@@ -142,26 +193,38 @@ PanelWindow {
 
         Item { Layout.fillWidth: true }
 
-        // 1. System Tray Items (Placed first on the right)
+        // System Tray Items
         RowLayout {
-            spacing: 8
+            spacing: 6
 
             Repeater {
                 model: SystemTray.items
 
                 delegate: Rectangle {
                     required property var modelData
-                    width: 24; height: 24; radius: 6
+                    visible: modelData.icon !== ""
+                    width: 26; height: 26; radius: 6
                     color: trayMouse.containsMouse ? "#3b4261" : "#24283b"
                     border.color: "#3b4261"; border.width: 1
 
                     Behavior on color { ColorAnimation { duration: 150 } }
 
                     Image {
+                        id: trayImg
                         anchors.centerIn: parent
-                        width: 14; height: 14
+                        width: 16; height: 16
                         source: modelData.icon
                         fillMode: Image.PreserveAspectFit
+                        visible: status === Image.Ready
+                    }
+
+                    Text {
+                        anchors.centerIn: parent
+                        visible: trayImg.status !== Image.Ready
+                        text: "󰀂"
+                        color: "#7aa2f7"
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 13
                     }
 
                     MouseArea {
@@ -181,51 +244,102 @@ PanelWindow {
             }
         }
 
-        // 2. System Stats Modules (CPU, MEM, DISK)
+        // System Resource Pills (CPU, MEM, DISK)
         RowLayout {
-            spacing: 8
+            spacing: 6
 
             Rectangle {
-                height: 24; implicitWidth: cpuText.width + 16; radius: 6
+                height: 26; implicitWidth: cpuText.implicitWidth + 16; radius: 6
                 color: cpuArea.containsMouse ? "#3b4261" : "#24283b"
                 border.color: "#3b4261"; border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
-                Text { id: cpuText; anchors.centerIn: parent; text: "CPU: " + cpuUsage; color: "#7aa2f7"; font.pixelSize: 11; font.bold: true }
-                MouseArea { id: cpuArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "alacritty -e btop || kitty -e btop"]) }
+                Text {
+                    id: cpuText
+                    anchors.centerIn: parent
+                    text: "󰻠 " + cpuUsage
+                    color: "#7aa2f7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 11
+                    font.bold: true
+                }
+                MouseArea { id: cpuArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "kitty -e btop || alacritty -e btop"]) }
             }
 
             Rectangle {
-                height: 24; implicitWidth: memText.width + 16; radius: 6
+                height: 26; implicitWidth: memText.implicitWidth + 16; radius: 6
                 color: memArea.containsMouse ? "#3b4261" : "#24283b"
                 border.color: "#3b4261"; border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
-                Text { id: memText; anchors.centerIn: parent; text: "MEM: " + memUsage; color: "#bb9af7"; font.pixelSize: 11; font.bold: true }
-                MouseArea { id: memArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "alacritty -e btop || kitty -e btop"]) }
+                Text {
+                    id: memText
+                    anchors.centerIn: parent
+                    text: "󰍛 " + memUsage
+                    color: "#bb9af7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 11
+                    font.bold: true
+                }
+                MouseArea { id: memArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "kitty -e btop || alacritty -e btop"]) }
             }
 
             Rectangle {
-                height: 24; implicitWidth: diskText.width + 16; radius: 6
+                height: 26; implicitWidth: diskText.implicitWidth + 16; radius: 6
                 color: diskArea.containsMouse ? "#3b4261" : "#24283b"
                 border.color: "#3b4261"; border.width: 1
                 Behavior on color { ColorAnimation { duration: 150 } }
-                Text { id: diskText; anchors.centerIn: parent; text: "DISK: " + diskUsage; color: "#e0af68"; font.pixelSize: 11; font.bold: true }
-                MouseArea { id: diskArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["alacritty", "-e", "ncdu"]) }
+                Text {
+                    id: diskText
+                    anchors.centerIn: parent
+                    text: "󰋊 " + diskUsage
+                    color: "#e0af68"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 11
+                    font.bold: true
+                }
+                MouseArea { id: diskArea; anchors.fill: parent; hoverEnabled: true; onClicked: topBarExec.exec(["sh", "-c", "kitty -e ncdu || alacritty -e ncdu"]) }
             }
         }
 
-        // 3. Notification Toggle Button
+        // Media / Audio Quick Toggle
         Rectangle {
-            width: 24; height: 24; radius: 6
-            color: notifMouse.containsMouse ? "#3b4261" : "#24283b"
-            border.color: "#3b4261"; border.width: 1
-
+            width: 26; height: 26; radius: 6
+            color: mediaMouse.containsMouse ? "#3b4261" : "#24283b"
+            border.color: rootScope.mediaOpen ? "#9ece6a" : "#3b4261"; border.width: 1
             Behavior on color { ColorAnimation { duration: 150 } }
 
-            Text { 
-                anchors.centerIn: parent; 
-                text: "󰂚"; 
-                color: "#7aa2f7" 
-                font.pixelSize: 11
+            Text {
+                anchors.centerIn: parent
+                text: "󰕾"
+                color: "#9ece6a"
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 14
+            }
+
+            MouseArea {
+                id: mediaMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    let m = rootScope.mediaOpen;
+                    rootScope.closeAll();
+                    rootScope.mediaOpen = !m;
+                }
+            }
+        }
+
+        // Notification Toggle Button
+        Rectangle {
+            width: 26; height: 26; radius: 6
+            color: notifMouse.containsMouse ? "#3b4261" : "#24283b"
+            border.color: rootScope.notificationsOpen ? "#7aa2f7" : "#3b4261"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: "󰂚"
+                color: "#7aa2f7"
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 13
             }
 
             MouseArea {
@@ -240,19 +354,19 @@ PanelWindow {
             }
         }
 
-        // 4. Power Menu Button
+        // Power Menu Button
         Rectangle {
-            width: 24; height: 24; radius: 6
-            color: powerMouse.containsMouse ? "#3b4261" : "#24283b"
-            border.color: "#3b4261"; border.width: 1
-
+            width: 26; height: 26; radius: 6
+            color: powerMouse.containsMouse ? "#f7768e" : "#24283b"
+            border.color: "#f7768e"; border.width: 1
             Behavior on color { ColorAnimation { duration: 150 } }
 
-            Text { 
-                anchors.centerIn: parent; 
-                text: "⏻"; 
-                color: "#f7768e" 
-                font.pixelSize: 11
+            Text {
+                anchors.centerIn: parent
+                text: "󰐥"
+                color: powerMouse.containsMouse ? "#1a1b26" : "#f7768e"
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 13
             }
 
             MouseArea {
@@ -260,8 +374,9 @@ PanelWindow {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    rootScope.closeAll()
-                    rootScope.powerMenuOpen = true
+                    let p = rootScope.powerMenuOpen;
+                    rootScope.closeAll();
+                    rootScope.powerMenuOpen = !p;
                 }
             }
         }

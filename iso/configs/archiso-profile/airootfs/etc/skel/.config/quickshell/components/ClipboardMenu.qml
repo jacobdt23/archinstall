@@ -10,15 +10,15 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; right: true }
-    margins { top: 40; right: 100 }
-    
+    margins { top: 44; right: 80 }
+
     WlrLayershell.layer: WlrLayer.Overlay
     exclusionMode: ExclusionMode.Ignore
     visible: rootScope.clipboardOpen
     color: "transparent"
 
-    implicitWidth: 340
-    implicitHeight: 380
+    implicitWidth: 350
+    implicitHeight: 390
 
     ListModel { id: clipModel }
     Process { id: copyProc }
@@ -47,7 +47,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#7dcfff"
         border.width: 1
         radius: 12
 
@@ -58,21 +58,34 @@ PanelWindow {
 
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰅌"
+                    color: "#7dcfff"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 16
+                }
+
                 Text {
                     text: "Clipboard History"
-                    color: "#7aa2f7"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
                     font.bold: true
-                    font.pixelSize: 14
+                    font.pixelSize: 13
                 }
+
                 Item { Layout.fillWidth: true }
+
                 Rectangle {
-                    width: 56; height: 22; radius: 4
+                    width: 64; height: 24; radius: 6
                     color: clearMouse.containsMouse ? "#f7768e" : "#24283b"
                     border.color: "#3b4261"; border.width: 1
                     Text {
                         anchors.centerIn: parent
-                        text: "Clear"
+                        text: "󰩺 Clear"
                         color: clearMouse.containsMouse ? "#1a1b26" : "#c0caf5"
+                        font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 10; font.bold: true
                     }
                     MouseArea {
@@ -98,6 +111,7 @@ PanelWindow {
                 Layout.alignment: Qt.AlignHCenter
                 text: "Clipboard is empty"
                 color: "#565f89"
+                font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 12
             }
 
@@ -115,9 +129,9 @@ PanelWindow {
                     width: ListView.view.width
                     height: 38
                     color: clipItemMouse.containsMouse ? "#3b4261" : "#24283b"
-                    border.color: "#3b4261"
+                    border.color: clipItemMouse.containsMouse ? "#7dcfff" : "#3b4261"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
                     Text {
                         anchors.fill: parent
@@ -126,6 +140,7 @@ PanelWindow {
                         text: previewText
                         elide: Text.ElideRight
                         color: "#c0caf5"
+                        font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
                     }
 

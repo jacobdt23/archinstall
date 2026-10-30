@@ -83,9 +83,12 @@ vim
 zsh
 
 # Hyprland & Quickshell Custom Desktop Stack
+adwaita-icon-theme
 alacritty
 awww
+breeze-icons
 cliphist
+gnome-themes-extra
 hyprland
 hyprlock
 hyprpaper
@@ -94,11 +97,13 @@ kitty
 libnotify
 noto-fonts
 noto-fonts-emoji
+papirus-icon-theme
 playerctl
 polkit
 qt5-wayland
 qt6-5compat
 qt6-declarative
+qt6-svg
 qt6-wayland
 quickshell
 ttf-jetbrains-mono-nerd

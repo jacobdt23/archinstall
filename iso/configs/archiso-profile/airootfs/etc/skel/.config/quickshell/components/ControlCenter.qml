@@ -10,48 +10,50 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; right: true }
-    margins { top: 40; right: 20 }
+    margins { top: 44; right: 14 }
 
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-    color: "#01000000"
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    color: "transparent"
     visible: rootScope.controlCenterOpen
 
-    implicitWidth: 320
-    implicitHeight: 340
+    implicitWidth: 340
+    implicitHeight: 390
 
     Process { id: ccProc }
-
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: rootScope.controlCenterOpen = false
-    }
 
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#bb9af7"
         border.width: 1
         radius: 12
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            onClicked: {}
-        }
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
             spacing: 10
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "System Control Center"
-                color: "#7aa2f7"
-                font.bold: true
-                font.pixelSize: 14
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰒓"
+                    color: "#bb9af7"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 16
+                }
+
+                Text {
+                    text: "System Control Center"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 13
+                }
+
+                Item { Layout.fillWidth: true }
             }
 
             Rectangle {
@@ -62,31 +64,47 @@ PanelWindow {
 
             Repeater {
                 model: [
-                    { label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },
-                    { label: "Bluetooth Manager (Blueman)", cmd: "blueman-manager" },
-                    { label: "Network Manager TUI", cmd: "kitty -e nmtui || alacritty -e nmtui" },
-                    { label: "System Monitor (btop)", cmd: "kitty -e btop || alacritty -e btop" },
-                    { label: "Reload Hyprland Config", cmd: "hyprctl reload && notify-send 'Hyprland' 'Config Reloaded'" },
-                    { label: "Lock Screen (Hyprlock)", cmd: "hyprlock" }
+                    { icon: "󰇚", color: "#9ece6a", label: "Install System (Calamares)", cmd: "/usr/local/bin/launch-calamares" },
+                    { icon: "󰕾", color: "#7aa2f7", label: "Audio Mixer (Pavucontrol)", cmd: "pavucontrol" },
+                    { icon: "󰂯", color: "#7dcfff", label: "Bluetooth Manager (Blueman)", cmd: "blueman-manager" },
+                    { icon: "󰖩", color: "#e0af68", label: "Network Manager (nmtui)", cmd: "kitty -e nmtui || alacritty -e nmtui" },
+                    { icon: "󰻠", color: "#bb9af7", label: "System Monitor (btop)", cmd: "kitty -e btop || alacritty -e btop" },
+                    { icon: "󰑐", color: "#7aa2f7", label: "Reload Hyprland Config", cmd: "hyprctl reload && notify-send 'Hyprland' 'Config Reloaded'" },
+                    { icon: "󰌾", color: "#f7768e", label: "Lock Screen (Hyprlock)", cmd: "hyprlock" }
                 ]
 
                 delegate: Rectangle {
                     required property var modelData
                     Layout.fillWidth: true
-                    height: 36
+                    height: 38
                     color: ccItemMouse.containsMouse ? "#3b4261" : "#24283b"
-                    border.color: "#3b4261"
+                    border.color: ccItemMouse.containsMouse ? modelData.color : "#3b4261"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
-                    Behavior on color { ColorAnimation { duration: 150 } }
+                    Behavior on color { ColorAnimation { duration: 120 } }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: modelData.label
-                        color: "#c0caf5"
-                        font.pixelSize: 12
-                        font.bold: true
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 10
+
+                        Text {
+                            text: modelData.icon
+                            color: modelData.color
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 16
+                        }
+
+                        Text {
+                            text: modelData.label
+                            color: "#c0caf5"
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 11
+                            font.bold: true
+                            Layout.fillWidth: true
+                        }
                     }
 
                     MouseArea {

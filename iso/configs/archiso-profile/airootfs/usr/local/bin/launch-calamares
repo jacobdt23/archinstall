@@ -1,5 +1,7 @@
 #!/bin/bash
 export QT_QPA_PLATFORM="wayland;xcb"
+export QT_STYLE_OVERRIDE="Fusion"
+export QT_ICON_THEME="breeze-dark"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/0}"
 
 if command -v xhost >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then

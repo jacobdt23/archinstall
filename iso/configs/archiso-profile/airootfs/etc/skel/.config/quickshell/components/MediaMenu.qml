@@ -10,15 +10,15 @@ PanelWindow {
 
     screen: targetScreen
     anchors { top: true; right: true }
-    margins { top: 40; right: 60 }
-    
+    margins { top: 44; right: 48 }
+
     WlrLayershell.layer: WlrLayer.Overlay
     exclusionMode: ExclusionMode.Ignore
     visible: rootScope.mediaOpen
     color: "transparent"
 
-    implicitWidth: 320
-    implicitHeight: 200
+    implicitWidth: 330
+    implicitHeight: 195
 
     property string trackInfo: "No active media session"
     Process { id: mediaActionProc }
@@ -46,7 +46,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: "#1a1b26"
-        border.color: "#3b4261"
+        border.color: "#9ece6a"
         border.width: 1
         radius: 12
 
@@ -55,12 +55,24 @@ PanelWindow {
             anchors.margins: 16
             spacing: 12
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Media & Audio Controls"
-                color: "#bb9af7"
-                font.bold: true
-                font.pixelSize: 14
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰕾"
+                    color: "#9ece6a"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: 16
+                }
+
+                Text {
+                    text: "Media & Audio Controls"
+                    color: "#c0caf5"
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    font.pixelSize: 13
+                }
             }
 
             Rectangle {
@@ -74,33 +86,37 @@ PanelWindow {
                 horizontalAlignment: Text.AlignHCenter
                 text: trackInfo
                 elide: Text.ElideRight
-                color: "#c0caf5"
-                font.pixelSize: 12
+                color: "#a9b1d6"
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 11
             }
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 12
+                spacing: 10
 
                 Repeater {
                     model: [
-                        { label: "⏮", cmd: "playerctl previous" },
-                        { label: "⏯", cmd: "playerctl play-pause" },
-                        { label: "⏭", cmd: "playerctl next" },
-                        { label: "🔉", cmd: "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-" },
-                        { label: "🔊", cmd: "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+" }
+                        { label: "󰒮", cmd: "playerctl previous" },
+                        { label: "󰐎", cmd: "playerctl play-pause" },
+                        { label: "󰒭", cmd: "playerctl next" },
+                        { label: "󰕿", cmd: "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-" },
+                        { label: "󰕾", cmd: "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+" },
+                        { label: "󰝟", cmd: "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle" }
                     ]
 
                     delegate: Rectangle {
                         required property var modelData
-                        width: 42; height: 34; radius: 6
+                        width: 40; height: 34; radius: 8
                         color: mBtnMouse.containsMouse ? "#3b4261" : "#24283b"
-                        border.color: "#3b4261"; border.width: 1
+                        border.color: mBtnMouse.containsMouse ? "#9ece6a" : "#3b4261"
+                        border.width: 1
                         Text {
                             anchors.centerIn: parent
                             text: modelData.label
-                            color: "#7aa2f7"
-                            font.pixelSize: 13
+                            color: "#9ece6a"
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 15
                         }
                         MouseArea {
                             id: mBtnMouse
