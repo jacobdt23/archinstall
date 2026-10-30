@@ -11,9 +11,10 @@ WORK_DIR="$ISO_ROOT/work"
 OUT_DIR="$ISO_ROOT/out"
 
 STAGED_ROOT_CONFIG="$PROFILE_DIR/airootfs/root/.config"
+STAGED_ROOT_LOCAL="$PROFILE_DIR/airootfs/root/.local"
 
 cleanup_staging() {
-    rm -rf "$STAGED_ROOT_CONFIG"
+    rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL"
 }
 trap cleanup_staging EXIT
 
@@ -22,8 +23,9 @@ rm -rf "$WORK_DIR" "$OUT_DIR"
 mkdir -p "$OUT_DIR"
 
 echo "[+] Staging custom Hyprland + Python/GTK desktop configs into live ISO airootfs..."
-rm -rf "$STAGED_ROOT_CONFIG"
+rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/.config" "$STAGED_ROOT_CONFIG"
+cp -r "$PROFILE_DIR/airootfs/etc/skel/.local" "$STAGED_ROOT_LOCAL"
 chmod +x "$PROFILE_DIR/airootfs/etc/skel/.config/hypr/wallpaper_loop.sh" \
          "$PROFILE_DIR/airootfs/usr/local/bin/Hyprland" \
          "$PROFILE_DIR/airootfs/usr/local/bin/list-desktop-apps" \

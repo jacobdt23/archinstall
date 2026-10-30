@@ -57,13 +57,19 @@ rm -f /etc/systemd/journald.conf.d/volatile-storage.conf \
 rm -f /root/.zlogin /root/.automated_script.sh
 rm -rf /root/.config
 
-# 4. Set LightDM default session to Hyprland
+# 4. Set default shell to fish for root and future users
+if [ -f /etc/default/useradd ]; then
+    sed -i 's|^SHELL=.*|SHELL=/usr/bin/fish|' /etc/default/useradd
+fi
+chsh -s /usr/bin/fish root 2>/dev/null || true
+
+# 5. Set LightDM default session to Hyprland
 if [ -f /etc/lightdm/lightdm.conf ]; then
     sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf
     sed -i 's/^#greeter-session=.*/greeter-session=lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
 fi
 
-# 5. Pre-configure Timeshift in BTRFS mode + timeshift-autosnap + grub-btrfs when installed on Btrfs
+# 6. Pre-configure Timeshift in BTRFS mode + timeshift-autosnap + grub-btrfs when installed on Btrfs
 ROOT_DEV="$(findmnt -no SOURCE / 2>/dev/null | sed 's/\[.*//' || true)"
 ROOT_FSTYPE="$(findmnt -no FSTYPE / 2>/dev/null || true)"
 ROOT_UUID="$(findmnt -no UUID / 2>/dev/null || true)"
@@ -98,10 +104,10 @@ if [ "$ROOT_FSTYPE" = "btrfs" ] && [ -n "$ROOT_UUID" ]; then
 EOF
 fi
 
-# 6. Strip build-only local customrepo from /etc/pacman.conf on installed target
+# 7. Strip build-only local customrepo from /etc/pacman.conf on installed target
 sed -i '/^\[customrepo\]/,/^Server =/d' /etc/pacman.conf
 
-# 7. Remove live installer configuration and launcher from the installed system
+# 8. Remove live installer configuration and launcher from the installed system
 rm -rf /etc/calamares
 rm -f /usr/share/applications/calamares.desktop \
       /usr/local/bin/launch-calamares

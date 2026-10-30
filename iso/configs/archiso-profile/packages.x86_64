@@ -86,11 +86,14 @@ wget
 # Shell & Terminal Utilities
 btop
 fastfetch
+fish
 git
 grml-zsh-config
 micro
 nano
 ncdu
+neovide
+neovim
 ripgrep
 vim
 zsh
