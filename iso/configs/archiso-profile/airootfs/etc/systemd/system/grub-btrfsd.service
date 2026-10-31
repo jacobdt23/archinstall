@@ -1,0 +1,12 @@
+[Unit]
+Description=Regenerate grub-btrfs.cfg
+
+[Service]
+Type=simple
+LogLevelMax=notice
+Environment="PATH=/sbin:/bin:/usr/sbin:/usr/bin"
+EnvironmentFile=/etc/default/grub-btrfs/config
+ExecStart=/usr/bin/grub-btrfsd --syslog --timeshift-auto
+
+[Install]
+WantedBy=multi-user.target

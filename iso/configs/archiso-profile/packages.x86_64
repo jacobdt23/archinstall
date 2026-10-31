@@ -47,6 +47,7 @@ sudo
 syslinux
 timeshift
 timeshift-autosnap
+paru
 xorg-xhost
 
 # CPU Microcode (AMD & Intel)

@@ -89,7 +89,8 @@ if [ "$ROOT_FSTYPE" = "btrfs" ] && [ -n "$ROOT_UUID" ]; then
   "parent_device_uuid" : "",
   "do_first_run" : "false",
   "btrfs_mode" : "true",
-  "include_btrfs_home" : "false",
+  "include_btrfs_home_for_backup" : "false",
+  "include_btrfs_home_for_restore" : "false",
   "stop_cron_emails" : "true",
   "schedule_monthly" : "false",
   "schedule_weekly" : "true",
@@ -103,10 +104,20 @@ if [ "$ROOT_FSTYPE" = "btrfs" ] && [ -n "$ROOT_UUID" ]; then
   "count_boot" : "3",
   "snapshot_size" : "0",
   "snapshot_count" : "0",
+  "date_format" : "%Y-%m-%d %H:%M:%S",
   "exclude" : [],
   "exclude-apps" : []
 }
 EOF
+
+    # Configure timeshift-autosnap to let grub-btrfsd handle GRUB regeneration without race condition
+    if [ -f /etc/timeshift-autosnap.conf ]; then
+        sed -i 's/^updateGrub=.*/updateGrub=false/' /etc/timeshift-autosnap.conf
+        sed -i 's/^minHoursBetweenSnapshots=.*/minHoursBetweenSnapshots=0/' /etc/timeshift-autosnap.conf
+    fi
+else
+    # Disable grub-btrfsd if system was not installed on Btrfs
+    systemctl disable grub-btrfsd.service 2>/dev/null || true
 fi
 
 # 7. Strip build-only local customrepo from /etc/pacman.conf on installed target
