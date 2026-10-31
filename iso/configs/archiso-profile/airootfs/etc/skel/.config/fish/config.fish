@@ -8,6 +8,7 @@ if status is-interactive
     alias nv="neovide"
     alias gs="git status"
     alias ll="ls -lah"
+    alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
     # Fastfetch system info on startup
     if type -q fastfetch
