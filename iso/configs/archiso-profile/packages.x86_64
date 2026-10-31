@@ -137,6 +137,9 @@ xorg-xinit
 thunar
 thunar-archive-plugin
 thunar-volman
+gvfs
+gvfs-mtp
+gvfs-smb
 nwg-look
 qt5ct
 qt6ct
