@@ -8,20 +8,20 @@ A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring th
 
 ---
 
-## Download Latest ISO (v1.0.0)
+## Download Latest ISO
 
-You can download the single standalone release ISO directly from GitHub Releases:
+The newest build is published automatically by GitHub Actions on every push to `main`:
 
-* **Direct Release**: [**JacobOS v1.0.0 Release**](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0)
-* **ISO File**: `jacob-archlinux-2026.10.30-x86_64.iso` (2.12 GB / 2,120,302,592 bytes)
-* **SHA-256 Checksum**:
+* **Latest ISO**: [**Latest ISO release**](https://github.com/jacobdt23/archinstall/releases/tag/latest-iso)
+* The ISO is slightly over GitHub's 2 GiB per-file limit, so it is split into `jacob-archlinux.iso.part00` and `.part01`.
+* **Join the parts** (Windows, Command Prompt):
   ```
-  be5ae9fef7ba516abb66630b9a670677e969da1530fc078919e36f8278079289  jacob-archlinux-2026.10.30-x86_64.iso
+  copy /b jacob-archlinux.iso.part00 + jacob-archlinux.iso.part01 jacob-archlinux.iso
   ```
-* **Verify Download**:
-  ```bash
-  sha256sum -c jacob-archlinux-2026.10.30-x86_64.iso.sha256
-  ```
+  Linux/macOS: `cat jacob-archlinux.iso.part* > jacob-archlinux.iso`
+* **Verify Download**: compare `sha256sum jacob-archlinux.iso` with the hash in `SHA256SUMS`.
+* Boot in **UEFI** mode and let the installer format the EFI partition.
+* The older [v1.0.0 release](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0) has known installer bugs.
 
 ---
 
