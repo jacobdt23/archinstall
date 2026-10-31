@@ -30,6 +30,7 @@ file_permissions=(
   ["/usr/local/bin/jacob-control-center"]="0:0:755"
   ["/usr/local/bin/timeshift-launcher"]="0:0:755"
   ["/usr/local/bin/calamares-post-install"]="0:0:755"
+  ["/usr/local/bin/calamares-find-rootfs"]="0:0:755"
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
