@@ -63,12 +63,16 @@ if [ -f /etc/default/useradd ]; then
 fi
 chsh -s /usr/bin/fish root 2>/dev/null || true
 
-# 5. Set LightDM default session to Hyprland
-if [ -f /etc/lightdm/lightdm.conf ]; then
-    sed -i 's/^#user-session=.*/user-session=hyprland/' /etc/lightdm/lightdm.conf
-    sed -i 's/^#greeter-session=.*/greeter-session=lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
-    sed -i 's/^#logind-check-graphical=.*/logind-check-graphical=true/' /etc/lightdm/lightdm.conf
-fi
+# 5. Configure SDDM default session to Hyprland
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/10-session.conf << 'EOF'
+[Autologin]
+Session=hyprland
+
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+EOF
 
 # 6. Pre-configure Timeshift in BTRFS mode + timeshift-autosnap + grub-btrfs when installed on Btrfs
 ROOT_DEV="$(findmnt -no SOURCE / 2>/dev/null | sed 's/\[.*//' || true)"

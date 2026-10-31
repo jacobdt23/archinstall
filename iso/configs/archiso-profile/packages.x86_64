@@ -129,8 +129,7 @@ xdg-desktop-portal-hyprland
 
 # Desktop Applications, File Manager & Greeter
 firefox
-lightdm
-lightdm-gtk-greeter
+sddm
 xorg-server
 xorg-xwayland
 xorg-xinit
