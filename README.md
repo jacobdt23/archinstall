@@ -13,13 +13,8 @@ A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring th
 The newest build is published automatically by GitHub Actions on every push to `main`:
 
 * **Latest ISO**: [**Latest ISO release**](https://github.com/jacobdt23/archinstall/releases/tag/latest-iso)
-* The ISO is slightly over GitHub's 2 GiB per-file limit, so it is split into `jacob-archlinux.iso.part00` and `.part01`.
-* **Join the parts** (Windows, Command Prompt):
-  ```
-  copy /b jacob-archlinux.iso.part00 + jacob-archlinux.iso.part01 jacob-archlinux.iso
-  ```
-  Linux/macOS: `cat jacob-archlinux.iso.part* > jacob-archlinux.iso`
-* **Verify Download**: compare `sha256sum jacob-archlinux.iso` with the hash in `SHA256SUMS`.
+* Download the single `.iso` file from that release and write it to a USB stick (Rufus DD mode or Ventoy).
+* **Verify Download**: compare `sha256sum <iso file>` with the hash in `SHA256SUMS`.
 * Boot in **UEFI** mode and let the installer format the EFI partition.
 * The older [v1.0.0 release](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0) has known installer bugs.
 
