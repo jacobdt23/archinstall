@@ -95,6 +95,7 @@ nano
 ncdu
 neovide
 neovim
+tree-sitter-cli
 ripgrep
 vim
 zsh
