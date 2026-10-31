@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,3 +32,22 @@ jobs:
         with:
           name: jacob-archlinux-iso
           path: iso/out/*.iso
+      - name: Prepare release files
+        run: |
+          set -e
+          cd iso/out
+          sha256sum *.iso > SHA256SUMS
+          # GitHub release assets are limited to 2 GiB; split if needed
+          if [ "$(stat -c%s *.iso)" -gt 2000000000 ]; then
+            split -b 1900M -d *.iso jacob-archlinux.iso.part
+            rm -f *.iso
+            echo "ISO was split. Rejoin with: cat jacob-archlinux.iso.part* > jacob-archlinux.iso" > README-JOIN.txt
+          fi
+          ls -lh
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-iso
+          name: Latest ISO (${{ github.sha }})
+          body: Automated build of commit ${{ github.sha }}
+          files: iso/out/*
