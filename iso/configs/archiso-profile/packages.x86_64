@@ -131,6 +131,9 @@ xdg-desktop-portal-hyprland
 firefox
 lightdm
 lightdm-gtk-greeter
+xorg-server
+xorg-xwayland
+xorg-xinit
 thunar
 thunar-archive-plugin
 thunar-volman
