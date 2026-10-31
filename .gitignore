@@ -4,3 +4,4 @@ iso/out/
 *.save
 *.backup
 *.swp
+iso/configs/archiso-profile/airootfs/etc/pacman.d/hooks/00-timeshift-autosnap.hook
