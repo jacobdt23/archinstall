@@ -96,6 +96,7 @@ ncdu
 neovide
 neovim
 tree-sitter-cli
+stylua
 ripgrep
 vim
 zsh
@@ -137,6 +138,8 @@ xorg-xwayland
 xorg-xinit
 thunar
 thunar-archive-plugin
+zip
+unzip
 thunar-volman
 gvfs
 gvfs-mtp
