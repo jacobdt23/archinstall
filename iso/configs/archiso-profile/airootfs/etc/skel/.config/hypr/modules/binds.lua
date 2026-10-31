@@ -7,9 +7,8 @@ hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("jacob-shell toggle welcome"))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("discord"))
 
--- App Launcher / Menu (jacob-shell IPC call)
+-- App Launcher / Menu (Super alone)
 hl.bind("SUPER + Super_L", hl.dsp.exec_cmd("jacob-shell toggle launcher"), { release = true })
-hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("jacob-shell toggle launcher"))
 
 -- System Management
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("notify-send 'Jacob Shell' 'Active!'"))

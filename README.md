@@ -57,7 +57,7 @@ JacobOS features a native desktop stack written entirely in **Python 3 and GTK3*
 1. **`jacob-shell`**:
    * **Top Bar**: Workspace switcher (1–10), live date & calendar dropdown, real-time hardware monitor pills (CPU%, RAM, Disk), volume status, and quick control buttons.
    * **Floating Bottom Dock**: High-resolution application launchers (Kitty, Alacritty, Thunar, Firefox, Pavucontrol, Blueman, Timeshift, Calamares installer).
-   * **App Launcher (`SUPER` / `SUPER + SPACE`)**: Instant search and launch for all installed applications.
+   * **App Launcher (`SUPER`)**: Instant search and launch for all installed applications.
    * **Welcome Hub (`SUPER + W`)**: Autostarts on first boot. Features an Essential Apps launcher and an interactive Keybindings Reference cheat sheet.
    * **Clipboard Manager (`SUPER + SHIFT + V`)**: Visual clipboard history powered by `cliphist` and `wl-clipboard`.
    * **Notification Daemon**: Internal `org.freedesktop.Notifications` D-Bus server with popups and notification history center.
@@ -128,7 +128,7 @@ The compiled bootable ISO (`jacob-archlinux-YYYY.MM.DD-x86_64.iso`) will be plac
 The ISO boots directly into the live **Hyprland + Python/GTK** desktop on first boot (`tty1`). You can launch the **Calamares Graphical Installer** in any of three ways:
 
 1. **Click the `"⬇ Install"` button** on the bottom dock.
-2. **Press `SUPER + SHIFT + I`** (or open the App Launcher with `SUPER + SPACE` and select **Install System (Calamares)**).
+2. **Press `SUPER + SHIFT + I`** (or open the App Launcher with `SUPER` and select **Install System (Calamares)**).
 3. **Run from terminal**:
    ```bash
    launch-calamares
@@ -142,7 +142,7 @@ The ISO boots directly into the live **Hyprland + Python/GTK** desktop on first 
 | :--- | :--- |
 | `SUPER + W` | Toggle **Welcome Center & Keybinds Cheat Sheet** (Auto-opens on first boot) |
 | `SUPER + RETURN` | Open Terminal (`kitty`) |
-| `SUPER` / `SUPER + SPACE` | Toggle App Launcher |
+| `SUPER` | Toggle App Launcher |
 | `SUPER + SHIFT + I` | Launch **Calamares System Installer** (Live ISO) |
 | `SUPER + E` | Open File Manager (`thunar`) |
 | `SUPER + C` | Close Active Window |
