@@ -1,0 +1,31 @@
+name: Build ISO
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Install build dependencies
+        run: |
+          pacman -Syu --noconfirm archiso arch-install-scripts grub git
+      - uses: actions/checkout@v4
+      - name: Build ISO
+        run: |
+          set -e
+          P=iso/configs/archiso-profile
+          cp -r $P/airootfs/etc/skel/.config $P/airootfs/root/.config
+          cp -r $P/airootfs/etc/skel/.local $P/airootfs/root/.local
+          mkdir -p /repo/iso
+          ln -sfn "$PWD/iso/custom-repo" /repo/iso/custom-repo
+          mkarchiso -v -w /tmp/archiso-work -o iso/out $P
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jacob-archlinux-iso
+          path: iso/out/*.iso
