@@ -25,6 +25,7 @@ jobs:
           P=iso/configs/archiso-profile
           cp -r $P/airootfs/etc/skel/.config $P/airootfs/root/.config
           cp -r $P/airootfs/etc/skel/.local $P/airootfs/root/.local
+          cp -r $P/airootfs/etc/skel/Pictures $P/airootfs/root/Pictures
           mkdir -p /repo/iso
           ln -sfn "$PWD/iso/custom-repo" /repo/iso/custom-repo
           mkarchiso -v -w /tmp/archiso-work -o iso/out $P
