@@ -13,7 +13,6 @@ calamares
 cronie
 dosfstools
 e2fsprogs
-edk2-shell
 efibootmgr
 gptfdisk
 grub
@@ -25,7 +24,6 @@ linux-firmware-amd
 linux-firmware-amdgpu
 linux-firmware-atheros
 linux-firmware-broadcom
-linux-firmware-cirrus
 linux-firmware-intel
 linux-firmware-mediatek
 linux-firmware-nvidia
@@ -90,7 +88,6 @@ fastfetch
 fish
 git
 grml-zsh-config
-micro
 nano
 ncdu
 neovide
@@ -98,7 +95,6 @@ neovim
 tree-sitter-cli
 stylua
 ripgrep
-vim
 zsh
 
 # Hyprland + Python/GTK3 Custom Desktop Stack (jacob-shell & jacob-control-center)
@@ -116,7 +112,6 @@ gtk-layer-shell
 gtk3
 hyprland
 hyprlock
-hyprpaper
 hyprpolkitagent
 kitty
 libnotify
