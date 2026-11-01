@@ -105,6 +105,12 @@ zsh
 adwaita-icon-theme
 alacritty
 awww
+waypaper
+python-imageio
+python-imageio-ffmpeg
+python-pillow
+python-platformdirs
+python-screeninfo
 cliphist
 gtk-layer-shell
 gtk3
