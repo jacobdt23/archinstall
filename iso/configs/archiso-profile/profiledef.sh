@@ -21,7 +21,6 @@ file_permissions=(
   ["/root"]="0:0:750"
   ["/root/.automated_script.sh"]="0:0:755"
   ["/root/.gnupg"]="0:0:700"
-  ["/etc/skel/.config/hypr/wallpaper_loop.sh"]="0:0:755"
   ["/usr/local/bin/Hyprland"]="0:0:755"
   ["/usr/local/bin/list-desktop-apps"]="0:0:755"
   ["/usr/local/bin/launch-calamares"]="0:0:755"
