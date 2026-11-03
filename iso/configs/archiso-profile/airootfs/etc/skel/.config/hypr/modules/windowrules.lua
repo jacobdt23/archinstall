@@ -63,7 +63,25 @@ hl.window_rule({
     center = true,
 })
 
+hl.window_rule({
+    name   = "systemsettings-floating",
+    match  = { class = ".*systemsettings.*" },
+    float  = true,
+    size   = "1020 700",
+    center = true,
+})
+
+hl.window_rule({
+    name   = "hyprsettings-floating",
+    match  = { class = ".*hypr-?settings.*" },
+    float  = true,
+    size   = "950 660",
+    center = true,
+})
+
 hl.layer_rule({
     match   = { namespace = "nwg-dock" },
     no_anim = true,
 })
+
+

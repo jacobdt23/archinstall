@@ -157,3 +157,9 @@ pipewire
 pipewire-alsa
 pipewire-pulse
 wireplumber
+
+# Screenshot & Clipboard Tools
+grim
+slurp
+swappy
+wl-clipboard

@@ -13,7 +13,20 @@ hl.bind("SUPER + Super_L", hl.dsp.exec_cmd("jacob-shell toggle launcher"), { rel
 -- System Management
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("notify-send 'Jacob Shell' 'Active!'"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("sh -c 'hyprctl reload && notify-send \"Hyprland\" \"Reloaded!\"'"))
-hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("/usr/local/bin/launch-calamares"))
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("kitty -e btop"))
+
+-- Screenshot Utility (grim + slurp + swappy)
+hl.bind("Print", hl.dsp.exec_cmd("/home/jacob/.local/bin/hypr-screenshot area"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("/home/jacob/.local/bin/hypr-screenshot full"))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("/home/jacob/.local/bin/hypr-screenshot window"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("/home/jacob/.local/bin/hypr-screenshot area"))
+
+-- Live Environment Installer (active only when live ISO installer exists)
+local calamares_fd = io.open("/usr/local/bin/launch-calamares", "r")
+if calamares_fd ~= nil then
+    calamares_fd:close()
+    hl.bind(mainMod .. " + SHIFT + I", hl.dsp.exec_cmd("/usr/local/bin/launch-calamares"))
+end
 
 -- jacob-shell Menus
 hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("jacob-shell toggle keybinds"))
@@ -25,8 +38,9 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("jacob-shell toggle calendar"))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("jacob-shell toggle controlcenter"))
 
 -- Window Management
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("hyprctl dispatch togglefloating"))
-hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("hyprctl dispatch pseudo"))
+hl.bind(mainMod .. " + V", hl.dsp.window.float())
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + TAB", hl.dsp.focus({ monitor = "+1" }))
 
@@ -43,7 +57,7 @@ for i = 1, 10 do
 end
 
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("hyprctl dispatch movetoworkspace special:magic"))
+hl.bind(mainMod .. " + ALT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
 -- Mouse Window Interactions
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
