@@ -9,13 +9,13 @@ sidebar: widget
 navigation: widget
 
 strings:
-    productName:         "Jacob's Custom Arch Linux"
-    shortProductName:    "CustomArch"
+    productName:         "HyprFrost Linux"
+    shortProductName:    "HyprFrost"
     version:             "Rolling"
     shortVersion:        "Rolling"
-    versionedName:       "Jacob's Custom Arch Linux"
-    shortVersionedName:  "CustomArch"
-    bootloaderEntryName: "CustomArch"
+    versionedName:       "HyprFrost Linux"
+    shortVersionedName:  "HyprFrost"
+    bootloaderEntryName: "HyprFrost"
     productUrl:          "https://github.com/jacobdt23/archinstall"
     supportUrl:          "https://github.com/jacobdt23/archinstall/issues"
     knownIssuesUrl:      "https://github.com/jacobdt23/archinstall/issues"

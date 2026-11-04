@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="jacob-archlinux"
-iso_label="CUSTOM_ARCH"
-iso_publisher="Jacob <https://github.com/jacobdt23/archinstall>"
-iso_application="Jacob's Custom Arch Linux Live/Install ISO"
+iso_name="hyprfrost"
+iso_label="HYPRFROST"
+iso_publisher="HyprFrost <https://github.com/jacobdt23/archinstall>"
+iso_application="HyprFrost Linux Live/Install ISO"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')

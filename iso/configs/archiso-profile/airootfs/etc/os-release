@@ -1,6 +1,6 @@
-NAME="JacobOS"
-PRETTY_NAME="JacobOS (Arch Linux Rolling)"
-ID=jacobos
+NAME="HyprFrost"
+PRETTY_NAME="HyprFrost Linux (Arch Rolling)"
+ID=hyprfrost
 ID_LIKE=arch
 BUILD_ID=rolling
 ANSI_COLOR="38;2;122;162;247"

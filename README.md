@@ -1,6 +1,6 @@
-# JacobOS (`CUSTOM_ARCH`)
+# HyprFrost Linux (`HYPRFROST`)
 
-A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring the **Calamares Graphical Installer**, booting directly into **JacobOS Hyprland + Python/GTK3 (TokyoNight) Desktop Shell** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** auto-detection.
+A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring the **Calamares Graphical Installer**, booting directly into **HyprFrost Hyprland + Python/GTK3 (TokyoNight) Desktop Shell** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** auto-detection.
 
 [![Release](https://img.shields.io/badge/Release-v1.0.0-7aa2f7?style=for-the-badge&logo=archlinux)](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0)
 [![License](https://img.shields.io/badge/License-GPLv3-bb9af7?style=for-the-badge)](LICENSE)
@@ -22,7 +22,7 @@ The newest build is published automatically by GitHub Actions on every push to `
 
 ## Hardware Auto-Detection & VM Compatibility
 
-JacobOS automatically detects your hardware and configures the environment on first boot without manual intervention:
+HyprFrost automatically detects your hardware and configures the environment on first boot without manual intervention:
 
 * **GPUs**:
   * **NVIDIA**: Automatic detection via [`modules/env.lua`](iso/configs/archiso-profile/airootfs/etc/skel/.config/hypr/modules/env.lua). Loads `nvidia-open`, `nvidia-utils`, `nvidia-settings`, `libva-nvidia-driver`, and sets `LIBVA_DRIVER_NAME=nvidia`, `GBM_BACKEND=nvidia-drm`, `__GLX_VENDOR_LIBRARY_NAME=nvidia`, and `nvidia_drm modeset=1 fbdev=1`.
@@ -52,7 +52,7 @@ JacobOS automatically detects your hardware and configures the environment on fi
 
 ## Desktop Shell & System Control Center
 
-JacobOS features a native desktop stack written entirely in **Python 3 and GTK3** (`gtk-layer-shell`), eliminating all QML/Quickshell dependencies:
+HyprFrost features a native desktop stack written entirely in **Python 3 and GTK3** (`gtk-layer-shell`), eliminating all QML/Quickshell dependencies:
 
 1. **`jacob-shell`**:
    * **Top Bar**: Workspace switcher (1–10), live date & calendar dropdown, real-time hardware monitor pills (CPU%, RAM, Disk), volume status, and quick control buttons.
@@ -97,7 +97,7 @@ archinstall/
     │       ├── profiledef.sh              # ISO metadata & compression settings
     │       └── airootfs/                  # Live filesystem overlay
     │           ├── etc/
-    │           │   ├── os-release         # JacobOS rolling distribution branding
+    │           │   ├── os-release         # HyprFrost rolling distribution branding
     │           │   ├── calamares/         # Custom Calamares installer configuration
     │           │   └── skel/.config/      # TokyoNight Hyprland, Kitty, Alacritty dotfiles
     │           └── usr/local/bin/

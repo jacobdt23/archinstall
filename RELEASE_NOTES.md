@@ -1,6 +1,6 @@
-# JacobOS v1.0.0 Release
+# HyprFrost v1.0.0 Release
 
-Welcome to the official **JacobOS v1.0.0** release — a customized Arch Linux rolling distribution featuring Hyprland, a native Python/GTK3 desktop shell, TokyoNight styling, and graphical Calamares installation.
+Welcome to the official **HyprFrost v1.0.0** release — a customized Arch Linux rolling distribution featuring Hyprland, a native Python/GTK3 desktop shell, TokyoNight styling, and graphical Calamares installation.
 
 ---
 
