@@ -45,6 +45,7 @@ sudo
 syslinux
 timeshift
 timeshift-autosnap
+zram-generator
 paru
 xorg-xhost
 

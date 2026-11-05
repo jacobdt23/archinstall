@@ -43,6 +43,7 @@ squashfs-tools
 sudo
 syslinux
 timeshift
+zram-generator
 xorg-xhost
 
 # CPU Microcode (AMD & Intel)
