@@ -1,9 +1,9 @@
 # =============================================================================
-# Jacob's Custom Arch Linux ISO Package Manifest (x86_64)
-# Supports UEFI/GPT, BIOS/MBR, and NVIDIA + AMD + Intel CPUs & GPUs
+# HyprFrost ISO Package Manifest (x86_64)
+# Combines Official Native Packages and AUR Packages from custom-repo
 # =============================================================================
 
-# Base System, Boot (UEFI + BIOS/MBR), Calamares Installer & Live ISO Essentials
+# Base System, Boot (UEFI + BIOS/MBR) & Live ISO Essentials
 arch-install-scripts
 archiso
 base

@@ -35,7 +35,9 @@ chmod +x "$PROFILE_DIR/airootfs/usr/local/bin/Hyprland" \
          "$PROFILE_DIR/airootfs/usr/local/bin/jacob-shell" \
          "$PROFILE_DIR/airootfs/usr/local/bin/jacob-control-center" \
          "$PROFILE_DIR/airootfs/usr/local/bin/timeshift-launcher" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/calamares-post-install"
+         "$PROFILE_DIR/airootfs/usr/local/bin/calamares-post-install" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/pkg-save" \
+         "$PROFILE_DIR/airootfs/usr/local/bin/pkg-install"
 
 if command -v mkarchiso >/dev/null 2>&1; then
     if [ "$EUID" -ne 0 ]; then

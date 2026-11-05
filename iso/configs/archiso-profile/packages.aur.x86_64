@@ -1,0 +1,10 @@
+# =============================================================================
+# HyprFrost AUR / Custom Repo Packages Manifest (x86_64)
+# Built into iso/custom-repo/ and managed by iso/scripts/build-custom-repo.sh
+# =============================================================================
+calamares
+paru
+timeshift-autosnap
+waypaper
+python-imageio-ffmpeg
+python-screeninfo

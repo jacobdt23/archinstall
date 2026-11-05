@@ -86,28 +86,53 @@ archinstall/
 ├── RELEASE_NOTES.md                       # Release notes and checksums
 ├── README.md                              # Project documentation
 └── iso/
-    ├── custom-repo/                       # Local Calamares & timeshift-autosnap repo
+    ├── custom-repo/                       # Local repo for prebuilt AUR packages
     │   ├── calamares-3.4.2-2-x86_64.pkg.tar.zst
+    │   ├── paru-2.2.0-1-x86_64.pkg.tar.zst
     │   ├── timeshift-autosnap-0.10.0-1-any.pkg.tar.zst
+    │   ├── waypaper-2.9-1-any.pkg.tar.zst
     │   └── customrepo.db.tar.gz
     ├── configs/
     │   └── archiso-profile/               # Archiso build manifest
-    │       ├── packages.x86_64            # Package list (NVIDIA, AMD, Intel, base-devel)
-    │       ├── pacman.conf                # Pacman configuration
+    │       ├── packages.native.x86_64     # Official Arch Linux native package manifest
+    │       ├── packages.aur.x86_64        # AUR / custom-repo package manifest
+    │       ├── packages.x86_64            # Combined build manifest for mkarchiso
+    │       ├── pacman.conf                # Pacman configuration (ILoveCandy, Color, customrepo)
     │       ├── profiledef.sh              # ISO metadata & compression settings
     │       └── airootfs/                  # Live filesystem overlay
     │           ├── etc/
     │           │   ├── os-release         # HyprFrost rolling distribution branding
     │           │   ├── calamares/         # Custom Calamares installer configuration
-    │           │   └── skel/.config/      # TokyoNight Hyprland, Kitty, Alacritty dotfiles
+    │           │   └── skel/.config/      # TokyoNight Hyprland, Kitty, Alacritty, Paru dotfiles
     │           └── usr/local/bin/
+    │               ├── pkg-save           # Export native & AUR package lists
+    │               ├── pkg-install        # Restore native & AUR packages
     │               ├── jacob-shell        # Python/GTK3 desktop shell & dock
     │               ├── jacob-control-center # Python/GTK3 system settings center
     │               ├── Hyprland           # VM-aware Hyprland launch wrapper
     │               └── launch-calamares   # Graphical installer launcher
     └── scripts/
+        ├── build-custom-repo.sh           # Automated AUR package builder & repo-add updater
         └── build-iso.sh                   # Native or containerized build script
 ```
+
+---
+
+## Native & AUR Package Architecture
+
+HyprFrost establishes a clear boundary and workflow for managing both official native Arch packages and AUR packages:
+
+1. **Paru & Pacman Integration**:
+   - `pacman.conf` features colored package tables (`Color`, `VerbosePkgLists`) and `ILoveCandy`.
+   - `paru.conf` enables `CombinedUpgrade` (shows both native and AUR upgrades together), `SudoLoop`, `BottomUp`, `UpgradeMenu`, and `CleanAfter`.
+2. **Package Tracking (`pkg-save`)**:
+   - `pkg-save` exports explicitly installed native packages (`pacman -Qenq`) to `~/.config/packages/native.txt` and AUR packages (`pacman -Qemq`) to `~/.config/packages/aur.txt`.
+   - `pkg-save -l`: Displays a numbered list with counts.
+   - `pkg-save -g`: Automatically commits the updated lists to your dotfiles repo.
+3. **Restoration (`pkg-install`)**:
+   - Syncs and installs any missing packages from `native.txt` via `pacman` and `aur.txt` via `paru`.
+4. **AUR Package Builder (`build-custom-repo.sh`)**:
+   - Run `./iso/scripts/build-custom-repo.sh [pkg1 pkg2...]` to fetch and compile AUR packages directly into `iso/custom-repo/` with `repo-add`.
 
 ---
 
