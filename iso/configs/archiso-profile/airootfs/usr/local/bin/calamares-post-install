@@ -63,7 +63,8 @@ if [ -f /etc/default/useradd ]; then
 fi
 chsh -s /usr/bin/fish root 2>/dev/null || true
 
-# 5. Configure SDDM default session to Hyprland
+# 5. Configure SDDM default session to Hyprland & clean up duplicate desktop sessions
+rm -f /usr/share/wayland-sessions/qtile-generic.desktop /usr/share/xsessions/qtile-generic.desktop /usr/share/xsessions/qtile.desktop 2>/dev/null || true
 mkdir -p /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/10-session.conf << 'EOF'
 [Autologin]
