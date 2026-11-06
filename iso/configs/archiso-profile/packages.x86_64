@@ -114,6 +114,9 @@ gtk3
 hyprland
 hyprlock
 hyprpolkitagent
+qtile
+python-dbus-fast
+python-psutil
 kitty
 libnotify
 papirus-icon-theme
