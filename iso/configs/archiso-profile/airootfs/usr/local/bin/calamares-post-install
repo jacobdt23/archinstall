@@ -147,6 +147,9 @@ if [ -f /etc/default/grub-btrfs/config ]; then
     sed -i 's/^#*GRUB_BTRFS_SUBMENUNAME=.*/GRUB_BTRFS_SUBMENUNAME="HyprFrost Snapshots"/' /etc/default/grub-btrfs/config
 fi
 
+# Enable keyd for clean Super tap behavior across Hyprland and Qtile
+systemctl enable keyd.service 2>/dev/null || true
+
 # 8. Strip build-only local customrepo from /etc/pacman.conf on installed target
 sed -i '/^\[customrepo\]/,/^Server =/d' /etc/pacman.conf
 
