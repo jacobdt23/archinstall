@@ -83,6 +83,7 @@ wget
 # Shell & Terminal Utilities
 btop
 fastfetch
+bash-completion
 fish
 git
 grml-zsh-config
