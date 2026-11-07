@@ -22,6 +22,7 @@ cliphist
 # CPU Microcode (AMD & Intel)
 cronie
 curl
+dunst
 # Desktop Applications, File Manager & Greeter
 dosfstools
 e2fsprogs

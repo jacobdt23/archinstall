@@ -109,6 +109,9 @@ hyprland
 hyprlock
 hyprpolkitagent
 qtile
+picom
+dunst
+rofi
 python-dbus-fast
 python-psutil
 kitty
