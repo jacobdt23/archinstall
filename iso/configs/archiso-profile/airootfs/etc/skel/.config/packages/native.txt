@@ -115,6 +115,7 @@ qt6-wayland
 qtile
 reflector
 ripgrep
+rofi
 rsync
 sddm
 seahorse
@@ -135,6 +136,7 @@ vlc
 vulkan-icd-loader
 vulkan-intel
 vulkan-radeon
+waybar
 webkit2gtk-4.1
 wget
 wireplumber

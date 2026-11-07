@@ -1,24 +1,63 @@
-# =============================================================================
-# HyprFrost ISO Package Manifest (x86_64)
-# Combines Official Native Packages and AUR Packages from custom-repo
-# =============================================================================
 
-# Base System, Boot (UEFI + BIOS/MBR) & Live ISO Essentials
+# =============================================================================
+adwaita-icon-theme
+alacritty
+alsa-utils
+amd-ucode
 arch-install-scripts
 archiso
+# Audio & Media
+awww
 base
 base-devel
+# Base System, Boot (UEFI + BIOS/MBR) & Live ISO Essentials
+blueman
+bluez
+bluez-utils
+btop
 btrfs-progs
 calamares
+cliphist
+# Combines Official Native Packages and AUR Packages from custom-repo
+# CPU Microcode (AMD & Intel)
 cronie
+curl
+# Desktop Applications, File Manager & Greeter
 dosfstools
 e2fsprogs
 efibootmgr
+egl-wayland
+espeakup
+fastfetch
+firefox
+fish
+git
 gptfdisk
+# GPU Drivers (NVIDIA, AMD, Intel & Vulkan/VAAPI)
+grim
+grml-zsh-config
 grub
 grub-btrfs
+gtk3
+gtk-layer-shell
+gvfs
+gvfs-mtp
+gvfs-smb
+# HyprFrost ISO Package Manifest (x86_64)
+hyprland
+# Hyprland + Python/GTK3 Custom Desktop Stack (jacob-shell & jacob-control-center)
+hyprlock
+hyprpolkitagent
 inotify-tools
+intel-media-driver
+intel-ucode
+iwd
+keyd
+kitty
 kpmcore
+libnotify
+libva-intel-driver
+libva-nvidia-driver
 linux
 linux-firmware-amd
 linux-firmware-amdgpu
@@ -32,139 +71,92 @@ linux-firmware-realtek
 linux-firmware-whence
 memtest86+
 memtest86+-efi
+mesa
 mkinitcpio
 mkinitcpio-archiso
-mtools
-ntfs-3g
-os-prober
-parted
-pciutils
-pv
-squashfs-tools
-sudo
-syslinux
-timeshift
-timeshift-autosnap
-zram-generator
-paru
-xorg-xhost
-
-# CPU Microcode (AMD & Intel)
-amd-ucode
-intel-ucode
-
-# GPU Drivers (NVIDIA, AMD, Intel & Vulkan/VAAPI)
-egl-wayland
-intel-media-driver
-libva-intel-driver
-libva-nvidia-driver
-mesa
-nvidia-open
-nvidia-settings
-nvidia-utils
-vulkan-icd-loader
-vulkan-intel
-vulkan-radeon
-
-# Networking, Bluetooth & Live Services
-alsa-utils
-blueman
-bluez
-bluez-utils
-curl
-espeakup
-iwd
 modemmanager
-network-manager-applet
-networkmanager
-openssh
-pcsclite
-reflector
-rsync
-wget
-
-# Shell & Terminal Utilities
-btop
-fastfetch
-fish
-git
-grml-zsh-config
+mpv
+mtools
 nano
 ncdu
 neovide
 neovim
-tree-sitter-cli
-stylua
-ripgrep
-zsh
-
-# Hyprland + Python/GTK3 Custom Desktop Stack (jacob-shell & jacob-control-center)
-adwaita-icon-theme
-alacritty
-awww
-waypaper
+# Networking, Bluetooth & Live Services
+networkmanager
+network-manager-applet
+noto-fonts-emoji
+ntfs-3g
+nvidia-open
+nvidia-settings
+nvidia-utils
+nwg-look
+openssh
+os-prober
+papirus-icon-theme
+parted
+paru
+pavucontrol
+pciutils
+pcsclite
+pipewire
+pipewire-alsa
+pipewire-pulse
+playerctl
+polkit
+pv
+python
+python-dbus-fast
+python-gobject
 python-imageio
 python-imageio-ffmpeg
 python-pillow
 python-platformdirs
-python-screeninfo
-cliphist
-gtk-layer-shell
-gtk3
-hyprland
-hyprlock
-hyprpolkitagent
-qtile
-python-dbus-fast
 python-psutil
-kitty
-libnotify
-papirus-icon-theme
-python
-python-gobject
-playerctl
-polkit
+python-screeninfo
+qt5ct
 qt5-wayland
+qt6ct
 qt6-svg
 qt6-wayland
+qtile
+reflector
+ripgrep
+rofi
+rsync
+# Screenshot & Clipboard Tools
+sddm
+# Shell & Terminal Utilities
+slurp
+squashfs-tools
+stylua
+sudo
+swappy
+syslinux
+thunar
+thunar-archive-plugin
+thunar-volman
+timeshift
+timeshift-autosnap
+tree-sitter-cli
 ttf-dejavu
 ttf-jetbrains-mono
 ttf-nerd-fonts-symbols-mono
-noto-fonts-emoji
+tumbler
+unzip
+vulkan-icd-loader
+vulkan-intel
+vulkan-radeon
+waybar
+waypaper
+wget
+wireplumber
 wl-clipboard
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
-
-# Desktop Applications, File Manager & Greeter
-firefox
-sddm
 xorg-server
-xorg-xwayland
+xorg-xhost
 xorg-xinit
-thunar
-thunar-archive-plugin
+xorg-xwayland
 zip
-unzip
-thunar-volman
-gvfs
-gvfs-mtp
-gvfs-smb
-nwg-look
-qt5ct
-qt6ct
-tumbler
-
-# Audio & Media
-mpv
-pavucontrol
-pipewire
-pipewire-alsa
-pipewire-pulse
-wireplumber
-
-# Screenshot & Clipboard Tools
-grim
-slurp
-swappy
-wl-clipboard
-keyd
+zram-generator
+zsh
