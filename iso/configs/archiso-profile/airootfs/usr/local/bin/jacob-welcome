@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-exec /usr/local/bin/jacob-shell toggle welcome
+exec /usr/local/bin/hyprfrost-welcome "$@"
