@@ -363,15 +363,22 @@ def build_top_bar(screen_index=0):
         except Exception:
             pass
     else:
+        # On secondary monitor, mirror the exact Ethernet (󰈀) and Antigravity icons
         widgets.extend([
             widget.TextBox(
-                text="󰌗",
+                text="󰈀",
                 foreground=colors["cyan"],
                 background=colors["pill_bg"],
                 font="JetBrainsMono Nerd Font Bold",
-                fontsize=12,
+                fontsize=13,
                 padding=6,
                 mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
+            ),
+            widget.Sep(linewidth=0, padding=4),
+            widget.Image(
+                filename="/home/jacob/.local/share/icons/Papirus-Dark/22x22/apps/antigravity.png",
+                margin=6,
+                mouse_callbacks={"Button1": lazy.spawn("antigravity")},
             ),
             widget.Sep(linewidth=0, padding=4),
         ])
