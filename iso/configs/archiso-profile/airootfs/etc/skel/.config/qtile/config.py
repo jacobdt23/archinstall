@@ -363,15 +363,11 @@ def build_top_bar(screen_index=0):
         except Exception:
             pass
     else:
-        # On secondary monitor, mirror the exact Ethernet (󰈀) and Antigravity icons
+        # On secondary monitor, mirror the exact Ethernet and Antigravity icons from primary tray
         widgets.extend([
-            widget.TextBox(
-                text="󰈀",
-                foreground=colors["cyan"],
-                background=colors["pill_bg"],
-                font="JetBrainsMono Nerd Font Bold",
-                fontsize=13,
-                padding=6,
+            widget.Image(
+                filename="/usr/share/icons/Papirus-Dark/16x16/devices/network-wired.svg",
+                margin=9,
                 mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
             ),
             widget.Sep(linewidth=0, padding=4),
