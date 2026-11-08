@@ -33,4 +33,11 @@ file_permissions=(
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
+  ["/usr/local/bin/hypr-screenshot"]="0:0:755"
+  ["/usr/local/bin/hyprfrost-welcome"]="0:0:755"
+  ["/usr/local/bin/hypr-clipboard"]="0:0:755"
+  ["/usr/local/bin/fix-boot-branding"]="0:0:755"
+  ["/usr/local/bin/setup-zram"]="0:0:755"
+  ["/usr/local/bin/pkg-install"]="0:0:755"
+  ["/usr/local/bin/pkg-save"]="0:0:755"
 )

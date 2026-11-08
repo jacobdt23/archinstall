@@ -16,6 +16,9 @@ STAGED_ROOT_PICTURES="$PROFILE_DIR/airootfs/root/Pictures"
 
 cleanup_staging() {
     rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL" "$STAGED_ROOT_PICTURES"
+    if [ -L /repo/iso/custom-repo ]; then
+        rm -f /repo/iso/custom-repo
+    fi
 }
 trap cleanup_staging EXIT
 
@@ -28,16 +31,7 @@ rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL" "$STAGED_ROOT_PICTURES"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/.config" "$STAGED_ROOT_CONFIG"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/.local" "$STAGED_ROOT_LOCAL"
 cp -r "$PROFILE_DIR/airootfs/etc/skel/Pictures" "$STAGED_ROOT_PICTURES"
-chmod +x "$PROFILE_DIR/airootfs/usr/local/bin/Hyprland" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/list-desktop-apps" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/launch-calamares" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/jacob-welcome" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/jacob-shell" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/jacob-control-center" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/timeshift-launcher" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/calamares-post-install" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/pkg-save" \
-         "$PROFILE_DIR/airootfs/usr/local/bin/pkg-install"
+chmod +x "$PROFILE_DIR"/airootfs/usr/local/bin/*
 
 if command -v mkarchiso >/dev/null 2>&1; then
     if [ "$EUID" -ne 0 ]; then
