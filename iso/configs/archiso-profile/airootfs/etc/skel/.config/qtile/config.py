@@ -298,6 +298,18 @@ def build_top_bar(screen_index=0):
         # Right Expander Spacer
         widget.Spacer(),
 
+        # Ethernet / Network (GNOME-style wired network icon)
+        widget.TextBox(
+            text="󰌗",
+            foreground=colors["cyan"],
+            background=colors["pill_bg"],
+            font="JetBrainsMono Nerd Font Bold",
+            fontsize=12,
+            padding=8,
+            mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
+        ),
+        widget.Sep(linewidth=0, padding=4),
+
         # Hardware & System Status Area
         # CPU
         widget.TextBox(text="󰻠", foreground=colors["blue"], background=colors["pill_bg"], font="JetBrainsMono Nerd Font", fontsize=11, padding=4),
@@ -349,18 +361,6 @@ def build_top_bar(screen_index=0):
             fontsize=10,
             padding=4,
             mouse_callbacks={"Button1": lazy.spawn("pavucontrol")},
-        ),
-        widget.Sep(linewidth=0, padding=4),
-
-        # Ethernet / Network (GNOME-style wired network icon)
-        widget.TextBox(
-            text="󰌗",
-            foreground=colors["cyan"],
-            background=colors["pill_bg"],
-            font="JetBrainsMono Nerd Font Bold",
-            fontsize=12,
-            padding=8,
-            mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
         ),
         widget.Sep(linewidth=0, padding=6),
 

@@ -17,11 +17,11 @@
             "custom/media"
         ],
         "modules-right": [
+            "network",
             "cpu",
             "memory",
             "disk",
             "wireplumber",
-            "network",
             "custom/power"
         ],
         "custom/brand": {
