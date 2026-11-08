@@ -353,25 +353,15 @@ def build_top_bar(screen_index=0):
         widget.Sep(linewidth=0, padding=4),
     ]
 
-    # Systray (nm-applet ethernet, Antigravity, etc.) in Top Bar
-    if screen_index == 0:
-        try:
-            widgets.extend([
-                tray_widget(),
-                widget.Sep(linewidth=0, padding=4),
-            ])
-        except Exception:
-            pass
-    else:
-        # On secondary monitor, mirror the exact Ethernet icon from primary tray
-        widgets.extend([
-            widget.Image(
-                filename="/usr/share/icons/Papirus-Dark/16x16/devices/network-wired.svg",
-                margin=9,
-                mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
-            ),
-            widget.Sep(linewidth=0, padding=4),
-        ])
+    # Ethernet icon (exact SVG from Papirus-Dark) on both monitors
+    widgets.extend([
+        widget.Image(
+            filename="/usr/share/icons/Papirus-Dark/16x16/devices/network-wired.svg",
+            margin=9,
+            mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
+        ),
+        widget.Sep(linewidth=0, padding=4),
+    ])
 
     # Power Button
     widgets.extend([
