@@ -33,6 +33,7 @@ fastfetch
 firefox
 bash-completion
 fish
+flameshot
 git
 gptfdisk
 # GPU Drivers (NVIDIA, AMD, Intel & Vulkan/VAAPI)
@@ -56,6 +57,7 @@ intel-ucode
 iwd
 keyd
 kitty
+kguiaddons
 kpmcore
 libnotify
 libva-intel-driver

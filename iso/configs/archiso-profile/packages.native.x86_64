@@ -161,6 +161,8 @@ pipewire-pulse
 wireplumber
 
 # Screenshot & Clipboard Tools
+flameshot
+kguiaddons
 grim
 slurp
 swappy
