@@ -298,18 +298,6 @@ def build_top_bar(screen_index=0):
         # Right Expander Spacer
         widget.Spacer(),
 
-        # Ethernet / Network (GNOME-style wired network icon)
-        widget.TextBox(
-            text="󰌗",
-            foreground=colors["cyan"],
-            background=colors["pill_bg"],
-            font="JetBrainsMono Nerd Font Bold",
-            fontsize=12,
-            padding=8,
-            mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
-        ),
-        widget.Sep(linewidth=0, padding=4),
-
         # Hardware & System Status Area
         # CPU
         widget.TextBox(text="󰻠", foreground=colors["blue"], background=colors["pill_bg"], font="JetBrainsMono Nerd Font", fontsize=11, padding=4),
@@ -362,9 +350,34 @@ def build_top_bar(screen_index=0):
             padding=4,
             mouse_callbacks={"Button1": lazy.spawn("pavucontrol")},
         ),
-        widget.Sep(linewidth=0, padding=6),
+        widget.Sep(linewidth=0, padding=4),
+    ]
 
-        # Power Button
+    # Systray (nm-applet ethernet, Antigravity, etc.) in Top Bar
+    if screen_index == 0:
+        try:
+            widgets.extend([
+                tray_widget(),
+                widget.Sep(linewidth=0, padding=4),
+            ])
+        except Exception:
+            pass
+    else:
+        widgets.extend([
+            widget.TextBox(
+                text="󰌗",
+                foreground=colors["cyan"],
+                background=colors["pill_bg"],
+                font="JetBrainsMono Nerd Font Bold",
+                fontsize=12,
+                padding=6,
+                mouse_callbacks={"Button1": lazy.spawn("nm-connection-editor")},
+            ),
+            widget.Sep(linewidth=0, padding=4),
+        ])
+
+    # Power Button
+    widgets.extend([
         widget.TextBox(
             text=" ⏻ ",
             foreground=colors["red"],
@@ -375,7 +388,7 @@ def build_top_bar(screen_index=0):
             mouse_callbacks={"Button1": lazy.shutdown()},
         ),
         widget.Sep(linewidth=0, padding=4),
-    ]
+    ])
 
     return bar.Bar(
         widgets,
@@ -489,16 +502,6 @@ def build_bottom_dock(screen_index=0):
         ),
         widget.Sep(linewidth=0, padding=4),
     ]
-
-    # Systray in Primary Bottom Dock (keeps top bars symmetrical & clean)
-    if screen_index == 0:
-        try:
-            widgets.extend([
-                tray_widget(),
-                widget.Sep(linewidth=0, padding=4),
-            ])
-        except Exception:
-            pass
 
     # Layout Pill
     widgets.extend([

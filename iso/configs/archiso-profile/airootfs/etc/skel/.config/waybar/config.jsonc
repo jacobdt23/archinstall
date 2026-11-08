@@ -17,11 +17,11 @@
             "custom/media"
         ],
         "modules-right": [
-            "network",
             "cpu",
             "memory",
             "disk",
             "wireplumber",
+            "tray",
             "custom/power"
         ],
         "custom/brand": {
@@ -114,7 +114,6 @@
             "custom/clipboard",
             "custom/snip",
             "custom/keys",
-            "tray",
             "custom/showdesktop"
         ],
         "custom/start": {
