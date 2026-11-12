@@ -4,4 +4,6 @@ iso/out/
 *.save
 *.backup
 *.swp
+__pycache__/
+*.py[cod]
 iso/configs/archiso-profile/airootfs/etc/pacman.d/hooks/00-timeshift-autosnap.hook
