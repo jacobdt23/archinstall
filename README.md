@@ -36,14 +36,14 @@ HyprFrost automatically detects your hardware and configures the environment on 
 
 ---
 
-## Bulletproof Btrfs + Timeshift Rollback Stack
+## Btrfs & Timeshift Snapshots
 
-* **Default Btrfs Subvolumes**: Calamares partitions the disk with `noatime,compress=zstd:1` and automatically provisions:
-  * `@` $\rightarrow$ `/`
-  * `@home` $\rightarrow$ `/home`
-  * `@cache` $\rightarrow$ `/var/cache`
-  * `@log` $\rightarrow$ `/var/log`
-  * `@swap` $\rightarrow$ `/swap`
+* **Default Btrfs Subvolumes**: Calamares partitions the disk with `noatime,compress=zstd:1` and provisions:
+  * `@` -> `/`
+  * `@home` -> `/home`
+  * `@cache` -> `/var/cache`
+  * `@log` -> `/var/log`
+  * `@swap` -> `/swap`
 * **Timeshift (`timeshift`)**: Pre-configured in **BTRFS mode** on the target disk via `calamares-post-install` with `cronie.service` enabled for automatic daily, weekly, and boot snapshots.
 * **Pre-Upgrade Snapshots (`timeshift-autosnap`)**: Libalpm pacman hook (`00-timeshift-autosnap.hook`) automatically snapshots the root filesystem before any `pacman -Syu` upgrade.
 * **Bootable GRUB Snapshots (`grub-btrfs`)**: The `grub-btrfsd.service` daemon (`--timeshift-auto`) monitors snapshots in real time via `inotify-tools` and automatically updates the GRUB boot menu with bootable snapshot entries for one-click rollback.
