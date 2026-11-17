@@ -1,0 +1,58 @@
+_passwordless_package_transition() (
+  local action=$1 lock_fd rule
+  unset GLOBIGNORE
+  set +f
+  shopt -u failglob
+  [[ -d /run && ! -L /run ]] || return 1
+  [[ $(/usr/bin/stat -Lc '%u' /run) == "0" ]] || return 1
+  ! (( 8#$(/usr/bin/stat -Lc '%a' /run) & 022 )) || return 1
+  umask 077
+  case "$action" in
+    begin|installed)
+      : >/run/omarchy-sudo-passwordless-package-removing || return 1
+      ;;
+  esac
+  # Containerized pacstrap builds (e.g. GitHub Actions) may bind-mount /run without systemd-tmpfiles creating /run/lock.
+  if [[ ! -e /run/lock && "$action" == "installed" ]]; then
+    /usr/bin/install -d -m 0755 -o root -g root /run/lock || return 1
+  fi
+  [[ -d /run/lock && ! -L /run/lock ]] || return 1
+  [[ $(/usr/bin/stat -Lc '%u' /run/lock) == "0" ]] || return 1
+  ! (( 8#$(/usr/bin/stat -Lc '%a' /run/lock) & 022 )) || return 1
+  exec {lock_fd}>/run/lock/omarchy-sudo-passwordless.lock || return 1
+  /usr/bin/flock -x -w 60 "$lock_fd" || return 1
+  case "$action" in
+    begin|removed)
+      /usr/bin/rm -f -- /etc/sudoers.d/99-omarchy-nopasswd-* || return 1
+      ;;
+    installed)
+      /usr/bin/rm -f -- /etc/sudoers.d/99-omarchy-nopasswd-* || return 1
+      for rule in /etc/sudoers.d/99-omarchy-nopasswd-*; do
+        [[ ! -e $rule && ! -L $rule ]] || return 1
+      done
+      [[ -f /etc/tmpfiles.d/omarchy-nopasswd-sudo.conf ]] || return 1
+      /usr/bin/rm -f -- /run/omarchy-sudo-passwordless-package-removing || return 1
+      ;;
+    *) return 1 ;;
+  esac
+)
+
+pre_remove() {
+  _passwordless_package_transition begin || return 1
+}
+
+pre_upgrade() {
+  pre_remove
+}
+
+post_install() {
+  _passwordless_package_transition installed || return 1
+}
+
+post_upgrade() {
+  post_install
+}
+
+post_remove() {
+  _passwordless_package_transition removed || return 1
+}

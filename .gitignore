@@ -7,3 +7,7 @@ iso/out/
 __pycache__/
 *.py[cod]
 iso/configs/archiso-profile/airootfs/etc/pacman.d/hooks/00-timeshift-autosnap.hook
+iso/custom-repo/omarchy-*.pkg.tar.*
+iso/pkgbuilds/*/src/
+iso/pkgbuilds/*/pkg/
+iso/pkgbuilds/*/*.pkg.tar.*

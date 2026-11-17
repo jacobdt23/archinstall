@@ -1,0 +1,97 @@
+pkgname='omarchy-custom'
+pkgver=4.5.0.r7967.jacob
+pkgrel=1
+pkgdesc='Omarchy desktop runtime built from jacobdt23/omarchy (GRUB/Arch-host safe)'
+arch=('x86_64')
+url='https://github.com/jacobdt23/omarchy'
+license=('MIT')
+provides=('omarchy')
+conflicts=('omarchy' 'omarchy-dev')
+
+depends=(
+  'omarchy-keyring'
+  'omarchy-settings-custom'
+  'omarchy-security-functions'
+  'omarchy-themes-intros'
+  'hyprland'
+  'omarchy-hyprland-titlebars'
+  'quickshell'
+  'uwsm'
+  'sddm'
+  'xdg-desktop-portal-hyprland'
+  'wireplumber'
+  'pipewire'
+  'gnome-keyring'
+  'gum'
+  'jq'
+  'git'
+  'perl'
+  'omarchy-speedtest'
+  'fakeroot'
+  'pacman-contrib'
+  'ttf-jetbrains-mono-nerd-basic'
+)
+
+makedepends=(
+  'git'
+)
+
+_omarchy_repo="${OMARCHY_REPO:-https://github.com/jacobdt23/omarchy.git}"
+_omarchy_branch="${OMARCHY_BRANCH:-jacob-rtx5070}"
+
+prepare() {
+  rm -rf "$srcdir/omarchy"
+  if [[ -n "${OMARCHY_SRC:-}" && -d "${OMARCHY_SRC}" ]]; then
+    mkdir -p "$srcdir/omarchy"
+    cp -a --no-preserve=ownership "${_omarchy_src:-$OMARCHY_SRC}/." "$srcdir/omarchy/"
+  else
+    git clone --depth=1 --branch "${_omarchy_branch}" "${_omarchy_repo}" "$srcdir/omarchy"
+  fi
+}
+
+package() {
+  cd "$srcdir/omarchy"
+
+  install -d "$pkgdir/usr/bin" "$pkgdir/usr/share/omarchy/bin"
+  for bin in bin/*; do
+    [[ -f $bin ]] || continue
+    local base
+    base=$(basename "$bin")
+    case "$base" in
+      omarchy-debug|omarchy-debug-idle|omarchy-upload-log|omarchy-sudo-passwordless|omarchy-security-functions)
+        continue
+        ;;
+    esac
+    install -Dm755 "$bin" "$pkgdir/usr/bin/$base"
+    ln -s "/usr/bin/$base" "$pkgdir/usr/share/omarchy/bin/$base"
+  done
+
+  install -d "$pkgdir/usr/share/omarchy"
+
+  # Keep Hyprland reload pause/resume hooks and blocked-apps hook; omit 00-omarchy-update-guard.hook
+  # so standard Arch pacman -Syu / paru -Syu continues working cleanly.
+  install -Dm644 default/libalpm/hooks/10-omarchy-hyprland-reload-pause.hook "$pkgdir/usr/share/libalpm/hooks/10-omarchy-hyprland-reload-pause.hook"
+  install -Dm644 default/libalpm/hooks/90-omarchy-hyprland-reload-resume.hook "$pkgdir/usr/share/libalpm/hooks/90-omarchy-hyprland-reload-resume.hook"
+  if [[ -f default/libalpm/hooks/95-omarchy-blocked-apps.hook ]]; then
+    install -Dm644 default/libalpm/hooks/95-omarchy-blocked-apps.hook "$pkgdir/usr/share/libalpm/hooks/95-omarchy-blocked-apps.hook"
+  fi
+
+  cp -a --no-preserve=ownership install "$pkgdir/usr/share/omarchy/"
+  cp -a --no-preserve=ownership themes "$pkgdir/usr/share/omarchy/"
+  rm -rf "$pkgdir"/usr/share/omarchy/themes/*/backgrounds/intros
+
+  if [[ -d icons ]]; then
+    cp -a --no-preserve=ownership icons "$pkgdir/usr/share/omarchy/"
+  fi
+
+  cp -a --no-preserve=ownership migrations "$pkgdir/usr/share/omarchy/"
+  if compgen -G 'migrations/*.sh' >/dev/null; then
+    install -d "$pkgdir/etc/skel/.local/state/omarchy/migrations"
+    for migration in migrations/*.sh; do
+      touch "$pkgdir/etc/skel/.local/state/omarchy/migrations/$(basename "$migration")"
+    done
+  fi
+
+  cp -a --no-preserve=ownership shell "$pkgdir/usr/share/omarchy/"
+  install -Dm644 version "$pkgdir/usr/share/omarchy/version"
+}

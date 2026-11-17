@@ -1,0 +1,203 @@
+pkgname='omarchy-settings-custom'
+pkgver=4.5.0.r7967.jacob
+pkgrel=1
+pkgdesc='Omarchy user defaults, desktop assets, and session configs (GRUB/Arch-host safe)'
+arch=('x86_64')
+url='https://github.com/jacobdt23/omarchy'
+license=('MIT')
+provides=('omarchy-settings' 'omarchy-security-functions')
+conflicts=('omarchy-settings' 'omarchy-settings-dev')
+
+depends=(
+  'bash'
+  'curl'
+  'gum'
+  'sudo'
+  'hicolor-icon-theme'
+)
+
+makedepends=(
+  'git'
+  'imagemagick'
+)
+
+backup=(
+  'etc/fastfetch/config.jsonc'
+  'etc/gnupg/dirmngr.conf'
+  'etc/sysctl.d/99-omarchy-sysctl.conf'
+  'etc/sysctl.d/90-omarchy-file-watchers.conf'
+  'etc/sysctl.d/90-omarchy-arp.conf'
+  'etc/systemd/logind.conf.d/10-ignore-power-button.conf'
+  'etc/systemd/logind.conf.d/20-inhibit-delay.conf'
+  'etc/systemd/resolved.conf.d/10-disable-multicast.conf'
+  'etc/systemd/system.conf.d/10-faster-shutdown.conf'
+  'etc/systemd/system/user@.service.d/10-faster-shutdown.conf'
+  'etc/systemd/system/docker.service.d/no-block-boot.conf'
+  'etc/systemd/system/plocate-updatedb.service.d/ac-only.conf'
+  'etc/systemd/system.conf.d/20-omarchy-nofile.conf'
+  'etc/systemd/user.conf.d/20-omarchy-nofile.conf'
+  'etc/systemd/oomd.conf.d/10-omarchy.conf'
+  'etc/udev/rules.d/60-omarchy-io-scheduler.rules'
+  'etc/udev/rules.d/99-omarchy-power-profile.rules'
+  'etc/udev/rules.d/99-omarchy-wifi-powersave.rules'
+  'etc/modprobe.d/omarchy-usb-autosuspend.conf'
+)
+
+install='omarchy-settings-custom.install'
+
+_omarchy_repo="${OMARCHY_REPO:-https://github.com/jacobdt23/omarchy.git}"
+_omarchy_branch="${OMARCHY_BRANCH:-jacob-rtx5070}"
+
+prepare() {
+  rm -rf "$srcdir/omarchy"
+  if [[ -n "${OMARCHY_SRC:-}" && -d "${OMARCHY_SRC}" ]]; then
+    mkdir -p "$srcdir/omarchy"
+    cp -a --no-preserve=ownership "${OMARCHY_SRC}/." "$srcdir/omarchy/"
+  else
+    git clone --depth=1 --branch "${_omarchy_branch}" "${_omarchy_repo}" "$srcdir/omarchy"
+  fi
+}
+
+package() {
+  cd "$srcdir/omarchy"
+
+  install -d "$pkgdir/etc/skel/.config"
+  cp -a --no-preserve=ownership config/. "$pkgdir/etc/skel/.config/"
+
+  install -Dm644 etc/fastfetch/config.jsonc "$pkgdir/etc/fastfetch/config.jsonc"
+
+  install -d "$pkgdir/usr/share/omarchy/config"
+  cp -a --no-preserve=ownership config/. "$pkgdir/usr/share/omarchy/config/"
+
+  install -Dm644 default/uwsm/env.d/10-omarchy "$pkgdir/usr/share/uwsm/env.d/10-omarchy"
+  install -Dm644 default/environment.d/10-omarchy-fcitx.conf "$pkgdir/usr/lib/environment.d/10-omarchy-fcitx.conf"
+  install -Dm644 default/fontconfig/conf.avail/50-omarchy.conf "$pkgdir/usr/share/fontconfig/conf.avail/50-omarchy.conf"
+  install -d "$pkgdir/etc/fonts/conf.d"
+  ln -sfn /usr/share/fontconfig/conf.avail/50-omarchy.conf "$pkgdir/etc/fonts/conf.d/50-omarchy.conf"
+
+  install -Dm644 default/xdg-terminal-exec/hyprland-xdg-terminals.list "$pkgdir/usr/share/xdg-terminal-exec/hyprland-xdg-terminals.list"
+  install -Dm644 default/applications/mimeapps.list "$pkgdir/usr/share/applications/mimeapps.list"
+
+  for unit in \
+    bt-agent.service \
+    omarchy-sleep-lock.service \
+    omarchy-recover-internal-monitor.service \
+    omarchy-migrate-notify.service \
+    omarchy-tailscale-receive.service \
+    omarchy-fcitx5.service \
+    omarchy-crash-watch.service \
+    omarchy-brightness-keyboard-auto.service \
+    omarchy-usb-authorization.service \
+    omarchy-thunderbolt-authorization.service; do
+    if [[ -f default/systemd/user/$unit ]]; then
+      install -Dm644 "default/systemd/user/$unit" "$pkgdir/usr/lib/systemd/user/$unit"
+    fi
+  done
+  ln -sfn omarchy-migrate-notify.service "$pkgdir/usr/lib/systemd/user/omarchy-update-user-notify.service"
+
+  if [[ -f default/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf ]]; then
+    install -Dm644 default/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf "$pkgdir/usr/lib/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf"
+  fi
+  install -Dm644 default/systemd/user/app.slice.d/10-oomd.conf "$pkgdir/usr/lib/systemd/user/app.slice.d/10-oomd.conf"
+  install -Dm644 default/systemd/system/plocate-updatedb.service.d/10-omarchy.conf "$pkgdir/usr/lib/systemd/system/plocate-updatedb.service.d/10-omarchy.conf"
+
+  install -d "$pkgdir/usr/share/omarchy/applications"
+  cp -a --no-preserve=ownership applications/. "$pkgdir/usr/share/omarchy/applications/"
+  rm -rf "$pkgdir/usr/share/omarchy/applications/icons"
+
+  # Copy /etc drop-ins selectively so GRUB, mkinitcpio, Timeshift, Docker, and OS identity remain intact.
+  install -d "$pkgdir/etc"
+  cp -a --no-preserve=ownership etc/. "$pkgdir/etc/"
+  rm -rf \
+    "$pkgdir/etc/mkinitcpio.conf.d" \
+    "$pkgdir/etc/limine-entry-tool.d" \
+    "$pkgdir/etc/docker" \
+    "$pkgdir/etc/sddm.conf.d" \
+    "$pkgdir/etc/security" \
+    "$pkgdir/etc/cups" \
+    "$pkgdir/etc/plymouth" \
+    "$pkgdir/etc/nsswitch.conf" \
+    "$pkgdir/etc/systemd/resolved.conf.d/20-docker-dns.conf" \
+    "$pkgdir/etc/sysusers.d/omarchy-cups-browsed.conf"
+
+  if [[ -d "$pkgdir/etc/sudoers.d" ]]; then
+    chmod 0750 "$pkgdir/etc/sudoers.d"
+    chmod 0440 "$pkgdir/etc/sudoers.d"/*
+  fi
+
+  install -d "$pkgdir/etc/skel/.local/share/applications"
+  if compgen -G 'applications/*.desktop' >/dev/null; then
+    cp applications/*.desktop "$pkgdir/etc/skel/.local/share/applications/"
+  fi
+  if [[ -d applications/hidden ]] && compgen -G 'applications/hidden/*.desktop' >/dev/null; then
+    cp applications/hidden/*.desktop "$pkgdir/etc/skel/.local/share/applications/"
+  fi
+
+  if [[ -d applications/icons ]] && compgen -G 'applications/icons/*' >/dev/null; then
+    install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
+    install -d "$pkgdir/usr/share/icons/hicolor/48x48/apps"
+    install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+    for icon in applications/icons/*; do
+      [[ -f $icon ]] || continue
+      icon_name=$(basename "$icon")
+      icon_id=$(printf '%s\n' "${icon_name%.*}" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed 's/[^[:alnum:]]\+/-/g; s/^-//; s/-$//')
+      case "$icon_name" in
+        *.svg)
+          install -Dm644 "$icon" "$pkgdir/usr/share/icons/hicolor/scalable/apps/$icon_id.svg"
+          ;;
+        *)
+          magick "$icon" -thumbnail 256x256 -background transparent -gravity center -extent 256x256 \
+            "PNG32:$pkgdir/usr/share/icons/hicolor/256x256/apps/$icon_id.png"
+          magick "$icon" -thumbnail 48x48 -background transparent -gravity center -extent 48x48 \
+            "PNG32:$pkgdir/usr/share/icons/hicolor/48x48/apps/$icon_id.png"
+          ;;
+      esac
+    done
+  fi
+
+  install -d "$pkgdir/usr/share/omarchy/default"
+  cp -a --no-preserve=ownership default/. "$pkgdir/usr/share/omarchy/default/"
+
+  # Install Omarchy wayland session in both /usr/local/share and /usr/share so SDDM finds it reliably.
+  install -Dm644 default/wayland-sessions/omarchy.desktop \
+    "$pkgdir/usr/local/share/wayland-sessions/omarchy.desktop"
+  install -Dm644 default/wayland-sessions/omarchy.desktop \
+    "$pkgdir/usr/share/wayland-sessions/omarchy.desktop"
+  install -Dm644 default/sddm/hyprland.lua "$pkgdir/usr/share/sddm/hyprland.lua"
+
+  install -Dm644 default/fonts/omarchy/omarchy.ttf "$pkgdir/usr/share/fonts/omarchy/omarchy.ttf"
+  install -Dm755 default/systemd/system-sleep/unmount-fuse \
+    "$pkgdir/usr/lib/systemd/system-sleep/unmount-fuse"
+
+  for helper in omarchy-sudo-passwordless omarchy-security-functions; do
+    install -Dm755 "bin/$helper" "$pkgdir/usr/bin/$helper"
+    install -d "$pkgdir/usr/share/omarchy/bin"
+    ln -s "/usr/bin/$helper" "$pkgdir/usr/share/omarchy/bin/$helper"
+  done
+  install -Dm644 default/libalpm/hooks/05-omarchy-passwordless-revoke.hook \
+    "$pkgdir/usr/share/libalpm/hooks/05-omarchy-passwordless-revoke.hook"
+
+  install -Dm644 logo.txt "$pkgdir/usr/share/omarchy/logo.txt"
+  install -Dm644 logo.svg "$pkgdir/usr/share/omarchy/logo.svg"
+  install -Dm644 icon.txt "$pkgdir/usr/share/omarchy/icon.txt"
+  install -Dm644 icon.png "$pkgdir/usr/share/omarchy/icon.png"
+  install -Dm644 icon.png "$pkgdir/usr/share/pixmaps/omarchy.png"
+  install -Dm644 icon.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/omarchy.png"
+
+  install -Dm644 logo.txt "$pkgdir/etc/skel/.config/omarchy/branding/screensaver.txt"
+  install -Dm644 icon.txt "$pkgdir/etc/skel/.config/omarchy/branding/about.txt"
+  install -Dm644 default/hypr/toggles/flags.lua \
+    "$pkgdir/etc/skel/.local/state/omarchy/toggles/hypr/flags.lua"
+  install -Dm644 default/nautilus-python/extensions/localsend.py \
+    "$pkgdir/etc/skel/.local/share/nautilus-python/extensions/localsend.py"
+  install -Dm644 default/nautilus-python/extensions/transcode.py \
+    "$pkgdir/etc/skel/.local/share/nautilus-python/extensions/transcode.py"
+  install -Dm644 default/tensaku/state.toml \
+    "$pkgdir/etc/skel/.local/state/tensaku/state.toml"
+
+  install -Dm755 bin/omarchy-upload-log "$pkgdir/usr/bin/omarchy-upload-log"
+  install -Dm755 bin/omarchy-debug "$pkgdir/usr/bin/omarchy-debug"
+  install -Dm755 bin/omarchy-debug-idle "$pkgdir/usr/bin/omarchy-debug-idle"
+}

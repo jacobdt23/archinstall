@@ -10,12 +10,7 @@ CUSTOM_REPO_DIR="$ISO_ROOT/custom-repo"
 WORK_DIR="$ISO_ROOT/work"
 OUT_DIR="$ISO_ROOT/out"
 
-STAGED_ROOT_CONFIG="$PROFILE_DIR/airootfs/root/.config"
-STAGED_ROOT_LOCAL="$PROFILE_DIR/airootfs/root/.local"
-STAGED_ROOT_PICTURES="$PROFILE_DIR/airootfs/root/Pictures"
-
 cleanup_staging() {
-    rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL" "$STAGED_ROOT_PICTURES"
     if [ -L /repo/iso/custom-repo ]; then
         rm -f /repo/iso/custom-repo
     fi
@@ -26,12 +21,13 @@ echo "[+] Cleaning previous build directories..."
 rm -rf "$WORK_DIR" "$OUT_DIR"
 mkdir -p "$OUT_DIR"
 
-echo "[+] Staging custom Hyprland + Python/GTK desktop configs into live ISO airootfs..."
-rm -rf "$STAGED_ROOT_CONFIG" "$STAGED_ROOT_LOCAL" "$STAGED_ROOT_PICTURES"
-cp -r "$PROFILE_DIR/airootfs/etc/skel/.config" "$STAGED_ROOT_CONFIG"
-cp -r "$PROFILE_DIR/airootfs/etc/skel/.local" "$STAGED_ROOT_LOCAL"
-cp -r "$PROFILE_DIR/airootfs/etc/skel/Pictures" "$STAGED_ROOT_PICTURES"
-chmod +x "$PROFILE_DIR"/airootfs/usr/local/bin/*
+if [ "${SKIP_OMARCHY_REPO_BUILD:-0}" != "1" ]; then
+    echo "[+] Building Omarchy custom packages (omarchy-keyring, omarchy-settings-custom, omarchy-custom)..."
+    bash "$SCRIPT_DIR/build-omarchy-repo.sh"
+fi
+
+echo "[+] Preparing executable scripts in live ISO airootfs..."
+chmod +x "$PROFILE_DIR"/airootfs/usr/local/bin/* "$PROFILE_DIR/airootfs/root/customize_airootfs.sh"
 
 if command -v mkarchiso >/dev/null 2>&1; then
     if [ "$EUID" -ne 0 ]; then
@@ -49,7 +45,8 @@ elif command -v podman >/dev/null 2>&1; then
         docker.io/library/archlinux:latest \
         /bin/bash -c "set -e
             sed -i 's/^#DisableSandbox/DisableSandbox/' /etc/pacman.conf
-            pacman -Sy --noconfirm archiso arch-install-scripts grub
+            pacman -Sy --noconfirm archiso arch-install-scripts grub base-devel git imagemagick
+            bash /repo/iso/scripts/build-omarchy-repo.sh
             sed -i 's/setup=chroot_setup/setup=unshare_setup/' /usr/bin/pacstrap
             rm -rf /tmp/archiso-work
             mkarchiso -v -w /tmp/archiso-work -o /repo/iso/out /repo/iso/configs/archiso-profile"
@@ -60,7 +57,8 @@ elif command -v docker >/dev/null 2>&1; then
         docker.io/library/archlinux:latest \
         /bin/bash -c "set -e
             sed -i 's/^#DisableSandbox/DisableSandbox/' /etc/pacman.conf
-            pacman -Sy --noconfirm archiso arch-install-scripts grub
+            pacman -Sy --noconfirm archiso arch-install-scripts grub base-devel git imagemagick
+            bash /repo/iso/scripts/build-omarchy-repo.sh
             sed -i 's/setup=chroot_setup/setup=unshare_setup/' /usr/bin/pacstrap
             rm -rf /tmp/archiso-work
             mkarchiso -v -w /tmp/archiso-work -o /repo/iso/out /repo/iso/configs/archiso-profile"

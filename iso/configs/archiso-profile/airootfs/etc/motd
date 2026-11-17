@@ -1,10 +1,11 @@
 ===============================================================================
-  Welcome to HyprFrost Linux Live Environment (HYPRFROST)
+  Welcome to HyprFrost Linux (Omarchy Edition) Live Environment (HYPRFROST)
 ===============================================================================
 
   Quick Commands:
-  - Graphical System Installer  :  launch-calamares  (or click "Install" on dock)
-  - Launch Live Hyprland Desktop:  Hyprland
-  - Configure Wi-Fi             :  iwctl  (or nmtui)
+  - Graphical System Installer  :  launch-calamares  (also in app launcher)
+  - Omarchy Menu / Keybindings  :  SUPER + ALT + SPACE / SUPER + K
+  - App Launcher                :  Tap Left Super (F24) or SUPER + SPACE
+  - Configure Network           :  nmtui  (or top bar Network icon)
 
 ===============================================================================

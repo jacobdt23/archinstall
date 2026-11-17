@@ -17,15 +17,16 @@ jobs:
     steps:
       - name: Install build dependencies
         run: |
-          pacman -Syu --noconfirm archiso arch-install-scripts grub git jq curl
+          pacman -Syu --noconfirm archiso arch-install-scripts grub git jq curl base-devel imagemagick
       - uses: actions/checkout@v4
+      - name: Build Omarchy custom packages
+        run: |
+          bash iso/scripts/build-omarchy-repo.sh
       - name: Build ISO
         run: |
           set -e
           P=iso/configs/archiso-profile
-          cp -r $P/airootfs/etc/skel/.config $P/airootfs/root/.config
-          cp -r $P/airootfs/etc/skel/.local $P/airootfs/root/.local
-          cp -r $P/airootfs/etc/skel/Pictures $P/airootfs/root/Pictures
+          chmod +x $P/airootfs/usr/local/bin/* $P/airootfs/root/customize_airootfs.sh
           mkdir -p /repo/iso
           ln -sfn "$PWD/iso/custom-repo" /repo/iso/custom-repo
           mkarchiso -v -w /tmp/archiso-work -o iso/out $P

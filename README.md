@@ -1,10 +1,9 @@
 # HyprFrost Linux (`HYPRFROST`)
 
-A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring the **Calamares Graphical Installer**, booting directly into **HyprFrost Hyprland + Python/GTK3 (TokyoNight) Desktop Shell** with full **UEFI/BIOS (GPT & MBR)**, **NVIDIA/AMD/Intel**, and **Virtual Machine** auto-detection.
+A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring the **Calamares Graphical Installer** and booting directly via **SDDM (Wayland)** into the **Omarchy** desktop environment (built from [`jacobdt23/omarchy`](https://github.com/jacobdt23/omarchy) branch `jacob-rtx5070`) with **UEFI/BIOS (GPT & MBR)**, **Btrfs + Timeshift + GRUB snapshots**, **Stock Arch Kernel + `nvidia-open`**, and automatic **VM software-rendering fallback**.
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-7aa2f7?style=for-the-badge&logo=archlinux)](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0)
 [![License](https://img.shields.io/badge/License-GPLv3-bb9af7?style=for-the-badge)](LICENSE)
-[![Desktop](https://img.shields.io/badge/Desktop-Hyprland%20%2B%20Python%2FGTK3-7dcfff?style=for-the-badge)](iso/configs/archiso-profile/airootfs/usr/local/bin/jacob-shell)
+[![Desktop](https://img.shields.io/badge/Desktop-Omarchy%20(Hyprland%20%2B%20Quickshell)-7dcfff?style=for-the-badge)](https://github.com/jacobdt23/omarchy)
 
 ---
 
@@ -13,69 +12,33 @@ A custom Arch Linux rolling distribution and live ISO (`mkarchiso`) featuring th
 The newest build is published automatically by GitHub Actions on every push to `main`:
 
 * **Latest ISO**: [**Latest ISO release**](https://github.com/jacobdt23/archinstall/releases/tag/latest-iso)
-* Download the single `.iso` file from that release and write it to a USB stick (Rufus DD mode or Ventoy).
+* Download the `.iso` file from that release and write it to a USB stick (Rufus DD mode or Ventoy). If split for the 2 GiB release asset limit, rejoin with `cat jacob-archlinux.iso.part* > jacob-archlinux.iso`.
 * **Verify Download**: compare `sha256sum <iso file>` with the hash in `SHA256SUMS`.
 * Boot in **UEFI** mode and let the installer format the EFI partition.
-* The older [v1.0.0 release](https://github.com/jacobdt23/archinstall/releases/tag/v1.0.0) has known installer bugs.
 
 ---
 
-## Hardware Auto-Detection & VM Compatibility
+## Omarchy Desktop & Graphics Stack
 
-HyprFrost automatically detects your hardware and configures the environment on first boot without manual intervention:
-
-* **GPUs**:
-  * **NVIDIA**: Automatic detection via [`modules/env.lua`](iso/configs/archiso-profile/airootfs/etc/skel/.config/hypr/modules/env.lua). Loads `nvidia-open`, `nvidia-utils`, `nvidia-settings`, `libva-nvidia-driver`, and sets `LIBVA_DRIVER_NAME=nvidia`, `GBM_BACKEND=nvidia-drm`, `__GLX_VENDOR_LIBRARY_NAME=nvidia`, and `nvidia_drm modeset=1 fbdev=1`.
-  * **AMD**: Loads `mesa`, `vulkan-radeon`, `linux-firmware-amd`, `linux-firmware-amdgpu`, and sets `LIBVA_DRIVER_NAME=radeonsi`.
-  * **Intel**: Loads `mesa`, `vulkan-intel`, `intel-media-driver` (iHD), `libva-intel-driver` (i965), `linux-firmware-intel`, and sets `LIBVA_DRIVER_NAME=iHD`.
-* **Virtual Machines**:
-  * [`/usr/local/bin/Hyprland`](iso/configs/archiso-profile/airootfs/usr/local/bin/Hyprland) wrapper runs `systemd-detect-virt --vm`. Under QEMU, VirtualBox, VMware, or Hyper-V, it automatically enables software rendering fallback (`WLR_RENDERER_ALLOW_SOFTWARE=1`) and software cursors (`WLR_NO_HARDWARE_CURSORS=1`), while preserving full hardware acceleration on bare metal.
-* **CPUs**: Bundled with dual `amd-ucode` and `intel-ucode` microcode, automatically selected by the bootloader.
-* **Wi-Fi & Bluetooth**: Complete client firmware for Intel, Realtek, Broadcom, Qualcomm/Atheros, and MediaTek (MT7922/MT7961 Wi-Fi 6E).
-* **Boot Modes**: Hybrid ISO supporting **UEFI + GPT**, **Legacy BIOS + GPT** (`bios_grub`), and **Legacy BIOS + MBR (`msdos`)**.
+* **Omarchy Integration (`jacobdt23/omarchy#jacob-rtx5070`)**:
+  * Packaged via `omarchy-keyring`, `omarchy-settings-custom`, and `omarchy-custom` in [`iso/pkgbuilds/`](iso/pkgbuilds/), built cleanly without overriding GRUB, `mkinitcpio`, `Timeshift`, or `/etc/os-release`.
+  * Uses `[omarchy]` repo packages (`omarchy/hyprland`, `omarchy/quickshell`, `omarchy-hyprland-titlebars`, `owe`, `omasnap`, `omarchy-screensaver`, `omarchy-power-profiles-daemon`, etc.) ordered after `[core]`, `[extra]`, and `[multilib]` so stock Arch `linux` and `nvidia-open` remain matched.
+  * Live session auto-logs into **SDDM Wayland -> Omarchy (Hyprland + uwsm + Quickshell)** with Calamares pinned and auto-started for immediate installation.
+* **NVIDIA (`nvidia-open`) & Universal Hardware Support**:
+  * Keeps stock Arch `linux` + `nvidia-open`, `nvidia-utils`, `lib32-nvidia-utils`, `nvidia-settings`, and `libva-nvidia-driver` from `[extra]` / `[multilib]`.
+  * Ships `/etc/modprobe.d/nvidia.conf` (`nvidia_drm modeset=1 fbdev=1` and `NVreg_PreserveVideoMemoryAllocations=1`), kernel `nvidia-drm.modeset=1`, and auto-detects NVIDIA GPUs during `calamares-post-install` to enable early KMS in `/etc/mkinitcpio.conf.d/nvidia.conf` plus `nvidia-{suspend,resume,hibernate}.service`.
+  * Dual `1920x1080@100` defaults plus NVIDIA Wayland safeguards (`no_hardware_cursors = true`, `direct_scanout = 0`) are included in the forked Omarchy config, while Omarchy's native software-rendering detection automatically handles QEMU/VM sessions.
+* **CPUs, Wi-Fi & Keymap**:
+  * Dual `amd-ucode` + `intel-ucode` microcode, full `linux-firmware-*`, `NetworkManager`, and `keyd` (`leftmeta` tap mapped to `F24` -> Omarchy launcher).
+  * Hybrid ISO supporting **UEFI + GPT**, **Legacy BIOS + GPT** (`bios_grub`), and **Legacy BIOS + MBR (`msdos`)**.
 
 ---
 
 ## Btrfs & Timeshift Snapshots
 
-* **Default Btrfs Subvolumes**: Calamares partitions the disk with `noatime,compress=zstd:1` and provisions:
-  * `@` -> `/`
-  * `@home` -> `/home`
-  * `@cache` -> `/var/cache`
-  * `@log` -> `/var/log`
-  * `@swap` -> `/swap`
-* **Timeshift (`timeshift`)**: Pre-configured in **BTRFS mode** on the target disk via `calamares-post-install` with `cronie.service` enabled for automatic daily, weekly, and boot snapshots.
-* **Pre-Upgrade Snapshots (`timeshift-autosnap`)**: Libalpm pacman hook (`00-timeshift-autosnap.hook`) automatically snapshots the root filesystem before any `pacman -Syu` upgrade.
-* **Bootable GRUB Snapshots (`grub-btrfs`)**: The `grub-btrfsd.service` daemon (`--timeshift-auto`) monitors snapshots in real time via `inotify-tools` and automatically updates the GRUB boot menu with bootable snapshot entries for one-click rollback.
-
----
-
-## Desktop Shell & System Control Center
-
-HyprFrost features a native desktop stack written entirely in **Python 3 and GTK3** (`gtk-layer-shell`), eliminating all QML/Quickshell dependencies:
-
-1. **`jacob-shell`**:
-   * **Top Bar**: Workspace switcher (1–10), live date & calendar dropdown, real-time hardware monitor pills (CPU%, RAM, Disk), volume status, and quick control buttons.
-   * **Floating Bottom Dock**: High-resolution application launchers (Kitty, Alacritty, Thunar, Firefox, Pavucontrol, Blueman, Timeshift, Calamares installer).
-   * **App Launcher (`SUPER`)**: Instant search and launch for all installed applications.
-   * **Welcome Hub (`SUPER + W`)**: Autostarts on first boot. Features an Essential Apps launcher and an interactive Keybindings Reference cheat sheet.
-   * **Clipboard Manager (`SUPER + SHIFT + V`)**: Visual clipboard history powered by `cliphist` and `wl-clipboard`.
-   * **Notification Daemon**: Internal `org.freedesktop.Notifications` D-Bus server with popups and notification history center.
-   * **Media Controls (`SUPER + M`)**: Player controls for `playerctl` and PipeWire audio devices.
-   * **Power Menu (`SUPER + Q`)**: Lock (`hyprlock`), Suspend, Reboot, and Shutdown.
-
-2. **`jacob-control-center` (`SUPER + I`)**:
-   * **Audio & Mic**: Live PipeWire sink/source volume sliders and mute toggles.
-   * **Network & Wi-Fi**: NetworkManager integration (`nmcli`) with SSID discovery, connection status, and one-click scan.
-   * **Bluetooth**: BlueZ controller integration (`bluetoothctl`) with scan, paired devices, and connect/disconnect buttons.
-   * **Hyprland & Display**: Live sliders for inner/outer gaps, border radius, blur strength, active border colors, and animations toggle.
-   * **Btrfs & Snapshots**: Live status of Btrfs subvolumes, Timeshift snapshot listing, and one-click manual snapshot creation.
-   * **System & Maintenance**: Live hardware specs (CPU, GPU, RAM, Kernel), one-click `pacman -Syu` system upgrade, Reflector mirror ranking, and pacman cache cleanup.
-
-3. **Preloaded Developer & Terminal Suite**:
-   * Full `base-devel` build environment (`gcc`, `binutils`, `make`, `patch`, `fakeroot`, `autoconf`, etc.).
-   * Terminals: `kitty` and `alacritty`.
-   * Text Editors: `vim`, `nano`, and `micro`.
+* **Default Btrfs Subvolumes**: Calamares provisions `@` (`/`), `@home` (`/home`), `@cache` (`/var/cache`), `@log` (`/var/log`), and `@swap` (`/swap`).
+* **Timeshift + Autosnap (`timeshift`, `timeshift-autosnap`)**: Pre-configured in **BTRFS mode** with `00-timeshift-autosnap.hook` taking automatic snapshots before `pacman` upgrades.
+* **Bootable GRUB Snapshots (`grub-btrfs`)**: `grub-btrfsd.service` watches snapshots and updates GRUB snapshot boot entries under `"HyprFrost Snapshots"`.
 
 ---
 
@@ -83,101 +46,29 @@ HyprFrost features a native desktop stack written entirely in **Python 3 and GTK
 
 ```
 archinstall/
-├── RELEASE_NOTES.md                       # Release notes and checksums
-├── README.md                              # Project documentation
+├── README.md
 └── iso/
-    ├── custom-repo/                       # Local repo for prebuilt AUR packages
-    │   ├── calamares-3.4.2-2-x86_64.pkg.tar.zst
-    │   ├── paru-2.2.0-1-x86_64.pkg.tar.zst
-    │   ├── timeshift-autosnap-0.10.0-1-any.pkg.tar.zst
-    │   ├── waypaper-2.9-1-any.pkg.tar.zst
-    │   └── customrepo.db.tar.gz
+    ├── pkgbuilds/                         # Local PKGBUILDs built from jacobdt23/omarchy (jacob-rtx5070)
+    │   ├── omarchy-keyring/
+    │   ├── omarchy-settings-custom/
+    │   └── omarchy-custom/
+    ├── custom-repo/                       # Local pacman repo (Calamares, Paru, Timeshift-Autosnap, built Omarchy pkgs)
     ├── configs/
-    │   └── archiso-profile/               # Archiso build manifest
-    │       ├── packages.native.x86_64     # Official Arch Linux native package manifest
-    │       ├── packages.aur.x86_64        # AUR / custom-repo package manifest
-    │       ├── packages.x86_64            # Combined build manifest for mkarchiso
-    │       ├── pacman.conf                # Pacman configuration (ILoveCandy, Color, customrepo)
-    │       ├── profiledef.sh              # ISO metadata & compression settings
-    │       └── airootfs/                  # Live filesystem overlay
-    │           ├── etc/
-    │           │   ├── os-release         # HyprFrost rolling distribution branding
-    │           │   ├── calamares/         # Custom Calamares installer configuration
-    │           │   └── skel/.config/      # TokyoNight Hyprland, Kitty, Alacritty, Paru dotfiles
-    │           └── usr/local/bin/
-    │               ├── pkg-save           # Export native & AUR package lists
-    │               ├── pkg-install        # Restore native & AUR packages
-    │               ├── jacob-shell        # Python/GTK3 desktop shell & dock
-    │               ├── jacob-control-center # Python/GTK3 system settings center
-    │               ├── Hyprland           # VM-aware Hyprland launch wrapper
-    │               └── launch-calamares   # Graphical installer launcher
+    │   └── archiso-profile/               # Archiso profile (pacman.conf, packages.x86_64, profiledef.sh, airootfs/)
     └── scripts/
-        ├── build-custom-repo.sh           # Automated AUR package builder & repo-add updater
-        └── build-iso.sh                   # Native or containerized build script
+        ├── build-custom-repo.sh           # AUR package builder for Calamares / Paru / Timeshift-Autosnap
+        ├── build-omarchy-repo.sh          # Builds omarchy-keyring, omarchy-settings-custom, and omarchy-custom
+        └── build-iso.sh                   # Native (sudo mkarchiso) or Podman/Docker ISO builder
 ```
-
----
-
-## Native & AUR Package Architecture
-
-HyprFrost establishes a clear boundary and workflow for managing both official native Arch packages and AUR packages:
-
-1. **Paru & Pacman Integration**:
-   - `pacman.conf` features colored package tables (`Color`, `VerbosePkgLists`) and `ILoveCandy`.
-   - `paru.conf` enables `CombinedUpgrade` (shows both native and AUR upgrades together), `SudoLoop`, `BottomUp`, `UpgradeMenu`, and `CleanAfter`.
-2. **Package Tracking (`pkg-save`)**:
-   - `pkg-save` exports explicitly installed native packages (`pacman -Qenq`) to `~/.config/packages/native.txt` and AUR packages (`pacman -Qemq`) to `~/.config/packages/aur.txt`.
-   - `pkg-save -l`: Displays a numbered list with counts.
-   - `pkg-save -g`: Automatically commits the updated lists to your dotfiles repo.
-3. **Restoration (`pkg-install`)**:
-   - Syncs and installs any missing packages from `native.txt` via `pacman` and `aur.txt` via `paru`.
-4. **AUR Package Builder (`build-custom-repo.sh`)**:
-   - Run `./iso/scripts/build-custom-repo.sh [pkg1 pkg2...]` to fetch and compile AUR packages directly into `iso/custom-repo/` with `repo-add`.
 
 ---
 
 ## Building the Custom ISO
 
-Run the build script from the repository root (works on **Fedora/Ubuntu/Debian** via rootless `podman` or on **Arch Linux** via `sudo`):
+Build locally on Arch Linux (automatically rebuilds `omarchy-*` packages from [`jacobdt23/omarchy`](https://github.com/jacobdt23/omarchy) branch `jacob-rtx5070` and invokes `mkarchiso`):
 
 ```bash
-./iso/scripts/build-iso.sh
+sudo ./iso/scripts/build-iso.sh
 ```
 
-The compiled bootable ISO (`jacob-archlinux-YYYY.MM.DD-x86_64.iso`) will be placed in `iso/out/`.
-
----
-
-## Installing via Calamares
-
-The ISO boots directly into the live **Hyprland + Python/GTK** desktop on first boot (`tty1`). You can launch the **Calamares Graphical Installer** in any of three ways:
-
-1. **Click the `"⬇ Install"` button** on the bottom dock.
-2. **Press `SUPER + SHIFT + I`** (or open the App Launcher with `SUPER` and select **Install System (Calamares)**).
-3. **Run from terminal**:
-   ```bash
-   launch-calamares
-   ```
-
----
-
-## Keybindings Cheat Sheet
-
-| Keybind | Action |
-| :--- | :--- |
-| `SUPER + W` | Toggle **Welcome Center & Keybinds Cheat Sheet** (Auto-opens on first boot) |
-| `SUPER + RETURN` | Open Terminal (`kitty`) |
-| `SUPER` | Toggle App Launcher |
-| `SUPER + SHIFT + I` | Launch **Calamares System Installer** (Live ISO) |
-| `SUPER + E` | Open File Manager (`thunar`) |
-| `SUPER + C` | Close Active Window |
-| `SUPER + I` | Open System Control Center (`jacob-control-center`) |
-| `SUPER + K` | Toggle Keybinds Reference |
-| `SUPER + N` | Toggle Notifications Center |
-| `SUPER + SHIFT + V` | Toggle Clipboard History (`cliphist`) |
-| `SUPER + M` | Toggle Media & Audio Controls (`playerctl` / `wpctl`) |
-| `SUPER + L` | Toggle Calendar & Agenda Dropdown |
-| `SUPER + Q` | Toggle Power Menu (`hyprlock` / Reboot / Shutdown) |
-| `SUPER + = / - / BackSpace` | Volume Up / Down / Mute |
-| `SUPER + 1-0` | Switch to Workspaces 1–10 |
-| `SUPER + SHIFT + 1-0` | Move Window to Workspaces 1–10 |
+Or run rootless `podman` / `docker` from any Linux distro. The compiled bootable ISO (`hyprfrost-YYYY.MM.DD-x86_64.iso`) is written to `iso/out/`.

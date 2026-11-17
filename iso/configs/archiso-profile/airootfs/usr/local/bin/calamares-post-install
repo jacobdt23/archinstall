@@ -20,7 +20,33 @@ if [ -d /usr/lib/boot-backup ]; then
     chattr -R +m /boot 2>/dev/null || true
 fi
 
-# 2. Replace archiso mkinitcpio preset & hook config with standard installed Arch Linux preset
+# 2. Configure early NVIDIA KMS when an NVIDIA GPU is present on the target hardware
+has_nvidia=0
+if command -v lspci >/dev/null 2>&1 && lspci 2>/dev/null | grep -qi 'nvidia'; then
+    has_nvidia=1
+elif grep -qi '0x10de' /sys/bus/pci/devices/*/vendor 2>/dev/null; then
+    has_nvidia=1
+fi
+
+if [ "$has_nvidia" -eq 1 ]; then
+    mkdir -p /etc/modprobe.d /etc/mkinitcpio.conf.d
+    cat > /etc/modprobe.d/nvidia.conf << 'EOF'
+options nvidia_drm modeset=1 fbdev=1
+options nvidia NVreg_PreserveVideoMemoryAllocations=1
+EOF
+    cat > /etc/mkinitcpio.conf.d/nvidia.conf << 'EOF'
+MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+EOF
+    for unit in nvidia-suspend.service nvidia-resume.service nvidia-hibernate.service; do
+        if [ -f "/usr/lib/systemd/system/$unit" ]; then
+            systemctl enable "$unit" 2>/dev/null || true
+        fi
+    done
+else
+    rm -f /etc/mkinitcpio.conf.d/nvidia.conf
+fi
+
+# Replace archiso mkinitcpio preset & hook config with standard installed Arch Linux preset
 rm -rf /etc/mkinitcpio.conf.d/archiso.conf
 mkdir -p /etc/mkinitcpio.d
 cat > /etc/mkinitcpio.d/linux.preset << 'EOF'
@@ -54,26 +80,56 @@ rm -f /etc/systemd/journald.conf.d/volatile-storage.conf \
       /etc/systemd/resolved.conf.d/archiso.conf \
       /etc/systemd/system-generators/systemd-gpt-auto-generator \
       /etc/ssh/sshd_config.d/10-archiso.conf
-rm -f /root/.zlogin /root/.automated_script.sh
+rm -f /root/.zlogin /root/.automated_script.sh /root/customize_airootfs.sh
 rm -rf /root/.config
 
-# 4. Set default shell to fish for root and future users
-if [ -f /etc/default/useradd ]; then
-    sed -i 's|^SHELL=.*|SHELL=/usr/bin/fish|' /etc/default/useradd
+# Remove live-ISO session user, passwordless live sudoers, and live autologin
+rm -f /etc/sudoers.d/10-live-nopasswd \
+      /etc/sddm.conf.d/10-live-autologin.conf \
+      /usr/share/wayland-sessions/hyprland-uwsm.desktop
+if id -u hyprfrost >/dev/null 2>&1; then
+    userdel -r hyprfrost 2>/dev/null || rm -rf /home/hyprfrost
 fi
-chsh -s /usr/bin/fish root 2>/dev/null || true
 
-# 5. Configure SDDM default session to Hyprland & clean up duplicate desktop sessions
-rm -f /usr/share/wayland-sessions/qtile-generic.desktop /usr/share/xsessions/qtile-generic.desktop 2>/dev/null || true
+# Generate a unique per-machine pacman keyring populated with Arch + Omarchy keys
+rm -rf /etc/pacman.d/gnupg
+pacman-key --init 2>/dev/null || true
+pacman-key --populate archlinux omarchy 2>/dev/null || true
+
+# 4. Ensure Omarchy runtime services & clean bash default
+if [ -f /etc/default/useradd ]; then
+    sed -i 's|^SHELL=.*|SHELL=/usr/bin/bash|' /etc/default/useradd
+fi
+systemctl enable rtkit-daemon.service power-profiles-daemon.service systemd-oomd.service cups.service avahi-daemon.service 2>/dev/null || true
+systemctl mask NetworkManager-wait-online.service systemd-networkd-wait-online.service 2>/dev/null || true
+if command -v mise >/dev/null 2>&1; then
+    MISE_OFFLINE=true mise reshim --system 2>/dev/null || true
+fi
+
+# 5. Configure SDDM default session to Omarchy & provision installed user accounts
 mkdir -p /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/10-session.conf << 'EOF'
 [Autologin]
-Session=hyprland
+Session=omarchy
 
 [General]
 HaltCommand=/usr/bin/systemctl poweroff
 RebootCommand=/usr/bin/systemctl reboot
 EOF
+
+while IFS=: read -r username _ uid _ _ home_dir _; do
+    if [ "$uid" -ge 1000 ] && [ "$uid" -lt 60000 ] && [ -d "$home_dir" ] && [ -x /usr/share/omarchy/bin/omarchy-provision-user ]; then
+        su - "$username" -c '
+            export OMARCHY_PATH=/usr/share/omarchy
+            export OMARCHY_SETUP_CONTEXT=iso-chroot
+            export PATH="/usr/share/omarchy/bin:$PATH"
+            /usr/share/omarchy/bin/omarchy-provision-user --force --first-install || true
+            if [[ ! -s "$HOME/.local/state/omarchy/current/theme.name" ]] && command -v omarchy-theme-set >/dev/null 2>&1; then
+                OMARCHY_THEME_HEADLESS=1 omarchy-theme-set "Tokyo Night" || true
+            fi
+        ' 2>/dev/null || true
+    fi
+done < /etc/passwd
 
 # 6. Pre-configure Timeshift in BTRFS mode + timeshift-autosnap + grub-btrfs when installed on Btrfs
 ROOT_DEV="$(findmnt -no SOURCE / 2>/dev/null | sed 's/\[.*//' || true)"
@@ -147,7 +203,7 @@ if [ -f /etc/default/grub-btrfs/config ]; then
     sed -i 's/^#*GRUB_BTRFS_SUBMENUNAME=.*/GRUB_BTRFS_SUBMENUNAME="HyprFrost Snapshots"/' /etc/default/grub-btrfs/config
 fi
 
-# Enable keyd for clean Super tap behavior across Hyprland and Qtile
+# Enable keyd for clean Super tap (F24) launcher behavior
 systemctl enable keyd.service 2>/dev/null || true
 
 # 8. Strip build-only local customrepo from /etc/pacman.conf on installed target
