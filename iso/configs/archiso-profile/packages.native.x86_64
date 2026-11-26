@@ -127,6 +127,9 @@ xdg-desktop-portal-hyprland
 xdg-terminal-exec
 xdg-user-dirs
 
+# Optional Minimal COSMIC Desktop Session (selectable in SDDM alongside Omarchy)
+cosmic-session
+
 # Audio, Networking, Bluetooth & Input
 alsa-utils
 asdcontrol

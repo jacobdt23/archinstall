@@ -24,6 +24,7 @@ The newest build is published automatically by GitHub Actions on every push to `
   * Packaged via `omarchy-keyring`, `omarchy-settings-custom`, and `omarchy-custom` in [`iso/pkgbuilds/`](iso/pkgbuilds/), built cleanly without overriding GRUB, `mkinitcpio`, `Timeshift`, or `/etc/os-release`.
   * Uses `[omarchy]` repo packages (`omarchy/hyprland`, `omarchy/quickshell`, `omarchy-hyprland-titlebars`, `owe`, `omasnap`, `omarchy-screensaver`, `omarchy-power-profiles-daemon`, etc.) ordered after `[core]`, `[extra]`, and `[multilib]` so stock Arch `linux` and `nvidia-open` remain matched.
   * Live session auto-logs into **SDDM Wayland -> Omarchy (Hyprland + uwsm + Quickshell)** with Calamares pinned and auto-started for immediate installation.
+  * Includes a minimal **COSMIC** desktop session (`cosmic-session`) as an optional session selectable in SDDM alongside Omarchy.
 * **NVIDIA (`nvidia-open`) & Universal Hardware Support**:
   * Keeps stock Arch `linux` + `nvidia-open`, `nvidia-utils`, `lib32-nvidia-utils`, `nvidia-settings`, and `libva-nvidia-driver` from `[extra]` / `[multilib]`.
   * Ships `/etc/modprobe.d/nvidia.conf` (`nvidia_drm modeset=1 fbdev=1` and `NVreg_PreserveVideoMemoryAllocations=1`), kernel `nvidia-drm.modeset=1`, and auto-detects NVIDIA GPUs during `calamares-post-install` to enable early KMS in `/etc/mkinitcpio.conf.d/nvidia.conf` plus `nvidia-{suspend,resume,hibernate}.service`.

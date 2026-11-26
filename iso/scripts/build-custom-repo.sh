@@ -15,9 +15,6 @@ DEFAULT_AUR_PACKAGES=(
     "calamares"
     "paru"
     "timeshift-autosnap"
-    "waypaper"
-    "python-imageio-ffmpeg"
-    "python-screeninfo"
 )
 
 mkdir -p "$CUSTOM_REPO_DIR" "$BUILD_TMP"
