@@ -133,7 +133,6 @@ hyprpaper
 hyprlock
 hyprpolkitagent
 qtile
-python-pywlroots
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
 wlr-randr
