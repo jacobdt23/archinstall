@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Edit
+GenericName=Text Editor
+Comment=Fast tabbed text and code editor with syntax highlighting
+Icon=accessories-text-editor
+Exec=orbit-edit %F
+TryExec=orbit-edit
+Terminal=false
+Categories=Utility;TextEditor;GTK;
+Keywords=text;editor;code;notes;write;markdown;python;orbit;
+MimeType=text/plain;text/markdown;text/x-python;text/css;text/x-shellscript;application/json;application/x-desktop;
+StartupNotify=true
+StartupWMClass=dev.orbit.Edit
+SingleMainWindow=false
+DBusActivatable=false
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Window
+Icon=window-new-symbolic
+Exec=orbit-edit --new-window

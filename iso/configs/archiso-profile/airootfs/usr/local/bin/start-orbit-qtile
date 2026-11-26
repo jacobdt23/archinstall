@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+export XDG_CURRENT_DESKTOP="X-Orbit-Qtile:Qtile"
+export XDG_SESSION_DESKTOP="X-Orbit-Qtile"
+exec /usr/bin/qtile start -b wayland

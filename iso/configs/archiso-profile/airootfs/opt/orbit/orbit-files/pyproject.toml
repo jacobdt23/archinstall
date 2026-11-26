@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orbit-files"
+version = "1.0.0"
+description = "A modern GTK 4 + Libadwaita file manager in Python inspired by COSMIC Files and Thunar"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+orbit-files = "orbit_files.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["orbit_files*"]
+
+[tool.setuptools.package-data]
+orbit_files = ["style.css"]

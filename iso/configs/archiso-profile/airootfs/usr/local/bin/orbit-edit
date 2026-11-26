@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export PYTHONPATH="/opt/orbit/orbit-suite${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m orbit_suite.edit "$@"

@@ -1,0 +1,29 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Edit (Neovim)
+GenericName=Text Editor
+Comment=Hyprland LazyVim Neovim editor
+Icon=nvim
+Exec=/usr/local/bin/orbit-nvim %F
+TryExec=/usr/local/bin/orbit-nvim
+Terminal=false
+Categories=Utility;TextEditor;
+Keywords=text;editor;code;nvim;neovim;lazyvim;hyprland;orbit;
+MimeType=text/plain;text/markdown;text/x-python;text/css;text/x-shellscript;application/json;application/x-desktop;
+StartupNotify=true
+StartupWMClass=dev.orbit.Edit
+SingleMainWindow=false
+DBusActivatable=false
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;
+Actions=new-window;edit-hyprland-config;
+
+[Desktop Action new-window]
+Name=New Neovim Window
+Icon=nvim
+Exec=/usr/local/bin/orbit-nvim
+
+[Desktop Action edit-hyprland-config]
+Name=Edit Hyprland Config
+Icon=preferences-system-symbolic
+Exec=/usr/local/bin/orbit-nvim --hyprland

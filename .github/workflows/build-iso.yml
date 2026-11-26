@@ -1,4 +1,4 @@
-name: Build ISO
+name: Build Orbit OS ISO
 
 on:
   workflow_dispatch:
@@ -17,22 +17,18 @@ jobs:
     steps:
       - name: Install build dependencies
         run: |
-          pacman -Syu --noconfirm archiso arch-install-scripts grub git jq curl base-devel imagemagick
+          pacman -Syu --noconfirm archiso arch-install-scripts grub git jq curl
       - uses: actions/checkout@v4
-      - name: Build Omarchy custom packages
-        run: |
-          bash iso/scripts/build-omarchy-repo.sh
-      - name: Build ISO
+      - name: Build Orbit OS ISO
         run: |
           set -e
           P=iso/configs/archiso-profile
-          chmod +x $P/airootfs/usr/local/bin/* $P/airootfs/root/customize_airootfs.sh
-          mkdir -p /repo/iso
-          ln -sfn "$PWD/iso/custom-repo" /repo/iso/custom-repo
+          chmod +x $P/airootfs/usr/local/bin/*
+          chmod +x $P/airootfs/etc/skel/.config/qtile/autostart.sh
           mkarchiso -v -w /tmp/archiso-work -o iso/out $P
       - uses: actions/upload-artifact@v4
         with:
-          name: jacob-archlinux-iso
+          name: orbit-os-iso
           path: iso/out/*.iso
       - name: Prepare release files
         run: |
@@ -41,9 +37,9 @@ jobs:
           sha256sum *.iso > SHA256SUMS
           # GitHub release assets are limited to 2 GiB (2147483648 bytes); split only if larger
           if [ "$(stat -c%s *.iso)" -gt 2147000000 ]; then
-            split -b 1900M -d *.iso jacob-archlinux.iso.part
+            split -b 1900M -d *.iso orbit-os.iso.part
             rm -f *.iso
-            echo "ISO was split. Rejoin with: cat jacob-archlinux.iso.part* > jacob-archlinux.iso" > README-JOIN.txt
+            echo "ISO was split. Rejoin with: cat orbit-os.iso.part* > orbit-os.iso" > README-JOIN.txt
           fi
           ls -lh
       - name: Remove previous latest-iso release
@@ -58,6 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-iso
-          name: Latest ISO (${{ github.sha }})
-          body: Automated build of commit ${{ github.sha }}
+          name: Orbit OS v1.0.0 (${{ github.sha }})
+          body: Automated Orbit OS (Hyprland + Qtile, Python GTK4 Orbit Suite, LazyVim) ISO build of commit ${{ github.sha }}
           files: iso/out/*

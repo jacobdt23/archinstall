@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Orbit Desktop (Hyprland)
+Comment=Orbit Desktop — Standalone Hyprland session with Python GTK4 Orbit Shell & Suite
+Exec=/usr/local/bin/start-hyprland-standalone
+TryExec=/usr/local/bin/start-hyprland-standalone
+Type=Application
+DesktopNames=X-Hyprland-Standalone;Hyprland
+Keywords=tiling;wayland;compositor;standalone;orbit;

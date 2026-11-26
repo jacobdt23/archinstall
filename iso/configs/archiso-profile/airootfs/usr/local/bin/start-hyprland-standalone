@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+export XDG_CURRENT_DESKTOP="X-Hyprland-Standalone:Hyprland"
+export XDG_SESSION_DESKTOP="X-Hyprland-Standalone"
+exec /usr/bin/start-hyprland -- -c "${HOME}/.config/hypr-standalone/hyprland.conf"

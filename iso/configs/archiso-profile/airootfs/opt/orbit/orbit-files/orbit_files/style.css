@@ -1,0 +1,115 @@
+/* Orbit Files — COSMIC & Thunar inspired GTK 4 + Libadwaita styling */
+
+.sidebar-section-label {
+    font-size: 0.78em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.sidebar-item {
+    border-radius: 8px;
+}
+
+.sidebar-action-btn {
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    opacity: 0.65;
+}
+
+.sidebar-action-btn:hover {
+    opacity: 1.0;
+}
+
+.pathbar-container {
+    background-color: alpha(@view_fg_color, 0.04);
+    border-radius: 8px;
+    padding: 2px 4px;
+}
+
+.pathbar-crumb {
+    padding: 3px 8px;
+    min-height: 26px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.pathbar-crumb-active {
+    background-color: alpha(@accent_bg_color, 0.14);
+    color: @accent_color;
+    font-weight: 600;
+}
+
+.file-pane {
+    border: 2px solid transparent;
+    transition: border-color 140ms ease;
+}
+
+.file-pane-active {
+    border-top: 2px solid @accent_bg_color;
+}
+
+.orbit-grid-view > child {
+    border-radius: 10px;
+    margin: 4px;
+}
+
+.orbit-preview {
+    background-color: alpha(@window_fg_color, 0.02);
+}
+
+.preview-image {
+    border-radius: 8px;
+}
+
+.preview-text-frame {
+    border-radius: 8px;
+}
+
+.preview-text {
+    font-size: 0.82em;
+}
+
+.orbit-statusbar {
+    border-top: 1px solid alpha(@borders, 0.6);
+}
+
+windowcontrols button.close,
+windowcontrols button.maximize,
+windowcontrols button.minimize {
+    background-image: none;
+    background-color: alpha(@window_fg_color, 0.08);
+    color: @window_fg_color;
+    border-radius: 9999px;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    margin: 0 3px;
+    box-shadow: none;
+    border: none;
+}
+
+windowcontrols button.close:hover,
+windowcontrols button.maximize:hover,
+windowcontrols button.minimize:hover,
+windowcontrols button.close:active,
+windowcontrols button.maximize:active,
+windowcontrols button.minimize:active {
+    background-image: none;
+    background-color: alpha(@window_fg_color, 0.18);
+    color: @window_fg_color;
+}
+
+windowcontrols button.close:hover,
+windowcontrols button.close:active {
+    background-color: alpha(#f7768e, 0.85);
+    color: #ffffff;
+}
+
+windowcontrols button.close:backdrop,
+windowcontrols button.maximize:backdrop,
+windowcontrols button.minimize:backdrop {
+    background-image: none;
+    background-color: alpha(@window_fg_color, 0.04);
+    color: alpha(@window_fg_color, 0.55);
+}

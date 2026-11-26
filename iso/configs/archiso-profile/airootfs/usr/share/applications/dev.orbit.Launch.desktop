@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Launch
+GenericName=Application Launcher
+Comment=Keyboard-driven application launcher, calculator, and command palette
+Icon=system-search
+Exec=/usr/local/bin/orbit-launch
+TryExec=/usr/local/bin/orbit-launch
+Terminal=false
+Categories=Utility;GTK;
+Keywords=launcher;run;apps;search;palette;calculator;rofi;wofi;orbit;
+StartupNotify=true
+StartupWMClass=dev.orbit.Launch
+SingleMainWindow=true
+DBusActivatable=false
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;

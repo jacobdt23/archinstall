@@ -1,0 +1,17 @@
+[Default Applications]
+inode/directory=dev.orbit.Files.desktop
+text/plain=dev.orbit.Edit.desktop
+text/markdown=dev.orbit.Edit.desktop
+text/x-python=dev.orbit.Edit.desktop
+text/css=dev.orbit.Edit.desktop
+text/x-shellscript=dev.orbit.Edit.desktop
+application/json=dev.orbit.Edit.desktop
+application/x-desktop=dev.orbit.Edit.desktop
+image/png=dev.orbit.View.desktop
+image/jpeg=dev.orbit.View.desktop
+image/webp=dev.orbit.View.desktop
+image/gif=dev.orbit.View.desktop
+image/bmp=dev.orbit.View.desktop
+image/svg+xml=dev.orbit.View.desktop
+image/tiff=dev.orbit.View.desktop
+image/avif=dev.orbit.View.desktop

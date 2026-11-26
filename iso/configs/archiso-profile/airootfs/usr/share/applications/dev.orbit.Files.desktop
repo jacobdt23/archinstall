@@ -1,0 +1,50 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Files
+GenericName=File Manager
+Comment=Browse and organize local files, bookmarks, and mounted drives
+Icon=system-file-manager
+Exec=/usr/local/bin/orbit-files %U
+TryExec=/usr/local/bin/orbit-files
+Terminal=false
+Categories=System;FileTools;FileManager;GTK;
+Keywords=folder;manager;explore;disk;filesystem;files;browse;thunar;cosmic;orbit;
+MimeType=inode/directory;
+StartupNotify=true
+StartupWMClass=dev.orbit.Files
+SingleMainWindow=false
+DBusActivatable=false
+PrefersNonDefaultGPU=false
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;
+Actions=new-window;open-home;open-documents;open-downloads;open-trash;open-filesystem;
+
+[Desktop Action new-window]
+Name=New Window
+Icon=window-new-symbolic
+Exec=/usr/local/bin/orbit-files --new-window
+
+[Desktop Action open-home]
+Name=Open Home
+Icon=user-home-symbolic
+Exec=/usr/local/bin/orbit-files --new-window --place home
+
+[Desktop Action open-documents]
+Name=Open Documents
+Icon=folder-documents-symbolic
+Exec=/usr/local/bin/orbit-files --new-window --place documents
+
+[Desktop Action open-downloads]
+Name=Open Downloads
+Icon=folder-download-symbolic
+Exec=/usr/local/bin/orbit-files --new-window --place downloads
+
+[Desktop Action open-trash]
+Name=Open Trash
+Icon=user-trash-symbolic
+Exec=/usr/local/bin/orbit-files --new-window --place trash
+
+[Desktop Action open-filesystem]
+Name=Open File System (/)
+Icon=drive-harddisk-symbolic
+Exec=/usr/local/bin/orbit-files --new-window --place root

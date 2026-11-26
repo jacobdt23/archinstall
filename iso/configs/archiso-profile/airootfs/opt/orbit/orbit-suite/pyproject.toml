@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orbit-suite"
+version = "1.0.0"
+description = "Custom GTK 4 + Libadwaita desktop app suite in Python (Edit, View, Launch, Term)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+orbit-edit = "orbit_suite.edit:main"
+orbit-view = "orbit_suite.view:main"
+orbit-launch = "orbit_suite.launch:main"
+orbit-term = "orbit_suite.term:main"
+
+[tool.setuptools.packages.find]
+include = ["orbit_suite*"]

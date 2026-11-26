@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Orbit Desktop (Qtile)
+Comment=Orbit Desktop — Qtile Wayland session with Python Orbit Suite & LazyVim
+Exec=/usr/local/bin/start-orbit-qtile
+TryExec=/usr/local/bin/start-orbit-qtile
+Type=Application
+DesktopNames=X-Orbit-Qtile;Qtile
+Keywords=wm;tiling;wayland;qtile;orbit;

@@ -1,0 +1,23 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Term
+GenericName=Terminal Emulator
+Comment=Multi-tab GTK 4 terminal emulator in Python
+Icon=utilities-terminal
+Exec=orbit-term
+TryExec=orbit-term
+Terminal=false
+Categories=System;TerminalEmulator;GTK;
+Keywords=terminal;shell;bash;zsh;console;command;prompt;orbit;
+StartupNotify=true
+StartupWMClass=dev.orbit.Term
+SingleMainWindow=false
+DBusActivatable=false
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Terminal Window
+Icon=window-new-symbolic
+Exec=orbit-term
