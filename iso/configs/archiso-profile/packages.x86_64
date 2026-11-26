@@ -167,3 +167,13 @@ wireplumber
 bluez
 bluez-utils
 brightnessctl
+
+# Calamares GUI Installer & Btrfs Snapshot Safety (Timeshift + grub-btrfs + timeshift-autosnap)
+calamares
+timeshift
+timeshift-autosnap
+grub-btrfs
+inotify-tools
+os-prober
+paru
+keyd

@@ -23,8 +23,10 @@ jobs:
         run: |
           set -e
           P=iso/configs/archiso-profile
-          chmod +x $P/airootfs/usr/local/bin/*
+          chmod +x $P/airootfs/usr/local/bin/* $P/airootfs/root/customize_airootfs.sh
           chmod +x $P/airootfs/etc/skel/.config/qtile/autostart.sh
+          mkdir -p /repo/iso
+          ln -sfn "$PWD/iso/custom-repo" /repo/iso/custom-repo
           mkarchiso -v -w /tmp/archiso-work -o iso/out $P
       - uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,200 @@
+/* TokyoNight Dark Theme for Calamares Graphical Installer */
+
+QWidget {
+    background-color: #1a1b26;
+    color: #c0caf5;
+    font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+    font-size: 10pt;
+}
+
+#mainApp {
+    background-color: #1a1b26;
+}
+
+#sidebarApp {
+    background-color: #16161e;
+    border-right: 1px solid #292e42;
+}
+
+#logoApp {
+    padding: 12px;
+}
+
+QDialog {
+    background-color: #1a1b26;
+    color: #c0caf5;
+}
+
+QLabel {
+    background-color: transparent;
+    color: #c0caf5;
+}
+
+#mainText {
+    color: #7aa2f7;
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+QPushButton {
+    background-color: #24283b;
+    color: #c0caf5;
+    border: 1px solid #3b4261;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-weight: bold;
+    min-height: 22px;
+}
+
+QPushButton:hover {
+    background-color: #3b4261;
+    border-color: #7aa2f7;
+    color: #ffffff;
+}
+
+QPushButton:pressed {
+    background-color: #7aa2f7;
+    color: #1a1b26;
+}
+
+QPushButton:disabled {
+    background-color: #16161e;
+    color: #565f89;
+    border-color: #24283b;
+}
+
+#view-button-next, #view-button-cancel, #view-button-back {
+    min-width: 84px;
+}
+
+QComboBox {
+    background-color: #24283b;
+    color: #c0caf5;
+    border: 1px solid #3b4261;
+    border-radius: 6px;
+    padding: 5px 10px;
+    min-height: 22px;
+}
+
+QComboBox:hover {
+    border-color: #7aa2f7;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #24283b;
+    color: #c0caf5;
+    selection-background-color: #7aa2f7;
+    selection-color: #1a1b26;
+    border: 1px solid #3b4261;
+}
+
+QLineEdit, QTextEdit, QPlainTextEdit, QSpinBox {
+    background-color: #24283b;
+    color: #c0caf5;
+    border: 1px solid #3b4261;
+    border-radius: 6px;
+    padding: 5px 8px;
+    selection-background-color: #7aa2f7;
+    selection-color: #1a1b26;
+}
+
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
+    border-color: #7aa2f7;
+}
+
+QListView, QTreeView, QTableView {
+    background-color: #16161e;
+    alternate-background-color: #1f2335;
+    color: #c0caf5;
+    border: 1px solid #3b4261;
+    border-radius: 6px;
+    selection-background-color: #7aa2f7;
+    selection-color: #1a1b26;
+}
+
+QHeaderView::section {
+    background-color: #24283b;
+    color: #7aa2f7;
+    padding: 6px;
+    border: none;
+    border-bottom: 1px solid #3b4261;
+    font-weight: bold;
+}
+
+QProgressBar {
+    background-color: #24283b;
+    color: #c0caf5;
+    border: 1px solid #3b4261;
+    border-radius: 6px;
+    text-align: center;
+    height: 20px;
+}
+
+QProgressBar::chunk {
+    background-color: #7aa2f7;
+    border-radius: 5px;
+}
+
+QCheckBox, QRadioButton {
+    background-color: transparent;
+    color: #c0caf5;
+    spacing: 8px;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #565f89;
+    border-radius: 4px;
+    background-color: #24283b;
+}
+
+QRadioButton::indicator {
+    border-radius: 8px;
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background-color: #7aa2f7;
+    border-color: #7aa2f7;
+}
+
+QScrollBar:vertical {
+    background: #16161e;
+    width: 10px;
+    margin: 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: #3b4261;
+    min-height: 24px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #7aa2f7;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QGroupBox {
+    border: 1px solid #3b4261;
+    border-radius: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    color: #7aa2f7;
+    font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px;
+}

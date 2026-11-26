@@ -1,0 +1,14 @@
+# remove from airootfs!
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = intel-ucode
+Target = amd-ucode
+Target = linux
+
+[Action]
+Description = Backing up boot assets (ucode & kernel) for Calamares offline installer...
+When = PostTransaction
+Depends = coreutils
+Exec = /bin/sh -c "mkdir -p /usr/lib/boot-backup && cp -f /boot/*-ucode.img /usr/lib/boot-backup/ 2>/dev/null || true"
