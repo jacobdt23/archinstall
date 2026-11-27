@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 export XDG_CURRENT_DESKTOP="X-Hyprland-Standalone:Hyprland"
 export XDG_SESSION_DESKTOP="X-Hyprland-Standalone"
+if systemd-detect-virt --vm >/dev/null 2>&1; then
+    export WLR_RENDERER_ALLOW_SOFTWARE=1
+    export WLR_NO_HARDWARE_CURSORS=1
+    export LIBGL_ALWAYS_SOFTWARE=1
+fi
 exec /usr/bin/start-hyprland -- -c "${HOME}/.config/hypr-standalone/hyprland.conf"

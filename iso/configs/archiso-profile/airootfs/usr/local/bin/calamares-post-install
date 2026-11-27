@@ -81,7 +81,10 @@ rm -f /root/.zlogin /root/.automated_script.sh /root/customize_airootfs.sh
 rm -rf /root/.config
 
 rm -f /etc/sudoers.d/10-live-nopasswd \
-      /etc/sddm.conf.d/10-live-autologin.conf
+      /etc/sddm.conf.d/10-live-autologin.conf \
+      /etc/systemd/system/orbit-live-setup.service \
+      /etc/systemd/system/multi-user.target.wants/orbit-live-setup.service \
+      /usr/local/bin/orbit-live-setup
 if id -u orbit >/dev/null 2>&1; then
     userdel -r orbit 2>/dev/null || rm -rf /home/orbit
 fi

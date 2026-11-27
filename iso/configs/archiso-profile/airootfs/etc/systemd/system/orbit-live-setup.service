@@ -1,0 +1,12 @@
+[Unit]
+Description=Provision Orbit OS live desktop user before SDDM
+Before=display-manager.service sddm.service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/orbit-live-setup
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
