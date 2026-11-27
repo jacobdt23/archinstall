@@ -1,0 +1,33 @@
+#!/bin/bash
+# Expose the live root filesystem at a fixed path for Calamares unpackfs.
+# Finds the squashfs wherever the boot method put it; falls back to the
+# already-mounted live airootfs.
+DEST=/run/calamares-rootfs
+LOG=/tmp/calamares-find-rootfs.log
+exec >>"$LOG" 2>&1
+set -x
+mkdir -p "$DEST"
+mountpoint -q "$DEST" && exit 0
+
+SFS=""
+for f in /run/archiso/bootmnt/*/x86_64/airootfs.sfs /run/archiso/bootmnt/*/*/airootfs.sfs \
+         /run/archiso/copytoram/airootfs.sfs /run/archiso/airootfs.sfs; do
+    [ -f "$f" ] && SFS="$f" && break
+done
+if [ -z "$SFS" ]; then
+    SFS="$(find /run/archiso /run/media /mnt -maxdepth 6 -name 'airootfs.sfs' 2>/dev/null | head -n1)"
+fi
+if [ -z "$SFS" ] && mountpoint -q /run/archiso/airootfs; then
+    DEV="$(findmnt -n -o SOURCE /run/archiso/airootfs)"
+    case "$DEV" in /dev/loop*) SFS="$(losetup -nO BACK-FILE "$DEV" 2>/dev/null)";; esac
+fi
+
+if [ -n "$SFS" ] && mount -t squashfs -o loop,ro "$SFS" "$DEST"; then
+    echo "mounted $SFS"
+elif [ -d /run/archiso/airootfs ] && mount --bind /run/archiso/airootfs "$DEST"; then
+    echo "bind-mounted /run/archiso/airootfs"
+else
+    echo "FATAL: no live rootfs found"
+    ls -laR /run/archiso 2>&1 | head -50
+    exit 1
+fi
