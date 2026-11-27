@@ -86,7 +86,7 @@ menubutton.orbit-power-btn > button {
 }
 
 .orbit-pill:hover {
-    filter: brightness(1.08);
+    opacity: 0.90;
 }
 
 menubutton.orbit-clock-pill > button,
