@@ -75,101 +75,119 @@ menubutton.orbit-power-btn {
 }
 
 menubutton.orbit-power-btn > button {
-    background-color: rgba(33, 34, 44, 0.92);
-    border: 1px solid rgba(255, 85, 85, 0.75);
+    background-color: #ff5555;
+    border: 1px solid #ff6e6e;
     border-radius: 6px;
     padding: 1px 6px;
     min-height: 18px;
     min-width: 22px;
-    color: #ff5555;
+    color: #ffffff;
+    font-weight: 800;
 }
 
 .orbit-pill:hover {
-    background-color: rgba(68, 71, 90, 0.95);
-    border-color: rgba(189, 147, 249, 0.75);
+    filter: brightness(1.08);
 }
 
 menubutton.orbit-clock-pill > button,
 .orbit-clock-pill {
-    background-color: rgba(139, 233, 253, 0.16);
-    border: 1px solid rgba(139, 233, 253, 0.45);
-    border-bottom: 3px solid #8be9fd;
-    color: #8be9fd;
+    background-color: #8be9fd;
+    border: 1px solid #a4ffff;
+    border-bottom: 2px solid #5bc0de;
+    color: #191a21;
+    font-size: 11px;
     font-weight: 800;
 }
 
 label.orbit-window-title {
-    background-color: rgba(189, 147, 249, 0.14);
-    border: 1px solid rgba(189, 147, 249, 0.35);
-    border-bottom: 3px solid #bd93f9;
-    color: #f8f8f2;
+    background-color: #bd93f9;
+    border: 1px solid #d6acff;
+    border-bottom: 2px solid #9568d6;
+    color: #191a21;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 button.orbit-cpu {
-    background-color: rgba(189, 147, 249, 0.18);
-    border: 1px solid rgba(189, 147, 249, 0.45);
-    border-bottom: 3px solid #bd93f9;
-    color: #d6acff;
+    background-color: #bd93f9;
+    border: 1px solid #d6acff;
+    border-bottom: 2px solid #9568d6;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-mem {
-    background-color: rgba(255, 121, 198, 0.18);
-    border: 1px solid rgba(255, 121, 198, 0.45);
-    border-bottom: 3px solid #ff79c6;
-    color: #ff92df;
+    background-color: #ff79c6;
+    border: 1px solid #ff92df;
+    border-bottom: 2px solid #d6559f;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-disk {
-    background-color: rgba(255, 184, 108, 0.18);
-    border: 1px solid rgba(255, 184, 108, 0.45);
-    border-bottom: 3px solid #ffb86c;
-    color: #ffb86c;
+    background-color: #ffb86c;
+    border: 1px solid #ffcc95;
+    border-bottom: 2px solid #d99145;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-net {
-    background-color: rgba(241, 250, 140, 0.16);
-    border: 1px solid rgba(241, 250, 140, 0.45);
-    border-bottom: 3px solid #f1fa8c;
-    color: #f1fa8c;
+    background-color: #f1fa8c;
+    border: 1px solid #ffffa5;
+    border-bottom: 2px solid #c9d460;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 menubutton.orbit-vol > button,
 .orbit-vol {
-    background-color: rgba(80, 250, 123, 0.18);
-    border: 1px solid rgba(80, 250, 123, 0.45);
-    border-bottom: 3px solid #50fa7b;
-    color: #69ff94;
+    background-color: #50fa7b;
+    border: 1px solid #69ff94;
+    border-bottom: 2px solid #2ed058;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 menubutton.orbit-media > button,
 .orbit-media {
-    background-color: rgba(255, 121, 198, 0.22);
-    border: 1px solid rgba(255, 121, 198, 0.55);
-    border-bottom: 3px solid #ff79c6;
-    color: #ff92df;
+    background-color: #ff79c6;
+    border: 1px solid #ff92df;
+    border-bottom: 2px solid #d6559f;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-bat {
-    background-color: rgba(80, 250, 123, 0.18);
-    border: 1px solid rgba(80, 250, 123, 0.45);
-    border-bottom: 3px solid #50fa7b;
-    color: #50fa7b;
+    background-color: #50fa7b;
+    border: 1px solid #69ff94;
+    border-bottom: 2px solid #2ed058;
+    color: #191a21;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-bat-low {
-    background-color: rgba(255, 85, 85, 0.25);
-    border: 1px solid rgba(255, 85, 85, 0.65);
-    border-bottom: 3px solid #ff5555;
-    color: #ff6e6e;
+    background-color: #ff5555;
+    border: 1px solid #ff6e6e;
+    border-bottom: 2px solid #cc3333;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 button.orbit-theme-btn {
-    background-color: rgba(139, 233, 253, 0.18);
-    border: 1px solid rgba(139, 233, 253, 0.45);
-    border-bottom: 3px solid #8be9fd;
-    color: #8be9fd;
+    background-color: #8be9fd;
+    border: 1px solid #a4ffff;
+    border-bottom: 2px solid #5bc0de;
+    color: #191a21;
+    font-weight: 800;
 }
 
 .orbit-ws-btn {
