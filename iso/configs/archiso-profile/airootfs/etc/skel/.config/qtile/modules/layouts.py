@@ -40,8 +40,8 @@ FLOAT_RULES = [
     Match(wm_class="swappy"),
     Match(title="Missing Packages Detected"),
     Match(wm_class="Rofi"),
-    Match(wm_class="hyprfrost-welcome"),
-    Match(title="HyprFrost Welcome Center"),
+    Match(wm_class="dev.orbit.Launch"),
+    Match(wm_class="dev.orbit.Theme"),
 ]
 
 floating_layout = layout.Floating(**BORDER_THEME, float_rules=FLOAT_RULES)

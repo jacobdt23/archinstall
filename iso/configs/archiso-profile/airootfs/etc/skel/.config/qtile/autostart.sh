@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# HyprFrost Qtile Autostart Script
+# Orbit Desktop (Qtile) Autostart Script
 # =============================================================================
 
 # Ensure only one instance runs
@@ -32,9 +32,4 @@ pgrep -x dunst >/dev/null || dunst &
 # 4. Wayland Clipboard History
 if [ -n "$WAYLAND_DISPLAY" ]; then
     pgrep -x cliphist >/dev/null || wl-paste --type text --watch cliphist store &
-fi
-
-# 5. First-Boot Welcome Hub
-if [ ! -f "$HOME/.config/hyprfrost-welcome-disabled" ] && [ ! -f "$HOME/.config/jacob-welcome-disabled" ]; then
-    pgrep -f "python3.*hyprfrost-welcome" >/dev/null || (sleep 1 && hyprfrost-welcome) &
 fi

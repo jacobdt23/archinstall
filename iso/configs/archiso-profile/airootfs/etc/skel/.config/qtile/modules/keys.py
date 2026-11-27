@@ -83,7 +83,7 @@ keys: list[Key] = [
     Key([MOD], "n", lazy.spawn(settings.EDITOR), desc="Launch Orbit Edit (LazyVim)"),
     Key([MOD, "shift"], "d", lazy.spawn("rofi -show drun"), desc="Rofi fallback launcher"),
     Key([MOD], "b", lazy.spawn(settings.BROWSER), desc="Launch Brave Browser"),
-    Key([MOD], "w", lazy.spawn(settings.WELCOME_APP), desc="Open HyprFrost Welcome Center"),
+    Key([MOD], "w", lazy.spawn(settings.THEME_APP), desc="Open Orbit Theme & Wallpapers"),
     Key([MOD], "c", lazy.window.kill(), desc="Close focused window"),
 
     # Window state & monitor focus

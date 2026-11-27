@@ -1,0 +1,11 @@
+NAME="Orbit OS"
+PRETTY_NAME="Orbit OS (Arch Linux Rolling)"
+ID=orbit
+ID_LIKE=arch
+BUILD_ID=rolling
+VERSION_ID=1.0.0
+ANSI_COLOR="38;2;189;147;249"
+HOME_URL="https://github.com/jacobdt23/archinstall"
+DOCUMENTATION_URL="https://github.com/jacobdt23/orbit-desktop-hyprland"
+SUPPORT_URL="https://github.com/jacobdt23/archinstall/issues"
+LOGO=archlinux-logo

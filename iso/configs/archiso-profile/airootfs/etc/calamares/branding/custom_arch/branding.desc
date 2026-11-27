@@ -9,13 +9,13 @@ sidebar: widget
 navigation: widget
 
 strings:
-    productName:         "HyprFrost Linux"
-    shortProductName:    "HyprFrost"
-    version:             "Rolling"
-    shortVersion:        "Rolling"
-    versionedName:       "HyprFrost Linux"
-    shortVersionedName:  "HyprFrost"
-    bootloaderEntryName: "HyprFrost"
+    productName:         "Orbit OS"
+    shortProductName:    "Orbit OS"
+    version:             "1.0.0"
+    shortVersion:        "1.0.0"
+    versionedName:       "Orbit OS 1.0.0"
+    shortVersionedName:  "Orbit OS"
+    bootloaderEntryName: "Orbit OS"
     productUrl:          "https://github.com/jacobdt23/archinstall"
     supportUrl:          "https://github.com/jacobdt23/archinstall/issues"
     knownIssuesUrl:      "https://github.com/jacobdt23/archinstall/issues"
@@ -28,10 +28,10 @@ images:
     productWelcome:      "welcome.png"
 
 style:
-   SidebarBackground:        "#16161e"
-   SidebarText:              "#a9b1d6"
-   SidebarTextCurrent:       "#1a1b26"
-   SidebarBackgroundCurrent: "#7aa2f7"
+   SidebarBackground:        "#21222c"
+   SidebarText:              "#f8f8f2"
+   SidebarTextCurrent:       "#21222c"
+   SidebarBackgroundCurrent: "#bd93f9"
 
 slideshow:
     - "welcome.png"
