@@ -177,3 +177,7 @@ inotify-tools
 os-prober
 paru
 keyd
+fastfetch
+starship
+playerctl
+python-cairo

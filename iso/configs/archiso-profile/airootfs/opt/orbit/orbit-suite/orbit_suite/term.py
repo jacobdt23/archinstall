@@ -38,8 +38,8 @@ APP_NAME = "Orbit Term"
 
 TERM_CSS = """
 .orbit-term-view {
-    background-color: #13161d;
-    color: #e6eaf2;
+    background-color: #282a36;
+    color: #f8f8f2;
     font-family: monospace;
 }
 """
@@ -60,10 +60,10 @@ _SGR_COLORS = {
 }
 
 _PALETTE_HEX = [
-    "#15161e", "#f7768e", "#9ece6a", "#e0af68",
-    "#7aa2f7", "#bb9af7", "#7dcfff", "#a9b1d6",
-    "#414868", "#ff7a93", "#b9f27c", "#ff9e64",
-    "#7da6ff", "#c099ff", "#0db9d7", "#c0caf5",
+    "#21222c", "#ff5555", "#50fa7b", "#f1fa8c",
+    "#bd93f9", "#ff79c6", "#8be9fd", "#f8f8f2",
+    "#6272a4", "#ff6e6e", "#69ff94", "#ffffa5",
+    "#d6acff", "#ff92df", "#a4ffff", "#ffffff",
 ]
 
 
@@ -91,10 +91,29 @@ class VteTerminalTab(Gtk.ScrolledWindow):
         self.term.set_scroll_on_output(False)
         self.term.set_scroll_on_keystroke(True)
         self.term.set_bold_is_bright(True)
+        bg_hex, fg_hex = "#282a36", "#f8f8f2"
+        pal_hex = list(_PALETTE_HEX)
+        pal_file = Path.home() / ".config" / "orbit" / "palette.json"
+        if pal_file.is_file():
+            try:
+                import json
+
+                pal = json.loads(pal_file.read_text(encoding="utf-8"))
+                bg_hex = pal.get("bg", bg_hex)
+                fg_hex = pal.get("fg", fg_hex)
+                if pal.get("accent"):
+                    pal_hex[4] = pal["accent"]
+                if pal.get("accent2"):
+                    pal_hex[5] = pal["accent2"]
+                if pal.get("cyan"):
+                    pal_hex[6] = pal["cyan"]
+            except Exception:
+                pass
+
         self.term.set_colors(
-            _rgba("#c0caf5"),
-            _rgba("#13161d"),
-            [_rgba(h) for h in _PALETTE_HEX],
+            _rgba(fg_hex),
+            _rgba(bg_hex),
+            [_rgba(h) for h in pal_hex],
         )
         self.set_font_size(font_size)
 
@@ -120,11 +139,12 @@ class VteTerminalTab(Gtk.ScrolledWindow):
             None,
         )
 
-    def focus_terminal(self) -> None:
+    def focus_terminal(self) -> bool:
         self.term.grab_focus()
+        return False
 
     def set_font_size(self, size: int) -> None:
-        desc = Pango.FontDescription.from_string(f"Monospace {size}")
+        desc = Pango.FontDescription.from_string(f"JetBrainsMono Nerd Font {size}")
         self.term.set_font(desc)
 
     def copy_selection(self) -> None:
@@ -168,6 +188,8 @@ class PtyTerminalTab(Gtk.ScrolledWindow):
         self.text_view = Gtk.TextView.new_with_buffer(self.buffer)
         self.text_view.set_editable(False)
         self.text_view.set_cursor_visible(True)
+        self.text_view.set_can_focus(True)
+        self.text_view.set_focusable(True)
         self.text_view.set_monospace(True)
         self.text_view.set_wrap_mode(Gtk.WrapMode.CHAR)
         self.text_view.set_left_margin(10)
@@ -177,14 +199,20 @@ class PtyTerminalTab(Gtk.ScrolledWindow):
         self.text_view.add_css_class("orbit-term-view")
 
         key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         key_ctrl.connect("key-pressed", self._on_key_pressed)
         self.text_view.add_controller(key_ctrl)
+
+        click_ctrl = Gtk.GestureClick()
+        click_ctrl.connect("pressed", lambda *_: self.text_view.grab_focus())
+        self.text_view.add_controller(click_ctrl)
 
         self.set_child(self.text_view)
         self._spawn_shell()
 
-    def focus_terminal(self) -> None:
+    def focus_terminal(self) -> bool:
         self.text_view.grab_focus()
+        return False
 
     def set_font_size(self, _size: int) -> None:
         # Handled via window-level CSS provider for the fallback TextView
@@ -502,6 +530,10 @@ class OrbitTermWindow(Adw.ApplicationWindow):
 
         self._tab_view = Adw.TabView()
         self._tab_view.connect("close-page", self._on_close_page)
+        self._tab_view.connect(
+            "notify::selected-page",
+            lambda *_: self.active_tab and GLib.idle_add(self.active_tab.focus_terminal),
+        )
 
         self._tab_bar = Adw.TabBar()
         self._tab_bar.set_view(self._tab_view)
@@ -510,6 +542,25 @@ class OrbitTermWindow(Adw.ApplicationWindow):
 
         toolbar_view.set_content(self._tab_view)
         self.connect("close-request", self._on_window_close)
+
+        # Window-level CAPTURE key handler for PTY fallback so typing works regardless of widget focus
+        if not HAS_VTE:
+            win_key = Gtk.EventControllerKey()
+            win_key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+            win_key.connect("key-pressed", self._on_window_key_pressed)
+            self.add_controller(win_key)
+
+    def _on_window_key_pressed(
+        self,
+        ctrl: Gtk.EventControllerKey,
+        keyval: int,
+        keycode: int,
+        state: Gdk.ModifierType,
+    ) -> bool:
+        tab = self.active_tab
+        if isinstance(tab, PtyTerminalTab):
+            return tab._on_key_pressed(ctrl, keyval, keycode, state)
+        return False
 
     def _setup_actions(self) -> None:
         actions = [
@@ -543,7 +594,7 @@ class OrbitTermWindow(Adw.ApplicationWindow):
         tab.connect("exited", lambda _t, p=page: self._tab_view.close_page(p))
         tab.connect("title-changed", lambda _t, title, p=page: p.set_title(title))
         self._tab_view.set_selected_page(page)
-        tab.focus_terminal()
+        GLib.idle_add(tab.focus_terminal)
         return tab
 
     def _on_close_page(self, _tv: Adw.TabView, page: Adw.TabPage) -> bool:

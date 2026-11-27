@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Orbit Theme
+GenericName=Wallpaper & Palette Switcher
+Comment=Change wallpaper and dynamically match Orbit Desktop colors (pywal-style)
+Icon=preferences-desktop-wallpaper
+Exec=/usr/local/bin/orbit-theme
+TryExec=/usr/local/bin/orbit-theme
+Terminal=false
+Categories=Settings;DesktopSettings;
+Keywords=wallpaper;theme;colors;pywal;palette;dracula;orbit;
+StartupNotify=true
+StartupWMClass=dev.orbit.Theme
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;

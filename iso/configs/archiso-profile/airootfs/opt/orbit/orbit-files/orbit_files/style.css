@@ -1,9 +1,29 @@
-/* Orbit Files — COSMIC & Thunar inspired GTK 4 + Libadwaita styling */
+/* Orbit Files — Dracula GTK 4 + Libadwaita theme */
+
+@define-color accent_color #bd93f9;
+@define-color accent_bg_color #bd93f9;
+@define-color accent_fg_color #21222c;
+@define-color window_bg_color #282a36;
+@define-color window_fg_color #f8f8f2;
+@define-color view_bg_color #282a36;
+@define-color view_fg_color #f8f8f2;
+@define-color headerbar_bg_color #21222c;
+@define-color headerbar_fg_color #f8f8f2;
+@define-color headerbar_border_color #44475a;
+@define-color sidebar_bg_color #21222c;
+@define-color sidebar_fg_color #f8f8f2;
+@define-color card_bg_color #343746;
+@define-color card_fg_color #f8f8f2;
+@define-color popover_bg_color #21222c;
+@define-color popover_fg_color #f8f8f2;
+@define-color dialog_bg_color #282a36;
+@define-color dialog_fg_color #f8f8f2;
 
 .sidebar-section-label {
     font-size: 0.78em;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    color: #6272a4;
 }
 
 .sidebar-item {
@@ -22,7 +42,7 @@
 }
 
 .pathbar-container {
-    background-color: alpha(@view_fg_color, 0.04);
+    background-color: rgba(68, 71, 90, 0.45);
     border-radius: 8px;
     padding: 2px 4px;
 }
@@ -35,8 +55,8 @@
 }
 
 .pathbar-crumb-active {
-    background-color: alpha(@accent_bg_color, 0.14);
-    color: @accent_color;
+    background-color: rgba(189, 147, 249, 0.22);
+    color: #bd93f9;
     font-weight: 600;
 }
 
@@ -46,7 +66,7 @@
 }
 
 .file-pane-active {
-    border-top: 2px solid @accent_bg_color;
+    border-top: 2px solid #bd93f9;
 }
 
 .orbit-grid-view > child {
@@ -55,13 +75,10 @@
 }
 
 .orbit-preview {
-    background-color: alpha(@window_fg_color, 0.02);
+    background-color: #21222c;
 }
 
-.preview-image {
-    border-radius: 8px;
-}
-
+.preview-image,
 .preview-text-frame {
     border-radius: 8px;
 }
@@ -71,45 +88,65 @@
 }
 
 .orbit-statusbar {
-    border-top: 1px solid alpha(@borders, 0.6);
+    background-color: #21222c;
+    border-top: 1px solid #44475a;
 }
 
-windowcontrols button.close,
-windowcontrols button.maximize,
-windowcontrols button.minimize {
+headerbar windowcontrols > button.close,
+headerbar windowcontrols > button.maximize,
+headerbar windowcontrols > button.minimize,
+windowcontrols > button.close,
+windowcontrols > button.maximize,
+windowcontrols > button.minimize {
+    background-color: transparent;
     background-image: none;
-    background-color: alpha(@window_fg_color, 0.08);
-    color: @window_fg_color;
-    border-radius: 9999px;
-    min-width: 24px;
-    min-height: 24px;
-    padding: 0;
-    margin: 0 3px;
-    box-shadow: none;
     border: none;
+    box-shadow: none;
+    padding: 0 3px;
+    margin: 0;
+    min-width: 22px;
+    min-height: 22px;
 }
 
-windowcontrols button.close:hover,
-windowcontrols button.maximize:hover,
-windowcontrols button.minimize:hover,
-windowcontrols button.close:active,
-windowcontrols button.maximize:active,
-windowcontrols button.minimize:active {
+headerbar windowcontrols > button.close > image,
+headerbar windowcontrols > button.maximize > image,
+headerbar windowcontrols > button.minimize > image,
+windowcontrols > button.close > image,
+windowcontrols > button.maximize > image,
+windowcontrols > button.minimize > image {
     background-image: none;
-    background-color: alpha(@window_fg_color, 0.18);
-    color: @window_fg_color;
+    border-radius: 9999px;
+    min-width: 16px;
+    min-height: 16px;
+    padding: 0;
+    color: transparent;
+    -gtk-icon-size: 12px;
 }
 
-windowcontrols button.close:hover,
-windowcontrols button.close:active {
-    background-color: alpha(#f7768e, 0.85);
-    color: #ffffff;
-}
+headerbar windowcontrols > button.minimize > image,
+windowcontrols > button.minimize > image { background-color: #ffb86c; }
 
-windowcontrols button.close:backdrop,
-windowcontrols button.maximize:backdrop,
-windowcontrols button.minimize:backdrop {
-    background-image: none;
-    background-color: alpha(@window_fg_color, 0.04);
-    color: alpha(@window_fg_color, 0.55);
+headerbar windowcontrols > button.maximize > image,
+windowcontrols > button.maximize > image { background-color: #50fa7b; }
+
+headerbar windowcontrols > button.close > image,
+windowcontrols > button.close > image { background-color: #ff5555; }
+
+headerbar windowcontrols > button.minimize:hover > image,
+windowcontrols > button.minimize:hover > image { background-color: #ffb86c; color: #21222c; }
+
+headerbar windowcontrols > button.maximize:hover > image,
+windowcontrols > button.maximize:hover > image { background-color: #50fa7b; color: #21222c; }
+
+headerbar windowcontrols > button.close:hover > image,
+windowcontrols > button.close:hover > image { background-color: #ff5555; color: #21222c; }
+
+headerbar windowcontrols > button.close:backdrop > image,
+headerbar windowcontrols > button.maximize:backdrop > image,
+headerbar windowcontrols > button.minimize:backdrop > image,
+windowcontrols > button.close:backdrop > image,
+windowcontrols > button.maximize:backdrop > image,
+windowcontrols > button.minimize:backdrop > image {
+    background-color: #6272a4;
+    color: transparent;
 }

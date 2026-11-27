@@ -11,7 +11,10 @@ import socket
 import subprocess
 import sys
 import threading
+from collections import deque
 from pathlib import Path
+
+import cairo
 
 # Ensure libgtk4-layer-shell is linked before GTK initializes Wayland
 try:
@@ -37,95 +40,181 @@ window.orbit-dock-window {
 }
 
 .orbit-top-bar {
-    background-color: rgba(20, 22, 34, 0.80);
-    border: 1px solid rgba(122, 162, 247, 0.30);
-    border-radius: 10px;
-    padding: 2px 6px;
+    background-color: rgba(33, 34, 44, 0.86);
+    border: 1px solid rgba(189, 147, 249, 0.35);
+    border-radius: 9px;
+    padding: 1px 6px;
 }
 
 .orbit-bottom-dock {
-    background-color: rgba(20, 22, 34, 0.82);
-    border: 1px solid rgba(122, 162, 247, 0.32);
-    border-radius: 10px;
-    padding: 2px 8px;
+    background-color: rgba(33, 34, 44, 0.86);
+    border: 1px solid rgba(189, 147, 249, 0.35);
+    border-radius: 9px;
+    padding: 1px 8px;
 }
 
-.orbit-pill {
-    background-color: rgba(26, 27, 38, 0.78);
-    border: 1px solid rgba(41, 46, 66, 0.85);
-    border-radius: 7px;
-    padding: 1px 8px;
-    min-height: 20px;
-    color: #c0caf5;
+.orbit-pill,
+menubutton.orbit-pill > button {
+    background-color: rgba(40, 42, 54, 0.88);
+    border: 1px solid rgba(68, 71, 90, 0.9);
+    border-radius: 6px;
+    padding: 1px 7px;
+    min-height: 18px;
+    color: #f8f8f2;
     font-size: 10px;
     font-weight: 600;
 }
 
-.orbit-pill:hover {
-    background-color: rgba(36, 40, 59, 0.95);
-    border-color: rgba(122, 162, 247, 0.65);
+menubutton.orbit-pill,
+menubutton.orbit-power-btn {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    min-height: 18px;
 }
 
-.orbit-clock-pill {
-    border-color: rgba(122, 162, 247, 0.38);
-    color: #7dcfff;
-    font-weight: 700;
-}
-
-.orbit-window-title {
-    color: #7dcfff;
-    font-size: 11px;
-    font-weight: 500;
-}
-
-.orbit-cpu { color: #7aa2f7; }
-.orbit-mem { color: #bb9af7; }
-.orbit-disk { color: #e0af68; }
-.orbit-vol { color: #9ece6a; }
-.orbit-net { color: #7dcfff; }
-.orbit-bat { color: #9ece6a; }
-.orbit-bat-low { color: #f7768e; }
-
-.orbit-ws-btn {
-    background-color: rgba(26, 27, 38, 0.72);
-    border: 1px solid rgba(41, 46, 66, 0.85);
+menubutton.orbit-power-btn > button {
+    background-color: rgba(33, 34, 44, 0.92);
+    border: 1px solid rgba(255, 85, 85, 0.75);
     border-radius: 6px;
     padding: 1px 6px;
-    min-width: 20px;
+    min-height: 18px;
+    min-width: 22px;
+    color: #ff5555;
+}
+
+.orbit-pill:hover {
+    background-color: rgba(68, 71, 90, 0.95);
+    border-color: rgba(189, 147, 249, 0.75);
+}
+
+menubutton.orbit-clock-pill > button,
+.orbit-clock-pill {
+    background-color: rgba(139, 233, 253, 0.16);
+    border: 1px solid rgba(139, 233, 253, 0.45);
+    border-bottom: 3px solid #8be9fd;
+    color: #8be9fd;
+    font-weight: 800;
+}
+
+label.orbit-window-title {
+    background-color: rgba(189, 147, 249, 0.14);
+    border: 1px solid rgba(189, 147, 249, 0.35);
+    border-bottom: 3px solid #bd93f9;
+    color: #f8f8f2;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+button.orbit-cpu {
+    background-color: rgba(189, 147, 249, 0.18);
+    border: 1px solid rgba(189, 147, 249, 0.45);
+    border-bottom: 3px solid #bd93f9;
+    color: #d6acff;
+}
+
+button.orbit-mem {
+    background-color: rgba(255, 121, 198, 0.18);
+    border: 1px solid rgba(255, 121, 198, 0.45);
+    border-bottom: 3px solid #ff79c6;
+    color: #ff92df;
+}
+
+button.orbit-disk {
+    background-color: rgba(255, 184, 108, 0.18);
+    border: 1px solid rgba(255, 184, 108, 0.45);
+    border-bottom: 3px solid #ffb86c;
+    color: #ffb86c;
+}
+
+button.orbit-net {
+    background-color: rgba(241, 250, 140, 0.16);
+    border: 1px solid rgba(241, 250, 140, 0.45);
+    border-bottom: 3px solid #f1fa8c;
+    color: #f1fa8c;
+}
+
+menubutton.orbit-vol > button,
+.orbit-vol {
+    background-color: rgba(80, 250, 123, 0.18);
+    border: 1px solid rgba(80, 250, 123, 0.45);
+    border-bottom: 3px solid #50fa7b;
+    color: #69ff94;
+}
+
+menubutton.orbit-media > button,
+.orbit-media {
+    background-color: rgba(255, 121, 198, 0.22);
+    border: 1px solid rgba(255, 121, 198, 0.55);
+    border-bottom: 3px solid #ff79c6;
+    color: #ff92df;
+}
+
+button.orbit-bat {
+    background-color: rgba(80, 250, 123, 0.18);
+    border: 1px solid rgba(80, 250, 123, 0.45);
+    border-bottom: 3px solid #50fa7b;
+    color: #50fa7b;
+}
+
+button.orbit-bat-low {
+    background-color: rgba(255, 85, 85, 0.25);
+    border: 1px solid rgba(255, 85, 85, 0.65);
+    border-bottom: 3px solid #ff5555;
+    color: #ff6e6e;
+}
+
+button.orbit-theme-btn {
+    background-color: rgba(139, 233, 253, 0.18);
+    border: 1px solid rgba(139, 233, 253, 0.45);
+    border-bottom: 3px solid #8be9fd;
+    color: #8be9fd;
+}
+
+.orbit-ws-btn {
+    background-color: rgba(40, 42, 54, 0.85);
+    border: 1px solid rgba(68, 71, 90, 0.9);
+    border-radius: 6px;
+    padding: 1px 7px;
+    min-width: 22px;
     min-height: 20px;
-    color: #565f89;
+    color: #6272a4;
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .orbit-ws-btn.occupied {
-    color: #c0caf5;
-    border-color: rgba(122, 162, 247, 0.35);
+    background-color: rgba(139, 233, 253, 0.14);
+    color: #8be9fd;
+    border-color: rgba(139, 233, 253, 0.45);
+    border-bottom: 3px solid #8be9fd;
 }
 
 .orbit-ws-btn.active {
-    background: linear-gradient(135deg, #7aa2f7 0%, #bb9af7 100%);
-    border-color: #7aa2f7;
-    color: #14161f;
+    background: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+    border-color: #ff79c6;
+    border-bottom: 3px solid #f1fa8c;
+    color: #21222c;
     font-weight: 900;
 }
 
 .orbit-ws-btn:hover {
-    border-color: #7aa2f7;
+    border-color: #bd93f9;
 }
 
 .orbit-power-btn {
-    background-color: rgba(20, 22, 31, 0.9);
-    border: 1px solid rgba(247, 118, 142, 0.75);
+    background-color: rgba(33, 34, 44, 0.92);
+    border: 1px solid rgba(255, 85, 85, 0.75);
     border-radius: 7px;
     padding: 1px 6px;
     min-height: 20px;
-    color: #f7768e;
+    color: #ff5555;
 }
 
 .orbit-power-btn:hover {
-    background-color: #f7768e;
-    color: #14161f;
+    background-color: #ff5555;
+    color: #21222c;
 }
 
 .orbit-dock-btn {
@@ -139,21 +228,21 @@ window.orbit-dock-window {
 }
 
 .orbit-dock-btn:hover {
-    background-color: rgba(122, 162, 247, 0.20);
-    border-color: rgba(122, 162, 247, 0.55);
+    background-color: rgba(189, 147, 249, 0.22);
+    border-color: rgba(189, 147, 249, 0.6);
 }
 
 .orbit-dock-btn.running {
-    border-bottom: 2px solid rgba(122, 162, 247, 0.55);
+    border-bottom: 2px solid rgba(189, 147, 249, 0.6);
 }
 
 .orbit-dock-btn.focused {
-    background-color: rgba(122, 162, 247, 0.16);
-    border-bottom: 2px solid #7aa2f7;
+    background-color: rgba(189, 147, 249, 0.18);
+    border-bottom: 2px solid #ff79c6;
 }
 
 .orbit-dock-sep {
-    background-color: rgba(122, 162, 247, 0.25);
+    background-color: rgba(189, 147, 249, 0.3);
     min-width: 1px;
     margin: 6px 4px;
 }
@@ -263,7 +352,8 @@ class SystemStats:
         except Exception:
             return "—"
 
-    def volume_summary(self) -> str:
+    def volume_state(self) -> tuple[int, bool, str]:
+        """Return (percent, muted, display_str)."""
         try:
             out = subprocess.check_output(
                 ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"],
@@ -271,11 +361,33 @@ class SystemStats:
                 timeout=1.0,
             ).strip()
             muted = "MUTED" in out
-            val = float(out.split()[1])
-            pct = int(round(val * 100))
-            return f"Muted ({pct}%)" if muted else f"{pct}%"
+            pct = int(round(float(out.split()[1]) * 100))
+            label = f"Muted ({pct}%)" if muted else f"{pct}%"
+            return pct, muted, label
         except Exception:
-            return "—"
+            return 0, False, "—"
+
+    def media_summary(self) -> tuple[str | None, str]:
+        """Return (short_label, full_title) or (None, '') if nothing playing."""
+        try:
+            status = subprocess.check_output(
+                ["playerctl", "status"], text=True, stderr=subprocess.DEVNULL, timeout=0.6
+            ).strip()
+            if status not in ("Playing", "Paused"):
+                return None, ""
+            meta = subprocess.check_output(
+                ["playerctl", "metadata", "--format", "{{artist}} - {{title}}"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+                timeout=0.6,
+            ).strip(" -")
+            if not meta:
+                return None, ""
+            icon = "▶" if status == "Playing" else "⏸"
+            short = meta if len(meta) <= 28 else meta[:27] + "…"
+            return f"{icon} {short}", meta
+        except Exception:
+            return None, ""
 
     def network_summary(self) -> str:
         try:
@@ -309,6 +421,50 @@ class SystemStats:
             return None, False
 
 
+class CpuSparkline(Gtk.DrawingArea):
+    """Lightweight Cairo rolling CPU sparkline graph (qtile-extras style)."""
+
+    def __init__(self, max_points: int = 20) -> None:
+        super().__init__()
+        self._points: deque[float] = deque([0.0] * max_points, maxlen=max_points)
+        self.set_content_width(42)
+        self.set_content_height(16)
+        self.set_draw_func(self._draw)
+
+    def push(self, pct: int) -> None:
+        self._points.append(max(0.0, min(100.0, float(pct))))
+        self.queue_draw()
+
+    def _draw(self, _area: Gtk.DrawingArea, cr: cairo.Context, w: int, h: int) -> None:
+        pts = list(self._points)
+        if len(pts) < 2:
+            return
+        step = w / (len(pts) - 1)
+
+        # Fill area under sparkline
+        cr.move_to(0, h)
+        for i, val in enumerate(pts):
+            x = i * step
+            y = h - (val / 100.0) * (h - 2) - 1
+            cr.line_to(x, y)
+        cr.line_to(w, h)
+        cr.close_path()
+        cr.set_source_rgba(0.74, 0.58, 0.98, 0.28)
+        cr.fill()
+
+        # Crisp top stroke
+        for i, val in enumerate(pts):
+            x = i * step
+            y = h - (val / 100.0) * (h - 2) - 1
+            if i == 0:
+                cr.move_to(x, y)
+            else:
+                cr.line_to(x, y)
+        cr.set_source_rgba(0.74, 0.58, 0.98, 0.95)
+        cr.set_line_width(1.5)
+        cr.stroke()
+
+
 class TopBarWindow(Gtk.ApplicationWindow):
     """Floating frosted-glass top bar for a single monitor."""
 
@@ -333,17 +489,8 @@ class TopBarWindow(Gtk.ApplicationWindow):
         bar.add_css_class("orbit-top-bar")
         self.set_child(bar)
 
-        # Left: Launcher + Workspaces + Active Window Title
+        # Left: Workspaces + Active Window Title (app menu kept on Super key & bottom bar)
         left = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-
-        brand_btn = Gtk.Button()
-        brand_btn.add_css_class("orbit-pill")
-        brand_btn.set_tooltip_text("Orbit Launch (Super+D)")
-        brand_icon = Gtk.Image.new_from_icon_name("distributor-logo-archlinux")
-        brand_icon.set_pixel_size(18)
-        brand_btn.set_child(brand_icon)
-        brand_btn.connect("clicked", lambda *_: _spawn(_bin("orbit-launch")))
-        left.append(brand_btn)
 
         self._ws_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         self._ws_buttons: dict[int, Gtk.Button] = {}
@@ -363,21 +510,57 @@ class TopBarWindow(Gtk.ApplicationWindow):
         left.append(self._title_lbl)
         bar.set_start_widget(left)
 
-        # Center: Clock with Calendar Popover
+        # Center: Clock + Live MPRIS Media Player Pill
+        center = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+
         self._clock_btn = Gtk.MenuButton()
         self._clock_btn.add_css_class("orbit-pill")
         self._clock_btn.add_css_class("orbit-clock-pill")
         cal_pop = Gtk.Popover()
         cal_pop.set_child(Gtk.Calendar())
         self._clock_btn.set_popover(cal_pop)
-        bar.set_center_widget(self._clock_btn)
+        center.append(self._clock_btn)
 
-        # Right: CPU, RAM, Disk, Volume, Power menu
+        self._media_btn = Gtk.MenuButton()
+        self._media_btn.add_css_class("orbit-pill")
+        self._media_btn.add_css_class("orbit-media")
+        self._media_btn.set_visible(False)
+        media_pop = Gtk.Popover()
+        mbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        mbox.set_margin_top(10)
+        mbox.set_margin_bottom(10)
+        mbox.set_margin_start(12)
+        mbox.set_margin_end(12)
+        self._media_full_lbl = Gtk.Label(label="")
+        self._media_full_lbl.set_max_width_chars(36)
+        self._media_full_lbl.set_ellipsize(Pango.EllipsizeMode.END)
+        self._media_full_lbl.add_css_class("heading")
+        mbox.append(self._media_full_lbl)
+        mctrls = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        mctrls.set_halign(Gtk.Align.CENTER)
+        for icon_name, cmd in (
+            ("media-skip-backward-symbolic", "playerctl previous"),
+            ("media-playback-start-symbolic", "playerctl play-pause"),
+            ("media-skip-forward-symbolic", "playerctl next"),
+        ):
+            mb = Gtk.Button.new_from_icon_name(icon_name)
+            mb.add_css_class("circular")
+            mb.connect("clicked", lambda _b, c=cmd: _spawn(c))
+            mctrls.append(mb)
+        mbox.append(mctrls)
+        media_pop.set_child(mbox)
+        self._media_btn.set_popover(media_pop)
+        center.append(self._media_btn)
+
+        bar.set_center_widget(center)
+
+        # Right: CPU + Sparkline, RAM, Disk, Net, Battery, Volume Slider Popover, Theme, Power
         right = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self._cpu_btn = Gtk.Button.new_with_label("CPU 0%")
         self._cpu_btn.add_css_class("orbit-pill")
         self._cpu_btn.add_css_class("orbit-cpu")
+        self._cpu_btn.set_tooltip_text("CPU Usage (click for btop)")
         self._cpu_btn.connect("clicked", lambda *_: _spawn("kitty -e btop"))
         right.append(self._cpu_btn)
 
@@ -406,15 +589,36 @@ class TopBarWindow(Gtk.ApplicationWindow):
         self._bat_btn.set_visible(False)
         right.append(self._bat_btn)
 
-        self._vol_btn = Gtk.Button.new_with_label("Vol —")
+        # Interactive Volume Pill + Slider Popover
+        self._vol_suppress = False
+        self._vol_btn = Gtk.MenuButton()
+        self._vol_btn.set_label("Vol —")
         self._vol_btn.add_css_class("orbit-pill")
         self._vol_btn.add_css_class("orbit-vol")
-        self._vol_btn.set_tooltip_text("Scroll: Volume  •  Click: Mute  •  Right-click: Mixer")
-        self._vol_btn.connect("clicked", lambda *_: _spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
-        rc = Gtk.GestureClick()
-        rc.set_button(3)
-        rc.connect("pressed", lambda *_: _spawn("pavucontrol"))
-        self._vol_btn.add_controller(rc)
+        self._vol_btn.set_tooltip_text("Click: Volume Slider  •  Scroll: Volume")
+        vol_pop = Gtk.Popover()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        vbox.set_size_request(210, -1)
+        vbox.set_margin_top(10)
+        vbox.set_margin_bottom(10)
+        vbox.set_margin_start(12)
+        vbox.set_margin_end(12)
+        self._vol_scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 150, 5)
+        self._vol_scale.set_draw_value(True)
+        self._vol_scale.connect("value-changed", self._on_vol_scale_changed)
+        vbox.append(self._vol_scale)
+        vrow = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        mute_b = Gtk.Button.new_with_label("Mute Toggle")
+        mute_b.set_hexpand(True)
+        mute_b.connect("clicked", lambda *_: _spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
+        mixer_b = Gtk.Button.new_with_label("Mixer")
+        mixer_b.connect("clicked", lambda *_: (vol_pop.popdown(), _spawn("pavucontrol")))
+        vrow.append(mute_b)
+        vrow.append(mixer_b)
+        vbox.append(vrow)
+        vol_pop.set_child(vbox)
+        self._vol_btn.set_popover(vol_pop)
+
         scroll = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL)
         scroll.connect(
             "scroll",
@@ -429,6 +633,17 @@ class TopBarWindow(Gtk.ApplicationWindow):
         )
         self._vol_btn.add_controller(scroll)
         right.append(self._vol_btn)
+
+        # 1-click Orbit Theme / Wallpaper switcher
+        theme_btn = Gtk.Button()
+        theme_btn.add_css_class("orbit-pill")
+        theme_btn.add_css_class("orbit-theme-btn")
+        theme_btn.set_tooltip_text("Orbit Theme & Wallpapers")
+        theme_icon = Gtk.Image.new_from_icon_name("preferences-desktop-wallpaper-symbolic")
+        theme_icon.set_pixel_size(14)
+        theme_btn.set_child(theme_icon)
+        theme_btn.connect("clicked", lambda *_: _spawn(_bin("orbit-theme")))
+        right.append(theme_btn)
 
         power_btn = Gtk.MenuButton()
         power_btn.add_css_class("orbit-power-btn")
@@ -458,17 +673,42 @@ class TopBarWindow(Gtk.ApplicationWindow):
 
         bar.set_end_widget(right)
 
+    def _on_vol_scale_changed(self, scale: Gtk.Scale) -> None:
+        if self._vol_suppress:
+            return
+        pct = int(round(scale.get_value()))
+        _spawn(f"wpctl set-volume @DEFAULT_AUDIO_SINK@ {pct}%")
+
     def update_clock(self, text: str) -> None:
         self._clock_btn.set_label(text)
 
     def update_stats(
-        self, cpu: int, mem: str, disk: str, vol: str, net: str, bat: str | None, bat_low: bool
+        self,
+        cpu: int,
+        mem: str,
+        disk: str,
+        vol_pct: int,
+        vol_label: str,
+        net: str,
+        bat: str | None,
+        bat_low: bool,
+        media_short: str | None,
+        media_full: str,
     ) -> None:
         self._cpu_btn.set_label(f"CPU {cpu}%")
         self._mem_btn.set_label(f"RAM {mem}")
         self._disk_btn.set_label(f"Disk {disk}")
         self._net_btn.set_label(net)
-        self._vol_btn.set_label(f"Vol {vol}")
+        self._vol_btn.set_label(f"Vol {vol_label}")
+        self._vol_suppress = True
+        self._vol_scale.set_value(vol_pct)
+        self._vol_suppress = False
+        if media_short:
+            self._media_btn.set_label(media_short)
+            self._media_full_lbl.set_text(media_full)
+            self._media_btn.set_visible(True)
+        else:
+            self._media_btn.set_visible(False)
         if bat is not None:
             self._bat_btn.set_label(bat)
             self._bat_btn.set_visible(True)
@@ -600,8 +840,10 @@ class OrbitShellApp(Adw.Application):
 
     def do_startup(self) -> None:
         Adw.Application.do_startup(self)
+        dynamic_path = Path.home() / ".config" / "orbit" / "theme.css"
+        dynamic_css = dynamic_path.read_text(encoding="utf-8") if dynamic_path.is_file() else ""
         provider = Gtk.CssProvider()
-        provider.load_from_string(SHELL_CSS)
+        provider.load_from_string(SHELL_CSS + "\n" + dynamic_css)
         display = Gdk.Display.get_default()
         if display is not None:
             Gtk.StyleContext.add_provider_for_display(
@@ -656,11 +898,14 @@ class OrbitShellApp(Adw.Application):
         cpu = self._stats.cpu_percent()
         mem = self._stats.mem_summary()
         disk = self._stats.disk_summary()
-        vol = self._stats.volume_summary()
+        vol_pct, _muted, vol_label = self._stats.volume_state()
         net = self._stats.network_summary()
         bat, bat_low = self._stats.battery_summary()
+        media_short, media_full = self._stats.media_summary()
         for bar in self._bars:
-            bar.update_stats(cpu, mem, disk, vol, net, bat, bat_low)
+            bar.update_stats(
+                cpu, mem, disk, vol_pct, vol_label, net, bat, bat_low, media_short, media_full
+            )
         return True
 
     def _schedule_hypr_refresh(self) -> None:

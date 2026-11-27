@@ -123,6 +123,15 @@ class OrbitFilesApp(Adw.Application):
                 provider,
                 Gtk.STYLE_PROVIDER_PRIORITY_USER,
             )
+            dynamic_path = Path.home() / ".config" / "orbit" / "theme.css"
+            if dynamic_path.is_file():
+                dyn_provider = Gtk.CssProvider()
+                dyn_provider.load_from_path(str(dynamic_path))
+                Gtk.StyleContext.add_provider_for_display(
+                    display,
+                    dyn_provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_USER + 1,
+                )
 
     def _register_shortcuts(self) -> None:
         shortcuts = {

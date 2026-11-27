@@ -1,0 +1,145 @@
+#!/bin/sh
+set -eu
+
+detect_de() {
+  if [ -n "${FASTFETCH_FORCE_DE:-}" ]; then
+    printf '%s\n' "$FASTFETCH_FORCE_DE"
+    return
+  fi
+
+  if pgrep -f '[o]rbit_suite\.shell' >/dev/null 2>&1; then
+    printf 'Orbit Desktop (Hyprland)\n'
+    return
+  fi
+
+  case "${XDG_CURRENT_DESKTOP:-}:${XDG_SESSION_DESKTOP:-}" in
+    *X-Hyprland-Standalone*)
+      printf 'Orbit Desktop (Hyprland)\n'
+      return
+      ;;
+    *X-Orbit-Qtile*)
+      printf 'Orbit Desktop (Qtile)\n'
+      return
+      ;;
+  esac
+
+  if pgrep -f '[j]acob-shell' >/dev/null 2>&1; then
+    printf 'HyprFrost\n'
+    return
+  fi
+
+  case "${HYPRLAND_CMD:-}" in
+    *hypr-personal*)
+      printf 'HyprFrost\n'
+      return
+      ;;
+  esac
+
+  if pgrep -f '[o]marchy-shell' >/dev/null 2>&1 || pgrep -f '[/]omarchy/shell' >/dev/null 2>&1; then
+    printf 'Omarchy\n'
+    return
+  fi
+
+  if pgrep -x qtile >/dev/null 2>&1; then
+    printf 'Qtile\n'
+    return
+  fi
+
+  case "${XDG_CURRENT_DESKTOP:-}:${DESKTOP_SESSION:-}" in
+    *qtile*|*Qtile*) printf 'Qtile\n' ;;
+    *) printf '%s\n' "${XDG_CURRENT_DESKTOP:-${DESKTOP_SESSION:-Standalone}}" ;;
+  esac
+}
+
+print_logo() {
+  de=$1
+  about="${HOME}/.config/omarchy/branding/about.txt"
+  if [ "$de" = "Omarchy" ] && [ -r "$about" ]; then
+    printf '\033[32m'
+    cat "$about"
+    printf '\033[0m'
+    return
+  fi
+
+  printf '\033[1;36m%s\n' \
+    '                   -`' \
+    '                  .o+`' \
+    '                 `ooo/' \
+    '                `+oooo:' \
+    '               `+oooooo:' \
+    '               -+oooooo+:' \
+    '             `/:-:++oooo+:'
+  printf '\033[0;36m%s\n' \
+    '            `/++++/+++++++:' \
+    '           `/++++++++++++++:' \
+    '          `/+++ooooooooooooo/`' \
+    '         ./ooosssso++osssssso+`' \
+    '        .oossssso-````/ossssss+`' \
+    '       -osssssso.      :ssssssso.' \
+    '      :osssssss/        osssso+++.' \
+    '     /ossssssss/        +ssssooo/-' \
+    '   `/ossssso+/:-        -:/+osssso+-' \
+    '  `+sso+:-`                 `.-/+oso:' \
+    ' `++:.                           `-/+/' \
+    ' .`                                 `/'
+  printf '\033[0m'
+}
+
+print_distro() {
+  de=$1
+  case "$de" in
+    "Orbit Desktop"*)
+      printf 'Orbit OS (Arch Linux Rolling) %s\n' "$(uname -m)"
+      return
+      ;;
+  esac
+  pretty=""
+  if [ -r /etc/os-release ]; then
+    pretty=$(sed -n 's/^PRETTY_NAME="\?\([^"]*\)"\?$/\1/p' /etc/os-release | head -n1)
+  fi
+  printf '%s %s\n' "${pretty:-Arch Linux}" "$(uname -m)"
+}
+
+print_branch() {
+  de=$1
+  case "$de" in
+    "Orbit Desktop"*)
+      printf 'v1.0.0\n'
+      return
+      ;;
+  esac
+  if [ "$de" = "Omarchy" ]; then
+    omarchy-version-branch 2>/dev/null && return || true
+  fi
+
+  ver=""
+  if [ -r /etc/os-release ]; then
+    ver=$(sed -n 's/^IMAGE_VERSION="\?\([^"]*\)"\?$/\1/p' /etc/os-release | head -n1)
+  fi
+  printf '%s\n' "${ver:-rolling}"
+}
+
+print_theme() {
+  de=$1
+  theme=""
+  if [ "$de" = "Omarchy" ]; then
+    theme=$(omarchy-theme-current 2>/dev/null || true)
+  else
+    theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | tr -d "'" || true)
+    [ -n "$theme" ] || theme="${GTK_THEME:-}"
+    [ -n "$theme" ] || theme=$(omarchy-theme-current 2>/dev/null || true)
+  fi
+  [ -n "$theme" ] && printf '%s \033[38m●\033[37m●\033[36m●\033[35m●\033[34m●\033[33m●\033[32m●\033[31m●\033[0m\n' "$theme" || true
+}
+
+mode=${1:-de}
+de=$(detect_de)
+
+case "$mode" in
+  de) printf '%s\n' "$de" ;;
+  distro) print_distro "$de" ;;
+  logo) print_logo "$de" ;;
+  branch) print_branch "$de" ;;
+  theme) print_theme "$de" ;;
+  *) exit 1 ;;
+esac

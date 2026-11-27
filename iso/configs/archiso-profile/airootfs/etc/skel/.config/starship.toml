@@ -1,0 +1,67 @@
+# Orbit Desktop — Dynamic Wallpaper Starship Prompt (hyprfrost-aurora)
+add_newline = true
+command_timeout = 800
+
+format = """
+[](#5281c6)\
+$os\
+[](bg:#8d5dcc fg:#5281c6)\
+$directory\
+[](fg:#8d5dcc bg:#333942)\
+$git_branch\
+$git_status\
+[](fg:#333942 bg:#17191e)\
+$python\
+$rust\
+$nodejs\
+$cmd_duration\
+[](fg:#17191e)
+$character"""
+
+[os]
+disabled = false
+style = "bg:#5281c6 fg:#17191e bold"
+
+[os.symbols]
+Arch = " 󰣇 "
+Linux = "  "
+
+[directory]
+style = "bg:#8d5dcc fg:#17191e bold"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = ""
+style = "bg:#333942 fg:#ea81a1 bold"
+format = "[ $symbol $branch ]($style)"
+
+[git_status]
+style = "bg:#333942 fg:#f1fa8c"
+format = "[$all_status$ahead_behind]($style)"
+
+[python]
+symbol = ""
+style = "bg:#17191e fg:#50fa7b"
+format = "[ $symbol ($version) ]($style)"
+
+[rust]
+symbol = ""
+style = "bg:#17191e fg:#ffb86c"
+format = "[ $symbol ($version) ]($style)"
+
+[nodejs]
+symbol = ""
+style = "bg:#17191e fg:#50fa7b"
+format = "[ $symbol ($version) ]($style)"
+
+[cmd_duration]
+min_time = 1500
+style = "bg:#17191e fg:#ffb86c"
+format = "[ 󱐋 $duration ]($style)"
+
+[character]
+success_symbol = "[❯](bold #5281c6)"
+error_symbol = "[❯](bold #ff5555)"
+vimcmd_symbol = "[❮](bold #50fa7b)"
