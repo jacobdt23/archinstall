@@ -772,8 +772,11 @@ class BottomDockWindow(Gtk.ApplicationWindow):
         left.append(search_btn)
         bar.set_start_widget(left)
 
-        # Center: Pinned Orbit apps + running window icons
+        # Center: Pinned Orbit apps (merged with running state) + unpinned running apps
         center = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+        self._pinned_meta: dict[str, tuple[Gtk.Button, str, str]] = {}
+        self._pinned_addrs: dict[str, list[str]] = {}
+        self._active_addr: str = ""
         for label, icon_name, cmd in PINNED_APPS:
             btn = Gtk.Button()
             btn.add_css_class("orbit-dock-btn")
@@ -781,7 +784,13 @@ class BottomDockWindow(Gtk.ApplicationWindow):
             img = Gtk.Image.new_from_icon_name(icon_name)
             img.set_pixel_size(20)
             btn.set_child(img)
-            btn.connect("clicked", lambda _b, c=cmd: _spawn(c))
+            btn.connect("clicked", lambda _b, icon=icon_name: self._on_pinned_click(icon))
+            mid = Gtk.GestureClick()
+            mid.set_button(2)
+            mid.connect("pressed", lambda *_args, c=cmd: _spawn(c))
+            btn.add_controller(mid)
+            self._pinned_meta[icon_name] = (btn, label, cmd)
+            self._pinned_addrs[icon_name] = []
             center.append(btn)
 
         self._sep = Gtk.Box()
@@ -800,7 +809,21 @@ class BottomDockWindow(Gtk.ApplicationWindow):
         desk_btn.connect("clicked", lambda *_: _spawn("hyprctl dispatch workspace empty"))
         bar.set_end_widget(desk_btn)
 
+    def _on_pinned_click(self, icon_name: str) -> None:
+        addrs = self._pinned_addrs.get(icon_name, [])
+        if not addrs:
+            _btn, _label, cmd = self._pinned_meta[icon_name]
+            _spawn(cmd)
+            return
+        if self._active_addr in addrs and len(addrs) > 1:
+            next_idx = (addrs.index(self._active_addr) + 1) % len(addrs)
+            target = addrs[next_idx]
+        else:
+            target = addrs[0]
+        _spawn(f"hyprctl dispatch focuswindow address:{target}")
+
     def update_clients(self, clients: list[dict[str, object]], active_addr: str) -> None:
+        self._active_addr = active_addr
         while (child := self._running_box.get_first_child()) is not None:
             self._running_box.remove(child)
 
@@ -808,9 +831,38 @@ class BottomDockWindow(Gtk.ApplicationWindow):
             c for c in clients
             if c.get("mapped") and c.get("class") and c.get("class") != "dev.orbit.Shell"
         ]
-        self._sep.set_visible(bool(visible_clients))
+
+        pinned_groups: dict[str, list[dict[str, object]]] = {k: [] for k in self._pinned_meta}
+        unpinned_clients: list[dict[str, object]] = []
 
         for client in visible_clients:
+            wm_class = str(client.get("class", ""))
+            icon_name = _resolve_icon_name(wm_class)
+            if icon_name in pinned_groups:
+                pinned_groups[icon_name].append(client)
+            else:
+                unpinned_clients.append(client)
+
+        for icon_name, (btn, base_label, _cmd) in self._pinned_meta.items():
+            group = pinned_groups[icon_name]
+            addrs = [str(c.get("address", "")) for c in group if c.get("address")]
+            self._pinned_addrs[icon_name] = addrs
+            btn.remove_css_class("running")
+            btn.remove_css_class("focused")
+            if group:
+                btn.add_css_class("running")
+                if active_addr in addrs:
+                    btn.add_css_class("focused")
+                if len(group) == 1:
+                    btn.set_tooltip_text(str(group[0].get("title") or base_label))
+                else:
+                    btn.set_tooltip_text(f"{base_label} ({len(group)} windows — click to cycle, middle-click for new)")
+            else:
+                btn.set_tooltip_text(base_label)
+
+        self._sep.set_visible(bool(unpinned_clients))
+
+        for client in unpinned_clients:
             addr = str(client.get("address", ""))
             wm_class = str(client.get("class", ""))
             title = str(client.get("title", wm_class))
