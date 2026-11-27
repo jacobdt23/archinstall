@@ -793,11 +793,6 @@ class BottomDockWindow(Gtk.ApplicationWindow):
             self._pinned_addrs[icon_name] = []
             center.append(btn)
 
-        self._sep = Gtk.Box()
-        self._sep.add_css_class("orbit-dock-sep")
-        self._sep.set_visible(False)
-        center.append(self._sep)
-
         self._running_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
         center.append(self._running_box)
         bar.set_center_widget(center)
@@ -864,8 +859,6 @@ class BottomDockWindow(Gtk.ApplicationWindow):
         for client in unpinned_clients:
             key = str(client.get("class", "")).strip().lower()
             unpinned_groups.setdefault(key, []).append(client)
-
-        self._sep.set_visible(bool(unpinned_groups))
 
         for _key, group in unpinned_groups.items():
             addrs = [str(c.get("address", "")) for c in group if c.get("address")]
