@@ -255,13 +255,19 @@ def _bin(name: str) -> str:
     return shutil.which(name) or name
 
 
+_BROWSER_ENTRY = (
+    ("Brave Browser", "brave-browser", "brave")
+    if shutil.which("brave")
+    else ("Firefox", "firefox", "firefox")
+)
+
 PINNED_APPS = [
     ("Orbit Launch", "launch", _bin("orbit-launch")),
     ("Orbit Term", "utilities-terminal", _bin("orbit-term")),
     ("Orbit Files", "system-file-manager", _bin("orbit-files")),
     ("Orbit Edit (LazyVim)", "nvim", _bin("orbit-nvim")),
     ("Orbit View", "image-x-generic", _bin("orbit-view")),
-    ("Brave Browser", "brave-browser", "brave"),
+    _BROWSER_ENTRY,
 ]
 
 CLASS_ICON_MAP = {
@@ -271,6 +277,7 @@ CLASS_ICON_MAP = {
     "dev.orbit.view": "image-x-generic",
     "dev.orbit.launch": "launch",
     "brave-browser": "brave-browser",
+    "firefox": "firefox",
     "kitty": "kitty",
     "antigravity": "antigravity",
     "code": "visual-studio-code",
@@ -840,6 +847,11 @@ class OrbitShellApp(Adw.Application):
 
     def do_startup(self) -> None:
         Adw.Application.do_startup(self)
+        settings = Gtk.Settings.get_default()
+        if settings is not None:
+            settings.set_property("gtk-application-prefer-dark-theme", True)
+            if Path("/usr/share/icons/Papirus-Dark").is_dir():
+                settings.set_property("gtk-icon-theme-name", "Papirus-Dark")
         dynamic_path = Path.home() / ".config" / "orbit" / "theme.css"
         dynamic_css = dynamic_path.read_text(encoding="utf-8") if dynamic_path.is_file() else ""
         provider = Gtk.CssProvider()

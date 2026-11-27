@@ -81,7 +81,12 @@ class VteTerminalTab(Gtk.ScrolledWindow):
         "title-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
-    def __init__(self, cwd: str | None = None, font_size: int = 11) -> None:
+    def __init__(
+        self,
+        cwd: str | None = None,
+        font_size: int = 11,
+        command: list[str] | None = None,
+    ) -> None:
         super().__init__()
         self.set_hexpand(True)
         self.set_vexpand(True)
@@ -126,12 +131,13 @@ class VteTerminalTab(Gtk.ScrolledWindow):
         self.set_child(self.term)
 
         shell = os.environ.get("SHELL", "/bin/bash")
+        argv = command if command else [shell]
         self.term.spawn_async(
             Vte.PtyFlags.DEFAULT,
             cwd or str(Path.home()),
-            [shell],
+            argv,
             None,
-            GLib.SpawnFlags.DEFAULT,
+            GLib.SpawnFlags.SEARCH_PATH,
             None,
             None,
             -1,
@@ -168,13 +174,19 @@ class PtyTerminalTab(Gtk.ScrolledWindow):
         "title-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
-    def __init__(self, cwd: str | None = None, font_size: int = 11) -> None:
+    def __init__(
+        self,
+        cwd: str | None = None,
+        font_size: int = 11,
+        command: list[str] | None = None,
+    ) -> None:
         super().__init__()
         self.set_hexpand(True)
         self.set_vexpand(True)
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self._cwd = cwd or str(Path.home())
+        self._command = command
         self._master_fd: int | None = None
         self._watch_id: int | None = None
         self._proc: subprocess.Popen[bytes] | None = None
@@ -239,7 +251,7 @@ class PtyTerminalTab(Gtk.ScrolledWindow):
             fcntl.ioctl(0, termios.TIOCSCTTY, 0)
 
         self._proc = subprocess.Popen(
-            [shell, "-i"],
+            self._command if self._command else [shell, "-i"],
             stdin=slave_fd,
             stdout=slave_fd,
             stderr=slave_fd,
@@ -486,8 +498,14 @@ TerminalTab = VteTerminalTab if HAS_VTE else PtyTerminalTab
 class OrbitTermWindow(Adw.ApplicationWindow):
     """Main Orbit Term window."""
 
-    def __init__(self, app: Adw.Application, initial_cwd: str | None = None) -> None:
-        super().__init__(application=app, title=APP_NAME)
+    def __init__(
+        self,
+        app: Adw.Application,
+        initial_cwd: str | None = None,
+        initial_command: list[str] | None = None,
+        window_title: str | None = None,
+    ) -> None:
+        super().__init__(application=app, title=window_title or APP_NAME)
         self.set_default_size(940, 600)
         self._font_size = 11
         self._font_provider = Gtk.CssProvider()
@@ -502,7 +520,7 @@ class OrbitTermWindow(Adw.ApplicationWindow):
         self._setup_actions()
         self._build_ui()
         self._apply_font_size()
-        self.add_tab(initial_cwd)
+        self.add_tab(initial_cwd, command=initial_command)
 
     def _build_ui(self) -> None:
         toolbar_view = Adw.ToolbarView()
@@ -586,10 +604,17 @@ class OrbitTermWindow(Adw.ApplicationWindow):
             return None
         return page.get_child()  # type: ignore[return-value]
 
-    def add_tab(self, cwd: str | None = None) -> TerminalTab:  # type: ignore[valid-type]
-        tab = TerminalTab(cwd=cwd, font_size=self._font_size)
+    def add_tab(
+        self,
+        cwd: str | None = None,
+        command: list[str] | None = None,
+    ) -> TerminalTab:  # type: ignore[valid-type]
+        tab = TerminalTab(cwd=cwd, font_size=self._font_size, command=command)
         page = self._tab_view.append(tab)
-        label = Path(cwd).name if cwd else Path(os.environ.get("SHELL", "shell")).name
+        if command:
+            label = Path(command[0]).name
+        else:
+            label = Path(cwd).name if cwd else Path(os.environ.get("SHELL", "shell")).name
         page.set_title(label or "Shell")
         tab.connect("exited", lambda _t, p=page: self._tab_view.close_page(p))
         tab.connect("title-changed", lambda _t, title, p=page: p.set_title(title))
@@ -647,7 +672,7 @@ class OrbitTermApp(Adw.Application):
     def __init__(self) -> None:
         super().__init__(
             application_id=APP_ID,
-            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
+            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE | Gio.ApplicationFlags.NON_UNIQUE,
         )
 
     def do_startup(self) -> None:
@@ -671,9 +696,30 @@ class OrbitTermApp(Adw.Application):
         win.present()
 
     def do_command_line(self, command_line: Gio.ApplicationCommandLine) -> int:
-        args = [a for a in command_line.get_arguments()[1:] if a and not a.startswith("-")]
-        cwd = args[0] if args and Path(args[0]).is_dir() else command_line.get_cwd()
-        win = OrbitTermWindow(self, initial_cwd=cwd)
+        raw_args = command_line.get_arguments()[1:]
+        title: str | None = None
+        command: list[str] | None = None
+        positional: list[str] = []
+        i = 0
+        while i < len(raw_args):
+            arg = raw_args[i]
+            if arg in ("-e", "--"):
+                command = raw_args[i + 1 :] or None
+                break
+            if arg == "--title" and i + 1 < len(raw_args):
+                title = raw_args[i + 1]
+                i += 2
+                continue
+            if not arg.startswith("-"):
+                positional.append(arg)
+            i += 1
+        cwd = positional[0] if positional and Path(positional[0]).is_dir() else command_line.get_cwd()
+        win = OrbitTermWindow(
+            self,
+            initial_cwd=cwd,
+            initial_command=command,
+            window_title=title,
+        )
         win.present()
         return 0
 

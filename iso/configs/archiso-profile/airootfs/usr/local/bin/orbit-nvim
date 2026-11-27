@@ -2,6 +2,6 @@
 export NVIM_APPNAME="nvim-hyprland"
 if [[ "${1:-}" == "--hyprland" ]]; then
     shift
-    exec kitty --class dev.orbit.Edit --title "Orbit Neovim (LazyVim)" -e nvim "${HOME}/.config/hypr-standalone/hyprland.conf" "$@"
+    exec /usr/local/bin/orbit-term --title "Orbit Neovim (LazyVim)" -e nvim "${HOME}/.config/hypr-standalone/hyprland.conf" "$@"
 fi
-exec kitty --class dev.orbit.Edit --title "Orbit Neovim (LazyVim)" -e nvim "$@"
+exec /usr/local/bin/orbit-term --title "Orbit Neovim (LazyVim)" -e nvim "$@"
