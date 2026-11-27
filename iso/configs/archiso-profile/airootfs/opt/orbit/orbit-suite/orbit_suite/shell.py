@@ -860,28 +860,51 @@ class BottomDockWindow(Gtk.ApplicationWindow):
             else:
                 btn.set_tooltip_text(base_label)
 
-        self._sep.set_visible(bool(unpinned_clients))
-
+        unpinned_groups: dict[str, list[dict[str, object]]] = {}
         for client in unpinned_clients:
-            addr = str(client.get("address", ""))
-            wm_class = str(client.get("class", ""))
-            title = str(client.get("title", wm_class))
+            key = str(client.get("class", "")).strip().lower()
+            unpinned_groups.setdefault(key, []).append(client)
+
+        self._sep.set_visible(bool(unpinned_groups))
+
+        for _key, group in unpinned_groups.items():
+            addrs = [str(c.get("address", "")) for c in group if c.get("address")]
+            if not addrs:
+                continue
+            wm_class = str(group[0].get("class", ""))
+            title = str(group[0].get("title", wm_class))
 
             btn = Gtk.Button()
             btn.add_css_class("orbit-dock-btn")
             btn.add_css_class("running")
-            if addr == active_addr:
+            if active_addr in addrs:
                 btn.add_css_class("focused")
-            btn.set_tooltip_text(title)
+            if len(group) == 1:
+                btn.set_tooltip_text(title)
+            else:
+                btn.set_tooltip_text(f"{wm_class} ({len(group)} windows — click to cycle)")
 
             img = Gtk.Image.new_from_icon_name(_resolve_icon_name(wm_class))
             img.set_pixel_size(20)
             btn.set_child(img)
 
-            btn.connect("clicked", lambda _b, a=addr: _spawn(f"hyprctl dispatch focuswindow address:{a}"))
+            def _focus_group(_b: Gtk.Button, group_addrs: list[str] = addrs) -> None:
+                if self._active_addr in group_addrs and len(group_addrs) > 1:
+                    nxt = (group_addrs.index(self._active_addr) + 1) % len(group_addrs)
+                    target = group_addrs[nxt]
+                else:
+                    target = group_addrs[0]
+                _spawn(f"hyprctl dispatch focuswindow address:{target}")
+
+            btn.connect("clicked", _focus_group)
             mid = Gtk.GestureClick()
             mid.set_button(2)
-            mid.connect("pressed", lambda *_args, a=addr: _spawn(f"hyprctl dispatch closewindow address:{a}"))
+            mid.connect(
+                "pressed",
+                lambda *_args, a=(active_addr if active_addr in addrs else addrs[0]): _spawn(
+                    f"hyprctl dispatch closewindow address:{a}"
+                ),
+            )
             btn.add_controller(mid)
 
             self._running_box.append(btn)
