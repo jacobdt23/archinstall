@@ -98,7 +98,13 @@ pacman-key --populate archlinux 2>/dev/null || true
 systemctl enable NetworkManager.service bluetooth.service sddm.service systemd-oomd.service 2>/dev/null || true
 systemctl mask NetworkManager-wait-online.service systemd-networkd-wait-online.service 2>/dev/null || true
 
-# 5. Configure SDDM default session to Orbit Desktop (Hyprland)
+# 5. Configure SDDM default session to Orbit Desktop (Hyprland) and remove duplicate upstream sessions
+rm -f /usr/share/wayland-sessions/hyprland.desktop \
+      /usr/share/wayland-sessions/hyprland-uwsm.desktop \
+      /usr/share/wayland-sessions/qtile-generic.desktop \
+      /usr/share/wayland-sessions/qtile-wayland.desktop \
+      /usr/share/xsessions/qtile.desktop \
+      /usr/share/xsessions/qtile-generic.desktop
 mkdir -p /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/10-orbit.conf << 'EOF'
 [Theme]
