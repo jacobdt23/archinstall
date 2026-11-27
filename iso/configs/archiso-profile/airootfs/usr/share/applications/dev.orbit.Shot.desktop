@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Orbit Shot
+Comment=Wayland/Hyprland Screenshot Utility (Region, Window, Monitor, Annotate)
+Exec=/usr/local/bin/orbit-shot
+Icon=applets-screenshooter
+Terminal=false
+Categories=Graphics;Utility;
+OnlyShowIn=X-Hyprland-Standalone;X-Orbit-Qtile;
+StartupWMClass=dev.orbit.Shot

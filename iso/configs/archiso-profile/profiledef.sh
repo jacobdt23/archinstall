@@ -35,6 +35,7 @@ file_permissions=(
   ["/usr/local/bin/orbit-nvim"]="0:0:755"
   ["/usr/local/bin/orbit-nvim-cli"]="0:0:755"
   ["/usr/local/bin/orbit-shell"]="0:0:755"
+  ["/usr/local/bin/orbit-shot"]="0:0:755"
   ["/usr/local/bin/orbit-term"]="0:0:755"
   ["/usr/local/bin/orbit-theme"]="0:0:755"
   ["/usr/local/bin/orbit-view"]="0:0:755"
