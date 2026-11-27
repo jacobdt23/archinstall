@@ -130,6 +130,7 @@ zsh
 # Orbit OS: Hyprland + Qtile (Wayland) + Python GTK4 Orbit Suite
 hyprland
 hyprpaper
+swaybg
 hyprlock
 hyprpolkitagent
 qtile
