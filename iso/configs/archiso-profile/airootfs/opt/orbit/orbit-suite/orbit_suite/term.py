@@ -131,12 +131,20 @@ class VteTerminalTab(Gtk.ScrolledWindow):
         self.set_child(self.term)
 
         shell = os.environ.get("SHELL", "/bin/bash")
-        argv = command if command else [shell]
+        self._spawn_argv = command if command else [shell]
+        self._spawn_cwd = cwd or str(Path.home())
+        GLib.idle_add(self._spawn_child)
+
+    def _spawn_child(self) -> bool:
+        env = os.environ.copy()
+        env.setdefault("TERM", "xterm-256color")
+        env.setdefault("COLORTERM", "truecolor")
+        envv = [f"{k}={v}" for k, v in env.items()]
         self.term.spawn_async(
             Vte.PtyFlags.DEFAULT,
-            cwd or str(Path.home()),
-            argv,
-            None,
+            self._spawn_cwd,
+            self._spawn_argv,
+            envv,
             GLib.SpawnFlags.SEARCH_PATH,
             None,
             None,
@@ -144,6 +152,7 @@ class VteTerminalTab(Gtk.ScrolledWindow):
             None,
             None,
         )
+        return False
 
     def focus_terminal(self) -> bool:
         self.term.grab_focus()

@@ -287,7 +287,7 @@ CLASS_ICON_MAP = {
 
 
 def _spawn(cmd: str) -> None:
-    subprocess.Popen(cmd, shell=True, start_new_session=True)
+    subprocess.Popen(cmd, shell=True, cwd=str(Path.home()), start_new_session=True)
 
 
 def _hyprctl_json(args: list[str]) -> object:
