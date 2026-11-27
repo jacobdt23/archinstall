@@ -12,10 +12,8 @@ if [ -f /home/orbit/.config/hypr-standalone/hyprland.conf ] && \
    ! grep -q 'launch-calamares' /home/orbit/.config/hypr-standalone/hyprland.conf; then
     cat >> /home/orbit/.config/hypr-standalone/hyprland.conf <<'EOF'
 
--- Live ISO only: auto-launch Calamares graphical installer
-hl.on("hyprland.start", function()
-  hl.exec_cmd("/usr/local/bin/launch-calamares")
-end)
+# Live ISO only: auto-launch Calamares graphical installer
+exec-once = /usr/local/bin/launch-calamares
 EOF
     chown orbit:orbit /home/orbit/.config/hypr-standalone/hyprland.conf
 fi
